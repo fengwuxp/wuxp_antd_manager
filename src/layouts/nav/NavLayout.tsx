@@ -1,14 +1,16 @@
 import * as React from "react";
 import {Layout, Icon} from 'antd';
-import {getMenuData} from "../../common/menu";
+
 import SiderMenu from "../../components/SiderMenu/index";
-import logo from "../../assets/logo.svg";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
-import SessionManagerImpl from "../../session/SessionManager";
-import {NoticeManager} from "../../session/NoticeManager";
-import NoticeManagerImpl from "../../session/NoticeManager";
 import {Scrollbars} from 'react-custom-scrollbars';
+
+import SessionManagerImpl from "../../session/SessionManager";
+import {NoticeManager,NoticeManagerImpl} from "../../session/NoticeManager";
+import {getMenuData} from "../../common/menu";
+import logo from "../../assets/logo.svg";
+
 
 const {Content, Header, Footer} = Layout;
 
