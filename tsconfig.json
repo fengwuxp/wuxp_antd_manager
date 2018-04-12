@@ -28,7 +28,8 @@
   },
   "compileOnSave": false,
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "node_modules/wuxp_react_dynamic_router/src/types/ScssType.ts"
   ],
   "exclude": [
     "config/dist",

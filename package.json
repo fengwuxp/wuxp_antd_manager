@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "基于antd的通用管理后台壳子",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fengwuxp/wuxp_antd_manager.git"
@@ -20,7 +17,13 @@
     "url": "https://github.com/fengwuxp/wuxp_antd_manager/issues"
   },
   "homepage": "https://github.com/fengwuxp/wuxp_antd_manager#readme",
-  "dependencies": {},
+  "scripts": {
+    "mock": "node --harmony ./mock/server.js"
+  },
+  "dependencies": {
+    "enquire-js": "^0.2.1",
+    "wuxp_react_dynamic_router": "0.0.1"
+  },
   "devDependencies": {
     "@types/lodash": "^4.14.106",
     "@types/lodash-decorators": "^4.0.0",
@@ -72,6 +75,9 @@
     "html-webpack-plugin": "^2.30.1",
     "http-proxy-middleware": "^0.18.0",
     "isomorphic-fetch": "^2.2.1",
+    "koa": "^1.2.2",
+    "koa-body": "^1.6.0",
+    "koa-router": "^5.4.0",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",
     "lodash": "^4.17.5",
@@ -85,6 +91,7 @@
     "rc-drawer-menu": "^0.5.0",
     "react": "^16.2.0",
     "react-container-query": "^0.9.1",
+    "react-custom-scrollbars": "^4.2.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.2.0",
     "react-fittext": "^1.0.0",
@@ -93,7 +100,6 @@
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^4.0.8",
-    "react-custom-scrollbars": "^4.2.1",
     "rollbar": "^2.3.4",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",

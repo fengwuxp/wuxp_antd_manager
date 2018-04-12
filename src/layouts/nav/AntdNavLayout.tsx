@@ -5,36 +5,38 @@ import SiderMenu from "../../components/SiderMenu/index";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
 import {Scrollbars} from 'react-custom-scrollbars';
-
-import SessionManagerImpl from "../../session/SessionManager";
-import {NoticeManager,NoticeManagerImpl} from "../../session/NoticeManager";
-import {getMenuData} from "../../common/menu";
-import logo from "../../assets/logo.svg";
+import {enquireScreen, unenquireScreen} from 'enquire-js';
+import AntdMenuManager, {AntdMenuItem} from "../../manager/menu/AntdMenuManager";
+import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
+import SimpleSessionManager from "../../session/SimpleSessionManager";
 
 
 const {Content, Header, Footer} = Layout;
 
 
-export interface NavLayoutProps extends GlobalHeaderProps {
+export interface AntdNavLayoutProps extends GlobalHeaderProps {
 
 }
 
 /**
  * 导航布局
  */
-export default class NavLayout extends React.Component<NavLayoutProps, any> {
+export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, any> {
 
+     /**
+     * enquire-js 处理者
+     */
+    private enquireHandler: any;
 
-    private noticeManager: NoticeManager<any>;
 
     constructor(props, contentx) {
         super(props, contentx);
-        this.noticeManager = new NoticeManagerImpl();
     }
 
     state = {
         collapsed: false,
-        isMobile: false
+        isMobile: false,
+        menus: []
     };
 
     /**
@@ -48,18 +50,37 @@ export default class NavLayout extends React.Component<NavLayoutProps, any> {
     };
 
     /**
-     * 点击菜单
-     * @param {any} key
+     * 在渲染前调用,在客户端也在服务端
      */
-    handleMenuClick = ({key}) => {
-        if (key === 'triggerError') {
+    componentWillMount() {
 
-            return;
-        }
-        if (key === 'logout') {
+        //加载菜单
+        const menus: Array<AntdMenuItem> = AntdMenuManager.getMenus();
+        this.setState({
+            menus
+        });
+    }
 
-        }
-    };
+    /**
+     * 在第一次渲染后调用，只在客户端。之后组件已经生成了对应的DOM结构
+     */
+    componentDidMount() {
+        //监听屏幕大小改变事件
+        this.enquireHandler = enquireScreen(mobile => {
+            this.setState({
+                isMobile: mobile,
+            });
+        });
+
+    }
+
+    /**
+     * 在组件从 DOM 中移除的时候立刻被调用。
+     */
+    componentWillUnmount() {
+        //移除监听
+        unenquireScreen(this.enquireHandler);
+    }
 
     render() {
         let fetchingNotices = false;
@@ -67,8 +88,7 @@ export default class NavLayout extends React.Component<NavLayoutProps, any> {
             <Layout>
                 <SiderMenu
                     {...this.props}
-                    logo={logo}
-                    menuData={getMenuData()}
+                    menuData={this.state.menus}
                     collapsed={this.state.collapsed}
                     location={location}
                     isMobile={this.state.isMobile}
@@ -77,16 +97,16 @@ export default class NavLayout extends React.Component<NavLayoutProps, any> {
                 <Layout>
                     <Header style={{background: '#fff', padding: 0}}>
                         <GlobalHeader
-                            logo={logo}
-                            currentUser={SessionManagerImpl.getCurrentManager()}
+                            logo={this.props.logo}
+                            currentUser={SimpleSessionManager.getCurrentMember()}
                             fetchingNotices={fetchingNotices}
-                            notices={this.noticeManager.getNotices()}
+                            notices={AntdNoticeManager.getNotices()}
                             collapsed={this.state.collapsed}
                             isMobile={this.state.isMobile}
-                            onNoticeClear={this.noticeManager.handleNoticeClear}
+                            onNoticeClear={AntdNoticeManager.clearNotices}
                             onCollapse={this.handleMenuCollapse}
-                            onMenuClick={this.handleMenuClick}
-                            onNoticeVisibleChange={this.noticeManager.handleNoticeVisibleChange}
+                            onMenuClick={AntdMenuManager.clickMenuItem}
+                            onNoticeVisibleChange={AntdNoticeManager.handleNoticeVisibleChange}
                         />
                     </Header>
                     <Scrollbars style={{width: "100%", height: " 100%"}}>

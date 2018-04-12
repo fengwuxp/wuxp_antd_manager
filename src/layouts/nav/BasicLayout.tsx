@@ -3,7 +3,7 @@ import DocumentTitle from 'react-document-title';
 import {ContainerQuery} from "react-container-query";
 import classNames from 'classnames';
 import MediaQuery from "./MediaQuery";
-import NavLayout from "./NavLayout";
+import AntdNavLayout from "./AntdNavLayout";
 
 
 export default class BasicLayout extends React.Component<any, any> {
@@ -31,7 +31,7 @@ export default class BasicLayout extends React.Component<any, any> {
         return (
             <DocumentTitle title={this.getPageTitle()}>
                 <ContainerQuery query={MediaQuery}>
-                    {params => <NavLayout{...this.props} className={classNames(params) as string}/>}
+                    {params => <AntdNavLayout{...this.props} className={classNames(params) as string}/>}
                 </ContainerQuery>
             </DocumentTitle>
         );
