@@ -189,18 +189,11 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             // console.log("----------------")
             // console.log(redirectData)
         }
-        const routerData = [
-            {
-                path: '/404',
-                exact: true,
-                component: NotFound
-            },
-        ];
+        const routerData = [];
 
-        const bashRedirect = "/";  // this.getBashRedirect();
-        console.log(`bashRedirect--> ${bashRedirect}`)
-        // console.log(this.props.match)
-        // console.log(this.props.match.path)
+        const bashRedirect = this.getBashRedirect();
+        // console.log(`bashRedirect--> ${bashRedirect}`)
+
         return (
             <Layout>
                 <SiderMenu
@@ -242,7 +235,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                                         redirectPath="/exception/403"
                                     />
                                 ))}
-                                {/*<Redirect exact from="/" to={bashRedirect}/>*/}
+                                <Redirect exact from="/" to={bashRedirect}/>
                                 <Route component={NotFound}/>
                             </Switch>
                         </Content>
