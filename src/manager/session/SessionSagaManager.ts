@@ -50,7 +50,7 @@ export class SessionSagaManager implements SessionSaga {
      * @returns {IterableIterator<any>}
      */
     * logout(payload) {
-        console.log("退出登录")
+        console.log("退出登录");
         yield call(adminLogout, payload);
         setAuthority("");
         //回到登录页面

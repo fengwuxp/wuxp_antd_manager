@@ -33,7 +33,6 @@ const SessionReducerManger: SessionReducer = {
 
     default(state) {
         if (state !== undefined) {
-            console.log("123")
             return state;
         }
         return defaultSession;

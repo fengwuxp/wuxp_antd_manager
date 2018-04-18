@@ -21,14 +21,13 @@ ReactDOM.render(
     <Provider store={antdAdminStore}>
         <ConnectedRouter history={history}>
             <Switch>
+                <Route path="/login" component={UserLayout}/>
                 <AuthorizedRoute
-                    exact
                     path="/"
                     render={(props: any) => <BasicLayout {...props} />}
                     authority={['admin', 'user']}
                     redirectPath="/login"
                 />
-                <Route path="/login" component={UserLayout}/>
             </Switch>
         </ConnectedRouter>
     </Provider>,
