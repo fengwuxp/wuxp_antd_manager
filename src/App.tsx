@@ -8,7 +8,7 @@ import BasicLayout from "./layouts/nav/BasicLayout";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory"
 import Authorized from './utils/auth/Authorized';
 import {Provider} from "react-redux";
-import {ConnectedRouter, goBack, push} from 'react-router-redux'
+import {ConnectedRouter} from 'react-router-redux'
 import {antdAdminStore} from "./manager/store/StoreManager";
 
 

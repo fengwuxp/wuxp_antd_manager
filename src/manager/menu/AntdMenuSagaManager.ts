@@ -26,7 +26,7 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
         const menus = yield call(queryMenus, payload);
 
-        console.log(menus);
+        // console.log(menus);
 
         yield put({
             type,
@@ -38,7 +38,7 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
 function queryMenus(params) {
     console.log("获取菜单列表");
-    console.log(params);
+    // console.log(params);
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(getMenuData())

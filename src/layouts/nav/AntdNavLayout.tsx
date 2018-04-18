@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Layout, Icon} from 'antd';
-
 import SiderMenu from "../../components/SiderMenu/index";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
@@ -15,11 +14,15 @@ import {MapStateToPropsParam} from "react-redux";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
-import {AntdNoticeItem} from "../../model/notice/AntdNoticeItem";
+import {match, Redirect, Route, Switch} from "react-router";
+import {getRoutes} from "../../utils/utils";
 
+import Authorized from '../../utils/auth/Authorized';
+import NotFound from '../../views/exception/404';
 
 const {Content, Header, Footer} = Layout;
 
+const {AuthorizedRoute, check} = Authorized;
 
 export interface AntdNavLayoutProps extends GlobalHeaderProps {
     /**
@@ -41,11 +44,19 @@ export interface AntdNavLayoutProps extends GlobalHeaderProps {
     /**
      * 全局异常
      */
-    globalError: any
+    globalError: any;
+
+    match: match<any>
 }
 
 
-const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, systemConfig, notices,globalError}) => ({
+/**
+ * 根据菜单取得重定向地址.
+ */
+const redirectData = [];
+
+
+const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, systemConfig, notices, globalError}) => ({
     session,
     menus,
     notices,
@@ -85,6 +96,33 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         });
     };
 
+    getBashRedirect = () => {
+        // According to the url parameter to redirect
+        // 这里是重定向的,重定向到 url 的 redirect 参数所示地址
+        const urlParams = new URL(window.location.href);
+
+        const redirect = urlParams.searchParams.get('redirect');
+        // Remove the parameters in the url
+        if (redirect) {
+            urlParams.searchParams.delete('redirect');
+            window.history.replaceState(null, 'redirect', urlParams.href);
+        } else {
+            const {menus} = this.props;
+            // get the first authorized route path in routerData
+            const authorizedPath = Object.keys(menus).find(
+                item => check(menus[item].authority, item as any, undefined) && item !== '/'
+            );
+            return authorizedPath;
+        }
+        return redirect;
+    };
+
+    /**
+     * 点击头部菜单
+     * @param {any} item
+     * @param {any} key
+     * @param {any} keyPath
+     */
     handleHeaderMenuClick = ({item, key, keyPath}) => {
         console.log(key);
         if (key === 'triggerError') {
@@ -104,6 +142,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
         //加载菜单
         antdMenuManager.getMenus();
+
 
     }
 
@@ -137,14 +176,31 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     render() {
         let fetchingNotices = false;
-        console.log("---------------------------1111-----------")
-        console.log(this.props);
+        // console.log("---------------------------1111-----------")
+        // console.log(this.props);
         const currentUser = {
             notifyCount: 10,
             name: "李四",//session.name,
             avatar: ""
         };
 
+        if (redirectData.length === 0) {
+            this.props.menus.forEach(getRedirect);
+            // console.log("----------------")
+            // console.log(redirectData)
+        }
+        const routerData = [
+            {
+                path: '/404',
+                exact: true,
+                component: NotFound
+            },
+        ];
+
+        const bashRedirect = "/";  // this.getBashRedirect();
+        console.log(`bashRedirect--> ${bashRedirect}`)
+        // console.log(this.props.match)
+        // console.log(this.props.match.path)
         return (
             <Layout>
                 <SiderMenu
@@ -172,7 +228,23 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                     </Header>
                     <Scrollbars style={{width: "100%", height: " 100%"}}>
                         <Content style={{margin: '24px 24px 0', height: '100%'}}>
-                            <div style={{height: 1000}}>12345</div>
+                            <Switch>
+                                {redirectData.map(item => (
+                                    <Redirect key={item.from} exact from={item.from} to={item.to}/>
+                                ))}
+                                {getRoutes(this.props.match.path, routerData).map(item => (
+                                    <AuthorizedRoute
+                                        key={item.key}
+                                        path={item.path}
+                                        component={item.component}
+                                        exact={item.exact}
+                                        authority={item.authority}
+                                        redirectPath="/exception/403"
+                                    />
+                                ))}
+                                {/*<Redirect exact from="/" to={bashRedirect}/>*/}
+                                <Route component={NotFound}/>
+                            </Switch>
                         </Content>
                         <Footer style={{padding: 0}}>
                             <GlobalFooter
@@ -207,3 +279,38 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         );
     }
 }
+
+
+const getRedirect = item => {
+    if (item && item.children) {
+        if (item.children[0] && item.children[0].path) {
+            redirectData.push({
+                from: `${item.path}`,
+                to: `${item.children[0].path}`,
+            });
+            item.children.forEach(children => {
+                getRedirect(children);
+            });
+        }
+    }
+};
+
+
+/**
+ * 获取面包屑映射
+ * @param {Object} menuData 菜单配置
+ * @param {Object} routerData 路由配置
+ */
+const getBreadcrumbNameMap = (menuData, routerData) => {
+    const result = {};
+    const childResult = {};
+    for (const i of menuData) {
+        if (!routerData[i.path]) {
+            result[i.path] = i;
+        }
+        if (i.children) {
+            Object.assign(childResult, getBreadcrumbNameMap(i.children, routerData));
+        }
+    }
+    return Object.assign({}, routerData, result, childResult);
+};
