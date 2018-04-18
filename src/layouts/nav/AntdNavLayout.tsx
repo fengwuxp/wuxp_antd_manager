@@ -6,9 +6,10 @@ import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {enquireScreen, unenquireScreen} from 'enquire-js';
-import AntdMenuManager, {AntdMenuItem} from "../../manager/menu/AntdMenuManager";
+import AntdMenuManager from "../../manager/menu/AntdMenuManager";
 import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
-import SimpleSessionManager from "../../session/SimpleSessionManager";
+import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
+
 
 
 const {Content, Header, Footer} = Layout;
@@ -23,7 +24,7 @@ export interface AntdNavLayoutProps extends GlobalHeaderProps {
  */
 export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, any> {
 
-     /**
+    /**
      * enquire-js 处理者
      */
     private enquireHandler: any;
@@ -36,7 +37,8 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     state = {
         collapsed: false,
         isMobile: false,
-        menus: []
+        menus: [],
+        notices: []
     };
 
     /**
@@ -55,16 +57,32 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     componentWillMount() {
 
         //加载菜单
-        const menus: Array<AntdMenuItem> = AntdMenuManager.getMenus();
-        this.setState({
-            menus
+        AntdMenuManager.getMenus().then((menus: Array<AntdMenuItem>) => {
+
+            this.setState({
+                menus
+            }, () => {
+                console.log(this.state.menus);
+            });
+
+        }).catch((e) => {
+            console.log(e);
+            console.log("------11--")
         });
+
     }
 
     /**
      * 在第一次渲染后调用，只在客户端。之后组件已经生成了对应的DOM结构
      */
     componentDidMount() {
+
+        AntdNoticeManager.getNotices().then((notices: Array<any>) => {
+            this.setState({
+                notices
+            })
+        });
+
         //监听屏幕大小改变事件
         this.enquireHandler = enquireScreen(mobile => {
             this.setState({
@@ -98,9 +116,9 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                     <Header style={{background: '#fff', padding: 0}}>
                         <GlobalHeader
                             logo={this.props.logo}
-                            currentUser={SimpleSessionManager.getCurrentMember()}
+                            currentUser={this.props.currentUser}
                             fetchingNotices={fetchingNotices}
-                            notices={AntdNoticeManager.getNotices()}
+                            notices={this.state.notices}
                             collapsed={this.state.collapsed}
                             isMobile={this.state.isMobile}
                             onNoticeClear={AntdNoticeManager.clearNotices}

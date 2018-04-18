@@ -38,7 +38,7 @@ export interface GlobalHeaderProps {
     /**
      * 当前用户
      */
-    currentUser?: GlobalManager,
+    currentUser: GlobalManager,
 
     /**
      * 是否已经折叠

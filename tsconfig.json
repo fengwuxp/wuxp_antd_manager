@@ -25,11 +25,14 @@
       "es2015",
       "es2015.promise"
     ]
+//    "typeRoots": [
+//      "types"
+//    ]
   },
   "compileOnSave": false,
   "include": [
-    "src/**/*",
-    "node_modules/wuxp_react_dynamic_router/src/types/ScssType.ts"
+    "src/**/*"
+    //    "node_modules/wuxp_react_dynamic_router/src/types/ScssType.ts"
   ],
   "exclude": [
     "config/dist",

@@ -27,6 +27,9 @@ config.devServer = {
             changeOrigin: true
         }
     },
+    //如果你的应用使用HTML5 history API，
+    //你可能需要使用index.html响应404或者问题请求，只需要设置g historyApiFallback: true即可
+    historyApiFallback: true,
     // before(app) {
     //     app.use(function (req, res, next) {
     //         let url = req.url.trim();

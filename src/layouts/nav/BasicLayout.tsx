@@ -23,15 +23,17 @@ export default class BasicLayout extends React.Component<any, any> {
     render() {
 
         const currentUser = {
-            notifyCount: 10
+            notifyCount: 10,
+            name:"张三",
+            avatar:""
         };
 
-        this.props.history.push("/login");
+        // this.props.history.push("/login");
 
         return (
             <DocumentTitle title={this.getPageTitle()}>
                 <ContainerQuery query={MediaQuery}>
-                    {params => <AntdNavLayout{...this.props} className={classNames(params) as string}/>}
+                    {params => <AntdNavLayout {...this.props} currentUser={currentUser} className={classNames(params) as string}/>}
                 </ContainerQuery>
             </DocumentTitle>
         );

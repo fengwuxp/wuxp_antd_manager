@@ -4,8 +4,7 @@ import {Icon} from 'antd';
 import {Link} from "react-router-dom";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import * as styles from './UserLayout.scss';
-
-import Login from "../../components/account/Login";
+import LoginView, {LoginPageProps} from "../../views/account/LoginView";
 
 
 const links = [
@@ -30,14 +29,17 @@ const copyright = (
     <div>Copyright <Icon type="copyright"/> 2018 蚂蚁金服体验技术部出品</div>
 );
 
-export interface UserLayoutPops {
+export interface UserLayoutPops extends LoginPageProps {
 
     routerData: any;
+
     match: any;
+
     logo: string;
 }
 
 class UserLayout extends React.PureComponent<UserLayoutPops, any> {
+
     getPageTitle() {
 
         let title = 'Ant Design Pro';
@@ -60,11 +62,7 @@ class UserLayout extends React.PureComponent<UserLayoutPops, any> {
                             </div>
                             <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
                         </div>
-                        <Login login={{
-                            type: "",
-                            status: "",
-                            submitting: ""
-                        }} submitting={false}/>
+                        <LoginView {...this.props}/>
                     </div>
                     <GlobalFooter links={links} copyright={copyright}/>
                 </div>

@@ -4,7 +4,8 @@ import pathToRegexp from 'path-to-regexp';
 import * as styles from './style.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import {Link} from "react-router-dom";
-import {AntdMenuItem} from "../../manager/menu/AntdMenuManager";
+import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
+
 
 
 const {Sider} = Layout;
@@ -75,14 +76,11 @@ export const getMeunMatcheys = (flatMenuKeys, path) => {
 
 export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
 
-    private menus: Array<AntdMenuItem>;
 
     private flatMenuKeys: Array<string>;
 
     constructor(props) {
         super(props);
-        this.menus = props.menuData;
-        this.flatMenuKeys = this.getFlatMenuKeys(props.menuData);
         this.state = {
             openKeys: this.getDefaultCollapsedSubMenus(props),
         };
@@ -104,7 +102,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
     getDefaultCollapsedSubMenus(props) {
         const {location: {pathname}} = props || this.props;
         return urlToList(pathname).map(item => {
-            return getMeunMatcheys(this.flatMenuKeys, item)[0];
+            return getMeunMatcheys(this.getFlatMenuKeys(props.menuData), item)[0];
         }).filter(item => item);
     }
 
@@ -199,7 +197,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
     // Get the currently selected menu
     getSelectedMenuKeys = () => {
         const {location: {pathname}} = this.props;
-        return urlToList(pathname).map(itemPath => getMeunMatcheys(this.flatMenuKeys, itemPath).pop());
+        return urlToList(pathname).map(itemPath => getMeunMatcheys(this.getFlatMenuKeys(this.props.menuData), itemPath).pop());
     };
     // conversion Path
     // 转化路径
@@ -231,7 +229,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
      * @returns {boolean}
      */
     isMainMenu = key => {
-        return this.menus.some(item => key && (item.key === key || item.path === key));
+        return this.props.menuData.some(item => key && (item.key === key || item.path === key));
     };
 
     handleOpenChange = openKeys => {
@@ -277,7 +275,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
                     selectedKeys={selectedKeys}
                     style={{padding: '16px 0', width: '100%'}}
                 >
-                    {this.getNavMenuItems(this.menus)}
+                    {this.getNavMenuItems(this.props.menuData)}
                 </Menu>
             </Sider>
         );
