@@ -1,7 +1,6 @@
 import * as React from 'react';
-import {Checkbox, Alert, Icon} from 'antd';
-import Login from "../../components/Login";
-import {Link} from "react-router-dom";
+import {Checkbox, Alert, message} from 'antd';
+import Login from "../../components/Login/";
 import * as styles from './Login.scss';
 import {sessionManager} from "../../manager/session/SessionManager";
 import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
@@ -38,6 +37,8 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
     state = {
         type: LoginType.ACCOUNT,
         autoLogin: true,
+        //是否有点击获取过手机验证码
+        hasGetMobileCaptcha: false,
         mobilePhone: ""
     };
 
@@ -46,7 +47,6 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
     };
 
     handleSubmit = (err, values) => {
-
         console.log(err);
         console.log(values);
         if (!err) {
@@ -68,16 +68,35 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
         return <Alert style={{marginBottom: 24}} message={content} type="error" showIcon/>;
     };
 
-    onChange = () => {
-        // console.log(arguments);
-        console.log(this.state)
+    onChange = (changedFields) => {
+        if (this.state.type === LoginType.MOBILE_PHONE) {
+            //使用手机号码登录
+            const {mobilePhone} = changedFields;
+            this.setState({
+                mobilePhone
+            })
+        }
     };
 
 
     /**
-     * 获取图片验证码
+     * 获取手机验证码
+     * @returns {Promise<boolean>}
      */
-    onGetCaptcha=()=>{
+    onGetMobileCaptcha = (): Promise<boolean> => {
+        if (!this.state.hasGetMobileCaptcha) {
+            this.setState({
+                hasGetMobileCaptcha: true
+            });
+        }
+        if (this.state.mobilePhone.trim().length < 11) {
+            message.warn("手机号码不足11位");
+            return Promise.reject(false)
+        }
+
+        //TODO请求手机验证码
+
+        return Promise.resolve(true);
 
     };
 
@@ -90,30 +109,30 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
 
         return (
             <div className={styles.main}>
-                <Login defaultActiveKey={session.type} onTabChange={this.onTabChange} onSubmit={this.handleSubmit}>
+                <Login ref="loginFrom"
+                       onChange={this.onChange}
+                       defaultActiveKey={session.type}
+                       onTabChange={this.onTabChange}
+                       onSubmit={this.handleSubmit}>
                     <Tab key={LoginType.ACCOUNT} tab="账户密码登录">
                         {session.status === SessionStatus.LOGIN_ERROR && session.type === LoginType.ACCOUNT && !session.submitting && this.renderMessage('账户或密码错误')}
-                        <UserName rules={[{required: true, message: "请填写登录账号"}]} name="userName" placeholder="请填写登录账号"/>
-                        <Password rules={[{required: true, message: '请填写登录密码'}]} name="password"
+                        <UserName rules={[{required: true, message: "登录账号"}]}
+                                  name="userName"
+                                  placeholder="请填写登录账号"/>
+                        <Password rules={[{required: true, message: '写登录密码'}]}
+                                  name="password"
                                   placeholder="请填写登录密码"/>
                     </Tab>
                     <Tab key={LoginType.MOBILE_PHONE} tab="手机号登录">
                         {session.status === SessionStatus.LOGIN_ERROR && session.type === LoginType.ACCOUNT && !session.submitting && this.renderMessage('验证码错误')}
-                        <Mobile name="mobile" value={this.state.mobilePhone} onChange={this.onChange}/>
-                        <Captcha name="captcha" onGetCaptcha={this.onGetCaptcha}/>
+                        <Mobile name="mobilePhone"/>
+                        <Captcha name="captcha" onGetCaptcha={this.onGetMobileCaptcha}/>
                     </Tab>
                     <div>
                         <Checkbox checked={this.state.autoLogin} onChange={this.changeAutoLogin}>自动登录</Checkbox>
                         <a style={{float: 'right'}} href="">忘记密码</a>
                     </div>
                     <Submit loading={submitting}>登录</Submit>
-                    <div className={styles.other}>
-                        其他登录方式
-                        <Icon className={styles.icon} type="alipay-circle"/>
-                        <Icon className={styles.icon} type="taobao-circle"/>
-                        <Icon className={styles.icon} type="weibo-circle"/>
-                        <Link className={styles.register} to="/user/register">注册账户</Link>
-                    </div>
                 </Login>
             </div>
         );

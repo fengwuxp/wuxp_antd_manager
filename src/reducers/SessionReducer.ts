@@ -1,6 +1,6 @@
 import {ReduxReducer, reducerFactory} from "wuxp_react_dynamic_router/src/proxy/redux/ReduxReducer";
 import {Reducer} from "redux";
-import {AntdAdmin, AntdSession} from "../model/session/AntdAdmin";
+import { AntdSession} from "../model/session/AntdAdmin";
 import {LoginType} from "../enums/AdminLoginType";
 
 /**

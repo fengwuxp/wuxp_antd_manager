@@ -1,6 +1,6 @@
 import React from 'react';
 import {Input, Icon} from 'antd';
-import styles from './style.scss';
+import * as styles from './style.scss';
 
 const map = {
     UserName: {
@@ -8,12 +8,12 @@ const map = {
         props: {
             size: 'large',
             prefix: <Icon type="user" className={styles.prefixIcon}/>,
-            placeholder: '请填写用户名',
+            placeholder: '登录用户名',
         },
         rules: [
             {
                 required: true,
-                message: '',
+                message: '请填写用户名',
             },
         ],
     },
@@ -23,12 +23,12 @@ const map = {
             size: 'large',
             prefix: <Icon type="lock" className={styles.prefixIcon}/>,
             type: 'password',
-            placeholder: '请输入密码',
+            placeholder: '登录密码',
         },
         rules: [
             {
                 required: true,
-                message: '',
+                message: '请输入密码',
             },
         ],
     },
@@ -60,7 +60,7 @@ const map = {
         rules: [
             {
                 required: true,
-                message: 'Please enter Captcha!',
+                message: '请输入验证码',
             },
         ],
     },

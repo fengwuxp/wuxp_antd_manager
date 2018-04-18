@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Tabs} from 'antd';
 import classNames from 'classnames';
-import {LoginItem} from './LoginItem';
+import LoginItem from './LoginItem';
 import LoginTab from './LoginTab';
 import LoginSubmit from './LoginSubmit';
-import styles from './style.scss';
+import * as styles from './style.scss';
 import {FormComponentProps} from "antd/lib/form/Form";
 
 
-export interface LoginProps extends FormComponentProps{
+export interface LoginProps extends FormComponentProps {
 
     defaultActiveKey?: string,
 
@@ -21,9 +21,11 @@ export interface LoginProps extends FormComponentProps{
 
     style?: React.CSSProperties
 
+    onChange?: (...p) => void;
+
 }
 
-class Login extends Component<LoginProps, any> {
+class Login extends React.Component<LoginProps, any> {
 
     static defaultProps = {
         className: '',
@@ -32,6 +34,18 @@ class Login extends Component<LoginProps, any> {
         },
         onSubmit: () => {
         },
+    };
+
+    static propTypes = {
+        className: PropTypes.string,
+        defaultActiveKey: PropTypes.string,
+        onTabChange: PropTypes.func,
+        onSubmit: PropTypes.func,
+    };
+    static childContextTypes = {
+        tabUtil: PropTypes.object,
+        form: PropTypes.object,
+        updateActive: PropTypes.func,
     };
 
     static Tab;
@@ -137,4 +151,14 @@ Object.keys(LoginItem).forEach(item => {
     Login[item] = LoginItem[item];
 });
 
-export default Form.create()(Login);
+export default Form.create({
+
+    /**
+     * 任一表单域的值发生改变时的回调
+     * @param {LoginProps} props
+     * @param changedFields
+     */
+    onValuesChange(props: LoginProps, changedFields) {
+        props.onChange(changedFields);
+    },
+})(Login);

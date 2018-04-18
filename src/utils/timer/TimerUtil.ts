@@ -1,5 +1,5 @@
-import {timer} from "typescript_api_sdk/src/utils/ExportWeexSdkModel";
 import {isFunction} from "util";
+import {is} from "redux-saga/utils";
 
 /**
  * 定时器
@@ -44,27 +44,36 @@ class TimerUtil {
      * @return {Timer}
      */
     public static countDown = (timerDown: TimerDown) => {
+        let total = Number(timerDown.total);
+        let times = timerDown.times ? timerDown.times : 1000;
+        let endActionIsFn = isFunction(timerDown.endAction);
 
-        if (isFunction(timerDown.stopFn) && timerDown.stopFn()) {
-            //提前结束
-            console.log("定时器提前结束!");
-            return;
-        }
-        timerDown.callback(timerDown.total);
-        let times = timerDown.times ? 1000 : timerDown.times;
-        let isEnd = isFunction(timerDown.endAction);
-        timer.setTimeout(() => {
-            timerDown.total--;
+        //立即执行一次callback
+        timerDown.callback(total);
 
-            if (timerDown.total <= 0 && isEnd) {
-                timerDown.endAction();
-                return;
-            }
-            TimerUtil.countDown(timerDown);
-        }, times);
+        countDown(total, endActionIsFn, times, timerDown);
     };
 
-
 }
+
+function countDown(total, endActionIsFn, times, timerDown: TimerDown) {
+    if (isFunction(timerDown.stopFn) && timerDown.stopFn()) {
+        //提前结束
+        console.log("定时器提前结束!");
+        return;
+    }
+    setTimeout(() => {
+        total--;
+        if (total <= 0) {
+            if (endActionIsFn) {
+                timerDown.endAction();
+            }
+            return;
+        }
+        timerDown.callback(total);
+        countDown(total, endActionIsFn, times, timerDown)
+    }, times);
+}
+
 
 export default TimerUtil;

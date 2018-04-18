@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Tabs} from 'antd';
 
@@ -12,8 +12,10 @@ const generateId = (() => {
     };
 })();
 
-export default class LoginTab extends Component<any, any> {
+export default class LoginTab extends React.Component<any, any> {
+
     static __ANT_PRO_LOGIN_TAB = true;
+
     static contextTypes = {
         tabUtil: PropTypes.object,
     };
