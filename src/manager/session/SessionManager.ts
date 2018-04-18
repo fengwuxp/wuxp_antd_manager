@@ -1,12 +1,10 @@
 import {reduxHandlerFactory} from "wuxp_react_dynamic_router/src/proxy/redux/ReduxActionProxy";
 import {addSagaHandler} from "wuxp_react_dynamic_router/src/manager/saga/SagaManager";
 import {SessionReducer} from "../../reducers/SessionReducer";
-import {AntdAdmin} from "../../model/session/AntdAdmin";
 import {antdAdminStore} from "../store/StoreManager";
-import {Reducer} from "redux";
 import {SessionSaga} from "../../saga/session/SessionSaga";
 import {AdminLoginReq} from "../../saga/session/req/AdminLoginReq";
-import {LoginSagaManager} from "./SessionSagaManager";
+import {SessionSagaManager} from "./SessionSagaManager";
 
 
 /**
@@ -47,7 +45,7 @@ class SessionManager extends SessionAction implements SessionSaga {
 }
 
 const sessionManager = new SessionManager();
-addSagaHandler(LoginSagaManager,SessionManager);
+addSagaHandler(SessionSagaManager,SessionManager);
 export {
     sessionManager
 }

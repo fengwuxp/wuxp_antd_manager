@@ -47,6 +47,11 @@ class UserLayout extends React.PureComponent<UserLayoutPops, any> {
         return title;
     }
 
+    componentWillUnmount(): void {
+    }
+
+
+
     render() {
         const {routerData, match} = this.props;
         return (

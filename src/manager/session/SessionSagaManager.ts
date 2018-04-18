@@ -1,11 +1,12 @@
-import {call, put, takeEvery} from "redux-saga/effects";
+import {call, put} from "redux-saga/effects";
 import {SessionSaga} from "../../saga/session/SessionSaga";
 import {AdminLoginReq} from "../../saga/session/req/AdminLoginReq";
 import {SessionStatus} from "../../model/session/AntdAdmin";
 import * as routerRedux from "react-router-redux"
+import {setAuthority} from "../../utils/auth/authority";
 
 
-export class LoginSagaManager implements SessionSaga {
+export class SessionSagaManager implements SessionSaga {
 
 
     /**
@@ -19,6 +20,7 @@ export class LoginSagaManager implements SessionSaga {
 
         try {
             const response = yield call(adminLogin, payload);
+            setAuthority("user");
             yield put({
                 type,
                 payload: {
@@ -26,6 +28,7 @@ export class LoginSagaManager implements SessionSaga {
                     status: SessionStatus.LOGIN_SUCCESS
                 },
             });
+            console.log("跳转到首页");
             //跳转到首页
             yield put(routerRedux.push('/'));
         } catch (e) {
@@ -47,7 +50,11 @@ export class LoginSagaManager implements SessionSaga {
      * @returns {IterableIterator<any>}
      */
     * logout(payload) {
+        console.log("退出登录")
         yield call(adminLogout, payload);
+        setAuthority("");
+        //回到登录页面
+        yield put(routerRedux.push('/login'));
         yield put({
             type: "removeAdmin",
             payload: null,

@@ -7,6 +7,8 @@ import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
 import HeaderSearch from 'ant-design-pro/lib/HeaderSearch';
 import {Link} from "react-router-dom";
 import * as styles from './style.scss';
+import {ReactReduxProps} from "../../model/redux/ReactReduxProps";
+import {AntdNoticeItem} from "../../model/notice/AntdNoticeItem";
 
 /**
  * 管理员
@@ -29,7 +31,14 @@ export interface GlobalManager {
     avatar: string;
 }
 
-export interface GlobalHeaderProps {
+export interface GlobalHeaderProps extends ReactReduxProps{
+
+
+    /**
+     * 通知列表
+     */
+    notices?: Array<any>,
+
 
     className?: string;
 
@@ -59,10 +68,6 @@ export interface GlobalHeaderProps {
      */
     logo?: string,
 
-    /**
-     * 通知列表
-     */
-    notices?: Array<any>,
 
     /**
      * 通知显示状态改变

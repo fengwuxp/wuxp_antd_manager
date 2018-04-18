@@ -1,6 +1,6 @@
 import {ReduxReducer, reducerFactory} from "wuxp_react_dynamic_router/src/proxy/redux/ReduxReducer";
 import {Reducer} from "redux";
-import { AntdSession} from "../model/session/AntdAdmin";
+import {AntdSession} from "../model/session/AntdAdmin";
 import {LoginType} from "../enums/AdminLoginType";
 
 /**
@@ -20,23 +20,30 @@ export interface SessionReducer extends ReduxReducer<AntdSession> {
     removeAdmin: Reducer<AntdSession>;
 }
 
+let defaultSession = {
+    admin: null,
+    type: LoginType.ACCOUNT,
+    status: null,
+    submitting: false
+};
 /**
  * 会话相关的 reducer管理者
  */
 const SessionReducerManger: SessionReducer = {
 
-    default: {
-        admin: null,
-        type: LoginType.ACCOUNT,
-        status: null,
-        submitting: false
+    default(state) {
+        if (state !== undefined) {
+            console.log("123")
+            return state;
+        }
+        return defaultSession;
     },
 
-    removeAdmin: undefined,
+    removeAdmin(state, {type, payload}) {
+        return defaultSession;
+    },
 
     setAdmin(state, {type, payload}) {
-        console.log(state);
-        console.log(payload);
         return {
             ...state,
             ...payload

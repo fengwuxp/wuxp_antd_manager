@@ -3,10 +3,17 @@ import DocumentTitle from 'react-document-title';
 import {ContainerQuery} from "react-container-query";
 import classNames from 'classnames';
 import MediaQuery from "./MediaQuery";
-import AntdNavLayout from "./AntdNavLayout";
+import AntdNavLayout, {AntdNavLayoutProps} from "./AntdNavLayout";
+import {MapStateToPropsParam} from "react-redux";
+import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
 
 
-export default class BasicLayout extends React.Component<any, any> {
+const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session}) => ({
+    session
+});
+
+@ReactReduxConnect(mapStateToPropsParam)
+export default class BasicLayout extends React.Component<AntdNavLayoutProps, any> {
 
 
     constructor(props: any, context: any) {
@@ -22,18 +29,17 @@ export default class BasicLayout extends React.Component<any, any> {
 
     render() {
 
-        const currentUser = {
-            notifyCount: 10,
-            name:"张三",
-            avatar:""
-        };
+        // console.log(this.props);
 
-        // this.props.history.push("/login");
+        const {session} = this.props;
+
+
 
         return (
             <DocumentTitle title={this.getPageTitle()}>
                 <ContainerQuery query={MediaQuery}>
-                    {params => <AntdNavLayout {...this.props} currentUser={currentUser} className={classNames(params) as string}/>}
+                    {params => <AntdNavLayout {...this.props}
+                                              className={classNames(params) as string}/>}
                 </ContainerQuery>
             </DocumentTitle>
         );
