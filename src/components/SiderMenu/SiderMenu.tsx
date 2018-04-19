@@ -5,21 +5,20 @@ import * as styles from './style.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
-
+import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
 
 
-export interface SiderMenuProps {
-
+export interface SiderMenuProps extends ReduxRouterProps {
 
 
     /**
      * 菜单列表
      */
-    menuData: Array<AntdMenuItem>;
+    menus: Array<AntdMenuItem>;
     /**
      * 是否为手机端
      */
@@ -47,15 +46,11 @@ export interface SiderMenuProps {
      */
     width?: number;
 
-    /**
-     * location
-     */
-    location: Location;
 
     /**
      * 鉴权
      */
-    Authorized?:any;
+    Authorized?: any;
 }
 
 const getIcon = icon => {
@@ -68,7 +63,13 @@ const getIcon = icon => {
     return icon;
 };
 
-export const getMeunMatcheys = (flatMenuKeys, path) => {
+/**
+ * 获取菜单匹配的key
+ * @param {Array<string>} flatMenuKeys
+ * @param {string} path
+ * @returns {string[]}
+ */
+export const getMeunMatcheys = (flatMenuKeys: Array<string>, path: string): string[] => {
     return flatMenuKeys.filter(item => {
         return pathToRegexp(item).test(path);
     });
@@ -77,14 +78,13 @@ export const getMeunMatcheys = (flatMenuKeys, path) => {
 export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
 
 
-    private flatMenuKeys: Array<string>;
-
     constructor(props) {
         super(props);
-        this.state = {
-            openKeys: this.getDefaultCollapsedSubMenus(props),
-        };
     }
+
+    state = {
+        openKeys: this.getDefaultCollapsedSubMenus(this.props)
+    };
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.location.pathname !== this.props.location.pathname) {
@@ -95,23 +95,32 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
     }
 
     /**
+     * 获取默认合拢子菜单
      * Convert pathname to openKeys
      * /list/search/articles = > ['list','/list/search']
      * @param  props
      */
-    getDefaultCollapsedSubMenus(props) {
+    getDefaultCollapsedSubMenus(props: SiderMenuProps): Array<string> {
         const {location: {pathname}} = props || this.props;
-        return urlToList(pathname).map(item => {
-            return getMeunMatcheys(this.getFlatMenuKeys(props.menuData), item)[0];
-        }).filter(item => item);
+        let openKeys = urlToList(pathname).map(item => {
+
+            let meunMatcheys = getMeunMatcheys(this.getFlatMenuKeys(props.menus), item);
+            if (meunMatcheys.length === 0) {
+                return null;
+            }
+            return meunMatcheys[0];
+        }).filter(item => item !== null);
+
+        return openKeys;
     }
 
     /**
+     * 将菜单数据中的 path 提取出来，包括children中的
      * Recursively flatten the data
      * [{path:string},{path:string}] => {path,path2}
      * @param  menus
      */
-    getFlatMenuKeys(menus): Array<string> {
+    getFlatMenuKeys(menus: Array<AntdMenuItem>): Array<string> {
         let keys: Array<string> = [];
         menus.forEach(item => {
             if (item.children) {
@@ -145,16 +154,9 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
                 to={itemPath}
                 target={target}
                 replace={itemPath === this.props.location.pathname}
-                onClick={
-                    this.props.isMobile
-                        ? () => {
-                            this.props.onCollapse(true);
-                        }
-                        : undefined
-                }
-            >
-                {icon}
-                <span>{name}</span>
+                onClick={this.props.isMobile ? () => {
+                    this.props.onCollapse(true);
+                } : undefined}>{icon}<span>{name}</span>
             </Link>
         );
     };
@@ -191,17 +193,24 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
                 // make dom
                 const ItemDom = this.getSubMenuOrItem(item);
                 return this.checkPermissionItem(item.authority, ItemDom);
-            })
-            .filter(item => item);
+            }).filter(item => item);
     };
-    // Get the currently selected menu
-    getSelectedMenuKeys = () => {
+
+    /**
+     * 获取当前选中的菜单keys
+     * @returns {any}
+     */
+    getSelectedMenuKeys = (): string[] => {
         const {location: {pathname}} = this.props;
-        return urlToList(pathname).map(itemPath => getMeunMatcheys(this.getFlatMenuKeys(this.props.menuData), itemPath).pop());
+        return urlToList(pathname).map(itemPath => getMeunMatcheys(this.getFlatMenuKeys(this.props.menus), itemPath).pop());
     };
-    // conversion Path
-    // 转化路径
-    conversionPath = path => {
+
+    /**
+     * 转化路径
+     * @param {string} path
+     * @returns {string}
+     */
+    conversionPath = (path: string) => {
         if (path && path.indexOf('http') === 0) {
             return path;
         } else {
@@ -225,13 +234,17 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
 
     /**
      * 是否为主菜单
-     * @param key
+     * @param openKey
      * @returns {boolean}
      */
-    isMainMenu = key => {
-        return this.props.menuData.some(item => key && (item.key === key || item.path === key));
+    isMainMenu = openKey => {
+        return this.props.menus.some(({key, path}) => openKey && (key === openKey || path === openKey));
     };
 
+    /**
+     * 切换当前打开的菜单
+     * @param openKeys
+     */
     handleOpenChange = openKeys => {
         const lastOpenKey = openKeys[openKeys.length - 1];
         const moreThanOne = openKeys.filter(openKey => this.isMainMenu(openKey)).length > 1;
@@ -242,7 +255,11 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
 
     render() {
         const {logo, collapsed, onCollapse} = this.props;
+
+
+        //默认打开的菜单keys
         const {openKeys} = this.state;
+
         // Don't show popup menu when it is been collapsed
         const menuProps = collapsed ? {} : {openKeys,};
         // if pathname can't match, use the nearest parent's key
@@ -250,6 +267,9 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         if (!selectedKeys.length) {
             selectedKeys = [openKeys[openKeys.length - 1]];
         }
+        console.log("-----------------")
+        console.log(selectedKeys);
+        console.log(openKeys)
         return (
             <Sider
                 trigger={null}
@@ -275,9 +295,21 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
                     selectedKeys={selectedKeys}
                     style={{padding: '16px 0', width: '100%'}}
                 >
-                    {this.getNavMenuItems(this.props.menuData)}
+                    {this.getNavMenuItems(this.props.menus)}
                 </Menu>
             </Sider>
         );
     }
+
+    // componentWillUpdate(nextProps: Readonly<SiderMenuProps>, nextState: Readonly<any>, nextContext: any) {
+    //
+    //     let openKeys = this.getDefaultCollapsedSubMenus(this.props);
+    //     if (openKeys.length > 0) {
+    //         console.log("更新openKeys  ");
+    //         console.log(openKeys);
+    //         this.setState({
+    //             openKeys
+    //         })
+    //     }
+    // }
 }

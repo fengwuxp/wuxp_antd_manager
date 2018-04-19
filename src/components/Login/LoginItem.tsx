@@ -5,18 +5,24 @@ import omit from 'omit.js';
 import * as styles from './style.scss';
 import map from './map';
 import TimerUtil from "../../utils/timer/TimerUtil"
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
 
 
 const FormItem = Form.Item;
 
-export interface LoginItemProps {
+export interface LoginItemProps extends ReactBaseProps{
     name?: string;
+
     rules?: any[];
-    style?: React.CSSProperties;
+
     onGetCaptcha?: () => Promise<any>;
+
     onChange: () => void;
+
     defaultValue?: string;
+
     placeholder?: string;
+
     value?: string;
 }
 

@@ -7,8 +7,7 @@ import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
 import HeaderSearch from 'ant-design-pro/lib/HeaderSearch';
 import {Link} from "react-router-dom";
 import * as styles from './style.scss';
-import {ReactReduxProps} from "../../model/redux/ReactReduxProps";
-import {AntdNoticeItem} from "../../model/notice/AntdNoticeItem";
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
 
 /**
  * 管理员
@@ -31,18 +30,13 @@ export interface GlobalManager {
     avatar: string;
 }
 
-export interface GlobalHeaderProps extends ReactReduxProps{
+export interface GlobalHeaderProps extends ReactBaseProps {
 
 
     /**
      * 通知列表
      */
     notices?: Array<any>,
-
-
-    className?: string;
-
-    style?: React.CSSProperties;
 
     /**
      * 当前用户
@@ -196,9 +190,9 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                     />
                     <Tooltip title="使用文档">
                         <a target="_blank"
-                            href="http://pro.ant.design/docs/getting-started"
-                            rel="noopener noreferrer"
-                            className={styles.action}>
+                           href="http://pro.ant.design/docs/getting-started"
+                           rel="noopener noreferrer"
+                           className={styles.action}>
                             <Icon type="question-circle-o"/>
                         </a>
                     </Tooltip>
@@ -232,7 +226,11 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                             emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
                         />
                     </NoticeIcon>
-                    {currentUser.name ? (<Dropdown overlay={menu}><span className={`${styles.action} ${styles.account}`}><Avatar size="small" className={styles.avatar} src={currentUser.avatar}/><span className={styles.name}>{currentUser.name}</span></span></Dropdown>) : (<Spin size="small" style={{marginLeft: 8}}/>)}
+                    {currentUser.name ? (
+                        <Dropdown overlay={menu}><span className={`${styles.action} ${styles.account}`}><Avatar
+                            size="small" className={styles.avatar} src={currentUser.avatar}/><span
+                            className={styles.name}>{currentUser.name}</span></span></Dropdown>) : (
+                        <Spin size="small" style={{marginLeft: 8}}/>)}
                 </div>
             </div>
         );

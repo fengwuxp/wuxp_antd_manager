@@ -6,10 +6,10 @@ import LoginItem from './LoginItem';
 import LoginTab from './LoginTab';
 import LoginSubmit from './LoginSubmit';
 import * as styles from './style.scss';
-import {FormComponentProps} from "antd/lib/form/Form";
+import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 
 
-export interface LoginProps extends FormComponentProps {
+export interface LoginProps extends AntdFromBaseProps {
 
     defaultActiveKey?: string,
 

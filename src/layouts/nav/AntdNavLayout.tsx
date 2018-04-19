@@ -16,9 +16,11 @@ import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
 import {match, Redirect, Route, Switch} from "react-router";
 import {getRoutes} from "../../utils/utils";
+import {routeConfigs} from "../../routes/router";
 
 import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
+import {isUndefined} from "util";
 
 const {Content, Header, Footer} = Layout;
 
@@ -46,6 +48,8 @@ export interface AntdNavLayoutProps extends GlobalHeaderProps {
      */
     globalError: any;
 
+
+    //匹配
     match: match<any>
 }
 
@@ -109,11 +113,14 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         } else {
             const {menus} = this.props;
             // get the first authorized route path in routerData
-            const authorizedPath = Object.keys(menus).find(
-                item => check(menus[item].authority, item as any, undefined) && item !== '/'
+            const authorizedPath = menus.find(
+                ({authority, path}) => check(authority, path as any, undefined) && path !== '/'
             );
-            return authorizedPath;
+            // console.log("------------------")
+            // console.log(authorizedPath);
+            return isUndefined(authorizedPath) ? '/' : authorizedPath.path;
         }
+
         return redirect;
     };
 
@@ -124,7 +131,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
      * @param {any} keyPath
      */
     handleHeaderMenuClick = ({item, key, keyPath}) => {
-        console.log(key);
+        // console.log(key);
         if (key === 'triggerError') {
             this.props.dispatch(push('/exception/trigger'));
             return;
@@ -186,19 +193,15 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
         if (redirectData.length === 0) {
             this.props.menus.forEach(getRedirect);
-            // console.log("----------------")
-            // console.log(redirectData)
         }
-        const routerData = [];
 
+        // console.log(this.props);
         const bashRedirect = this.getBashRedirect();
-        // console.log(`bashRedirect--> ${bashRedirect}`)
 
         return (
             <Layout>
                 <SiderMenu
                     {...this.props}
-                    menuData={this.props['menus']}
                     collapsed={this.state.collapsed}
                     location={location}
                     isMobile={this.state.isMobile}
@@ -225,7 +228,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                                 {redirectData.map(item => (
                                     <Redirect key={item.from} exact from={item.from} to={item.to}/>
                                 ))}
-                                {getRoutes(this.props.match.path, routerData).map(item => (
+                                {getRoutes(this.props.match.path, routeConfigs).map(item => (
                                     <AuthorizedRoute
                                         key={item.key}
                                         path={item.path}

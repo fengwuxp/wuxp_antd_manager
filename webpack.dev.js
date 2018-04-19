@@ -2,13 +2,13 @@ const webpack = require('webpack');
 const config = require("./webpack.config");
 const path = require("path");
 const host = require('quick-local-ip').getLocalIP4();
-const port = '8088';
+const port = '9091';
 
 config.plugins.push(
     new webpack.DefinePlugin({
         'process.env': {
             API_ROOT: JSON.stringify(`${host}:8088`),
-            BASE_NAME: JSON.stringify(null)
+            BASE_NAME: JSON.stringify("/")
         }
     })
 );
@@ -20,6 +20,8 @@ config.devServer = {
     host: host,
     port,    //设置端口号
     public,
+
+    publicPath: '/',
     proxy: {
         '/api': {
             target: `http://${host}:9899/react/`,

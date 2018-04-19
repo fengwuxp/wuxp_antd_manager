@@ -134,8 +134,10 @@ function getRenderArr(routes): Array<string> {
  * @param {string} currentPath 当前路径
  * @param {routerData} routerData
  */
-export function getRoutes(currentPath, routerData: Array<RouteConfig> = []) {
+export function getRoutes(currentPath:string, routerData: Array<RouteConfig> = []) {
 
+    // console.log(`currentPath --> ${currentPath}`);
+    // console.log(routerData)
     let routes: Array<RouteConfig> = routerData.filter(
         ({path}) => path.indexOf(currentPath) === 0 && path !== currentPath
     );
@@ -150,6 +152,8 @@ export function getRoutes(currentPath, routerData: Array<RouteConfig> = []) {
     // Conversion and stitching parameters
     const renderRoutes: Array<any> = renderArr.map((item, index) => {
         const exact = !routes.some(({path}) => path !== item && getRelation(path, item) === 1);
+        // console.log(`index-->  ${index}`);
+        // console.log(routerData[index])
         return {
             exact,
             ...routerData[index],
@@ -157,7 +161,7 @@ export function getRoutes(currentPath, routerData: Array<RouteConfig> = []) {
             path: `${currentPath}${item}`,
         };
     });
-    console.log(renderRoutes);
+    // console.log(renderRoutes);
     return renderRoutes;
 }
 

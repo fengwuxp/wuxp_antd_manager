@@ -33,7 +33,8 @@ const config = {
     output: {
         filename: '[name]_[hash].js',
         chunkFilename: '[name]_[hash].js',
-        path: path.resolve(__dirname, '../dist')
+        path: path.resolve(__dirname, '../dist'),
+        publicPath: "/"
     },
     resolve: {
         extensions: [".ts", ".tsx", "d.ts", ".js", ".css", ".scss", ".less"]
@@ -45,7 +46,14 @@ const config = {
                 exclude: /(node_modules|bower_components)/,
                 use: [
                     {
-                        loader: "babel-loader"
+                        loader: "babel-loader",
+                        options: {
+                            presets: ['env', 'react', 'flow'],
+                            plugins: [
+                                'syntax-dynamic-import',
+                                'transform-object-rest-spread'
+                            ]
+                        }
                     }
                 ]
             },
@@ -57,7 +65,12 @@ const config = {
                         loader: "babel-loader",
                         options: {
                             cacheDirectory: true,
-                            presets: ['es2015', 'stage-2']
+                            // presets: ['es2015', 'stage-2'],
+                            presets: ['env', 'react', 'flow'],
+                            plugins: [
+                                'syntax-dynamic-import',
+                                'transform-object-rest-spread'
+                            ]
                         }
                     },
                     {loader: "awesome-typescript-loader"}

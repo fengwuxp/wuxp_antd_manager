@@ -24,11 +24,11 @@ const menuData: Array<AntdMenuItem> = [
     {
         name: '表单页',
         icon: 'form',
-        path: 'form',
+        path: 'demo',
         children: [
             {
                 name: '基础表单',
-                path: 'basic-form',
+                path: 'form',
             },
             {
                 name: '分步表单',

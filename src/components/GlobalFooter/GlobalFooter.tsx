@@ -1,9 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 import * as styles from './style.scss';
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
 
 
-export interface GlobalFooterProps {
+export interface GlobalFooterProps extends ReactBaseProps {
     links?: Array<{
         key: string,
         title: React.ReactNode;
@@ -11,15 +12,14 @@ export interface GlobalFooterProps {
         blankTarget?: boolean;
     }>;
     copyright?: React.ReactNode;
-    style?: React.CSSProperties;
-    className?: string;
+
 }
 
 export default class GlobalFooter extends React.Component<GlobalFooterProps, any> {
 
     render() {
         const clsString = classNames(styles.globalFooter, this.props.className);
-        const {links,copyright} = this.props;
+        const {links, copyright} = this.props;
         return (
             <div className={clsString}>
                 {links && (

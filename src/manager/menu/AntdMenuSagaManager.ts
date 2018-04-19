@@ -1,5 +1,4 @@
 import {call, put} from "redux-saga/effects";
-import {SessionStatus} from "../../model/session/AntdAdmin";
 import {getMenuData} from "../../routes/menu";
 
 
@@ -37,11 +36,12 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 }
 
 function queryMenus(params) {
-    console.log("获取菜单列表");
+    // console.log("获取菜单列表");
     // console.log(params);
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(getMenuData())
-        }, 1500);
+        }, 1200);
     });
+    // return getMenuData();
 }

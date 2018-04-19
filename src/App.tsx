@@ -10,7 +10,19 @@ import Authorized from './utils/auth/Authorized';
 import {Provider} from "react-redux";
 import {ConnectedRouter} from 'react-router-redux'
 import {antdAdminStore} from "./manager/store/StoreManager";
+import {pushRoutes} from "./routes/router";
+import routes from "./views/demo";
+import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
+import {Spin} from "antd";
+import * as styles from "./index.scss";
 
+
+//设置默认加载组件
+setDefaultLoadingComponent(() => {
+    return <Spin size="large" className={styles.globalSpin}/>;
+});
+
+pushRoutes(routes);
 
 const history = BrowserNavigatorFactory.get();
 
