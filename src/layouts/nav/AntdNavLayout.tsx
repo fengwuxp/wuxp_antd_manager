@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from 'prop-types';
 import {Layout, Icon} from 'antd';
 import SiderMenu from "../../components/SiderMenu/index";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
@@ -21,10 +22,37 @@ import {routeConfigs} from "../../routes/router";
 import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
 import {isUndefined} from "util";
+import {getMenuData} from "../../routes/menu";
+import {RouteConfig} from "react-router-config";
 
 const {Content, Header, Footer} = Layout;
 
 const {AuthorizedRoute, check} = Authorized;
+
+
+
+function convertRouteToObject({path, location, component, exact, strict}: RouteConfig) {
+    return {
+        path,
+        location,
+        component,
+        exact,
+        strict
+    };
+}
+
+
+function convertRoutesToMap(routes: Array<RouteConfig>, result: any) {
+    routes.forEach((item) => {
+        if (item.routes) {
+            convertRoutesToMap(routes, result);
+        } else {
+            result[item.path] = convertRouteToObject(item);
+        }
+    });
+}
+
+
 
 export interface AntdNavLayoutProps extends GlobalHeaderProps {
     /**
@@ -89,6 +117,26 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         collapsed: false,
         isMobile: false,
     };
+
+
+    static childContextTypes = {
+        location: PropTypes.object,
+        breadcrumbNameMap: PropTypes.object,
+    };
+
+    getChildContext() {
+        const {location} = this.props;
+        const result = {};
+        convertRoutesToMap(routeConfigs, result);
+        console.log("-----------------ddd-----------");
+        console.log(this.props.menus);
+        console.log(result);
+        return {
+            location,
+            breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(this.props.menus), result),
+        };
+    }
+
 
     /**
      * 折叠菜单
@@ -292,15 +340,21 @@ const getRedirect = item => {
 };
 
 
+
 /**
  * 获取面包屑映射
- * @param {Object} menuData 菜单配置
- * @param {Object} routerData 路由配置
+ * @param {Array<AntdMenuItem>} menuData 菜单配置
+ * @param {Array<RouteConfig>} routerData 路由配置
+ * @returns {{} & Array<RouteConfig>}
  */
-const getBreadcrumbNameMap = (menuData, routerData) => {
+const getBreadcrumbNameMap = (menuData: Array<AntdMenuItem>, routerData: object) => {
+
     const result = {};
     const childResult = {};
+
+
     for (const i of menuData) {
+
         if (!routerData[i.path]) {
             result[i.path] = i;
         }

@@ -155,6 +155,18 @@ const menuData: Array<AntdMenuItem> = [
     },
 ];
 
+export {
+    menuData
+}
+
+
+/**
+ * 将菜单进行转换
+ * @param {Array<AntdMenuItem>} data
+ * @param {string} parentPath
+ * @param parentAuthority
+ * @returns {Array<AntdMenuItem>}
+ */
 function formatter(data: Array<AntdMenuItem>, parentPath = '/', parentAuthority?): Array<AntdMenuItem> {
     return data.map(item => {
         let {path} = item;
@@ -173,4 +185,7 @@ function formatter(data: Array<AntdMenuItem>, parentPath = '/', parentAuthority?
     });
 }
 
-export const getMenuData = (): Array<AntdMenuItem> => formatter(menuData);
+export function getMenuData(menus: Array<AntdMenuItem> = []): Array<AntdMenuItem> {
+
+    return formatter(menus);
+}

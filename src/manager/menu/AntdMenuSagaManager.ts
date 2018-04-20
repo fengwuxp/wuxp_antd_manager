@@ -1,5 +1,5 @@
 import {call, put} from "redux-saga/effects";
-import {getMenuData} from "../../routes/menu";
+import {getMenuData, menuData} from "../../routes/menu";
 
 
 /**
@@ -40,7 +40,8 @@ function queryMenus(params) {
     // console.log(params);
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve(getMenuData())
+            console.log(menuData)
+            resolve(getMenuData(menuData))
         }, 1200);
     });
     // return getMenuData();

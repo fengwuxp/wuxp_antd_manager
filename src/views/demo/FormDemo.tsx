@@ -1,152 +1,80 @@
-import {Form, Input, DatePicker, Col, TimePicker, Select, Cascader, InputNumber} from 'antd';
+import {Form, Input, DatePicker, Col, TimePicker, Select, Cascader, InputNumber, Card} from 'antd';
 import * as React from "react";
+import Button from "antd/lib/button/button";
+import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const formItemLayout = {
-    labelCol: {
-        xs: {span: 24},
-        sm: {span: 5},
-    },
-    wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 12},
-    },
-};
+
+class FormDemo extends React.Component<any, any> {
 
 
-export default class FormDemo extends React.Component<any, any> {
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+        });
+    };
 
+    handleSelectChange = (value) => {
+        console.log(value);
+        let obj = {
+            note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+        };
+        this.props.form.setFieldsValue(obj);
+    };
 
     render() {
-
+        const {getFieldDecorator} = this.props.form;
+        console.log(this.props);
         return (
-            <Form>
-                <FormItem
-                    {...formItemLayout}
-                    label="Fail"
-                    validateStatus="error"
-                    help="Should be combination of numbers & alphabets">
-                    <Input placeholder="unavailable choice" id="error"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Warning"
-                    validateStatus="warning"
-                >
-                    <Input placeholder="Warning" id="warning"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Validating"
-                    hasFeedback
-                    validateStatus="validating"
-                    help="The information is being validated..."
-                >
-                    <Input placeholder="I'm the content is being validated" id="validating"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Success"
-                    hasFeedback
-                    validateStatus="success"
-                >
-                    <Input placeholder="I'm the content" id="success"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Warning"
-                    hasFeedback
-                    validateStatus="warning"
-                >
-                    <Input placeholder="Warning" id="warning"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Fail"
-                    hasFeedback
-                    validateStatus="error"
-                    help="Should be combination of numbers & alphabets"
-                >
-                    <Input placeholder="unavailable choice" id="error"/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Success"
-                    hasFeedback
-                    validateStatus="success"
-                >
-                    <DatePicker style={{width: '100%'}}/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Warning"
-                    hasFeedback
-                    validateStatus="warning"
-                >
-                    <TimePicker style={{width: '100%'}}/>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Error"
-                    hasFeedback
-                    validateStatus="error"
-                >
-                    <Select defaultValue="1">
-                        <Option value="1">Option 1</Option>
-                        <Option value="2">Option 2</Option>
-                        <Option value="3">Option 3</Option>
-                    </Select>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Validating"
-                    hasFeedback
-                    validateStatus="validating"
-                    help="The information is being validated..."
-                >
-                    <Cascader defaultValue={['1']} options={[]}/>
-                </FormItem>
-
-                <FormItem
-                    label="inline"
-                    {...formItemLayout}
-                >
-                    <Col span={11}>
-                        <FormItem validateStatus="error" help="Please select the correct date">
-                            <DatePicker/>
+            <PageHeaderLayout
+                title="基础表单"
+                content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+                <Card bordered={false}>
+                    <Form onSubmit={this.handleSubmit}>
+                        <FormItem
+                            label="编号"
+                            labelCol={{span: 5}}
+                            wrapperCol={{span: 12}}>
+                            {getFieldDecorator('note', {
+                                rules: [{
+                                    required: true,
+                                    message: 'Please input your note!'
+                                }],
+                                initialValue: null
+                            })(
+                                <Input placeholder="请填写编号"/>
+                            )}
+                            <p>编号是5-10位的数字、字母等组合</p>
                         </FormItem>
-                    </Col>
-                    <Col span={2}>
-                        <span style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>-</span>
-                    </Col>
-                    <Col span={11}>
-                        <FormItem>
-                            <DatePicker/>
+                        <FormItem
+                            label="性别"
+                            labelCol={{span: 5}}
+                            wrapperCol={{span: 12}}>
+                            {getFieldDecorator('gender', {
+                                rules: [{required: true, message: 'Please select your gender!'}],
+                            })(
+                                <Select
+                                    placeholder="Select a option and change input text above"
+                                    onChange={this.handleSelectChange}
+                                >
+                                    <Option value="male">male</Option>
+                                    <Option value="female">female</Option>
+                                </Select>
+                            )}
                         </FormItem>
-                    </Col>
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="Success"
-                    hasFeedback
-                    validateStatus="success"
-                >
-                    <InputNumber style={{width: '100%'}}/>
-                </FormItem>
-            </Form>
-        )
+                        <FormItem wrapperCol={{span: 12, offset: 5}}>
+                            <Button type="primary" htmlType="submit">提交参数</Button>
+                        </FormItem>
+                    </Form>
+                </Card>
+            </PageHeaderLayout>
+        );
     }
 }
 
+export default Form.create()(FormDemo);

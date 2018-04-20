@@ -24,6 +24,7 @@
     "mock": "node --harmony ./mock/server.js"
   },
   "dependencies": {
+    "path-to-regexp": "^2.2.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.106",
