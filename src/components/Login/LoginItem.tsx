@@ -10,7 +10,7 @@ import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBas
 
 const FormItem = Form.Item;
 
-export interface LoginItemProps extends ReactBaseProps{
+export interface LoginItemProps extends ReactBaseProps {
     name?: string;
 
     rules?: any[];
@@ -24,6 +24,9 @@ export interface LoginItemProps extends ReactBaseProps{
     placeholder?: string;
 
     value?: string;
+
+    //图片验证码地址
+    pictureCodeSrc?: string;
 }
 
 
@@ -87,8 +90,9 @@ function generator({defaultProps, defaultRules, type}) {
                     options.initialValue = defaultValue;
                 }
                 otherProps = restProps || otherProps;
-                if (type === 'Captcha') {
+                if (type === 'Captcha' || type === 'PictureCode') {
                     const inputProps = omit(otherProps, ['onGetCaptcha']);
+
                     return (
                         <FormItem>
                             <Row gutter={8}>
@@ -97,15 +101,22 @@ function generator({defaultProps, defaultRules, type}) {
                                         <WrappedComponent {...defaultProps} {...inputProps} />
                                     )}
                                 </Col>
-                                <Col span={8}>
-                                    <Button
-                                        disabled={count}
-                                        className={styles.getCaptcha}
-                                        size="large"
-                                        onClick={this.onGetCaptcha}
-                                    >
-                                        {count ? `${count} s` : '获取验证码'}
-                                    </Button>
+                                <Col span={8} style={{textAlign:"right"}}>
+                                    {
+                                        type === 'Captcha' ? <Button
+                                            disabled={count}
+                                            className={styles.getCaptcha}
+                                            size="large"
+                                            onClick={this.onGetCaptcha}>
+                                            {count ? `${count} s` : '获取验证码'}
+                                        </Button> : <img src={this.props.pictureCodeSrc}
+                                                         style={{width:100,height:38,paddingBottom:4}}
+                                                         onClick={(event) => {
+                                                             let element = event.target as HTMLImageElement;
+                                                             element.src = element.src.split("?")[0] + new Date().getTime();
+                                                         }
+                                                         }/>
+                                    }
                                 </Col>
                             </Row>
                         </FormItem>

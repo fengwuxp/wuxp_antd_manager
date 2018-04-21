@@ -6,12 +6,12 @@ const routes: Array<RouteConfig> = [
     {
         path: '/demo/form',
         exact: true,
-        component: asyncComponent(() => {
-
-            // console.log(arguments);
-            return import(/* webpackChunkName: "test/form" */ './FormDemo');
-        })
-        // component: FormDemo
+        component: asyncComponent(() => import(/* webpackChunkName: "test/form" */ './FormDemo'))
+    },
+    {
+        path: '/demo/rich_text',
+        exact: true,
+        component: asyncComponent(() => import(/* webpackChunkName: "test/rich_text" */ './RichTextDemo'))
     }
 ];
 

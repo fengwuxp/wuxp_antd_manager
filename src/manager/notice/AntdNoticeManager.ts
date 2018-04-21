@@ -1,7 +1,6 @@
 import AbstractNoticeManager from "wuxp_react_dynamic_router/src/manager/notice/AbstractNoticeManager";
-// import ApiClientFetch from "typescript_api_sdk/src/api/impl/es/ApiClientFetch";
+import apiClient from "../../fetch/BuildFetchClient";
 
-// const apiClientFetch = new ApiClientFetch(false);
 
 /**
  * antd的消息管理器

@@ -8,7 +8,7 @@ import {LoginType} from "../../enums/AdminLoginType";
 import {MapStateToPropsParam} from 'react-redux';
 import {AntdAdmin, SessionStatus} from "../../model/session/AntdAdmin";
 
-const {Tab, UserName, Password, Mobile, Captcha, Submit} = Login as any;
+const {Tab, UserName, Password, Mobile, Captcha, Submit, PictureCode} = Login as any;
 
 
 export interface LoginPageProps {
@@ -122,6 +122,9 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
                         <Password rules={[{required: true, message: '写登录密码'}]}
                                   name="password"
                                   placeholder="请填写登录密码"/>
+                        <PictureCode name="pictureCode"
+                                     pictureCodeSrc={`${process.env.ROOT_DOMAIN}/login/captcha.htm`}/>
+
                     </Tab>
                     <Tab key={LoginType.MOBILE_PHONE} tab="手机号登录">
                         {session.status === SessionStatus.LOGIN_ERROR && session.type === LoginType.ACCOUNT && !session.submitting && this.renderMessage('验证码错误')}

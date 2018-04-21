@@ -30,7 +30,6 @@ const {Content, Header, Footer} = Layout;
 const {AuthorizedRoute, check} = Authorized;
 
 
-
 function convertRouteToObject({path, location, component, exact, strict}: RouteConfig) {
     return {
         path,
@@ -51,7 +50,6 @@ function convertRoutesToMap(routes: Array<RouteConfig>, result: any) {
         }
     });
 }
-
 
 
 export interface AntdNavLayoutProps extends GlobalHeaderProps {
@@ -122,6 +120,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     static childContextTypes = {
         location: PropTypes.object,
         breadcrumbNameMap: PropTypes.object,
+        menus: PropTypes.object
     };
 
     getChildContext() {
@@ -129,11 +128,11 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         const result = {};
         convertRoutesToMap(routeConfigs, result);
         console.log("-----------------ddd-----------");
-        console.log(this.props.menus);
         console.log(result);
         return {
             location,
             breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(this.props.menus), result),
+            menus: getMenuData(this.props.menus)
         };
     }
 
@@ -338,7 +337,6 @@ const getRedirect = item => {
         }
     }
 };
-
 
 
 /**

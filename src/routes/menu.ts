@@ -31,6 +31,10 @@ const menuData: Array<AntdMenuItem> = [
                 path: 'form',
             },
             {
+                name: '富文本示例',
+                path: 'rich_text',
+            },
+            {
                 name: '分步表单',
                 path: 'step-form',
             },

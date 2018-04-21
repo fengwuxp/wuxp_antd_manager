@@ -15,7 +15,9 @@ import routes from "./views/demo";
 import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
 import {Spin} from "antd";
 import * as styles from "./index.scss";
-
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 //设置默认加载组件
 setDefaultLoadingComponent(() => {

@@ -7,7 +7,7 @@ const port = '9091';
 config.plugins.push(
     new webpack.DefinePlugin({
         'process.env': {
-            API_ROOT: JSON.stringify(`${host}:8088`),
+            ROOT_DOMAIN: JSON.stringify(`${host}:8086/udf`),
             BASE_NAME: JSON.stringify("/")
         }
     })

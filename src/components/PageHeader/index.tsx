@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import pathToRegexp from 'path-to-regexp';
 import {Breadcrumb, Tabs} from 'antd';
 import classNames from 'classnames';
-import * as styles from './index.less';
+import * as styles from './index.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 
 const {TabPane} = Tabs;
@@ -27,10 +27,16 @@ export function getBreadcrumb(breadcrumbNameMap, url) {
  * 2：页面标题，以及提示内容等展示
  */
 export default class PageHeader extends PureComponent<any, any> {
+
     static contextTypes = {
         routes: PropTypes.array,
+
         params: PropTypes.object,
+
+        menus: PropTypes.object,
+
         location: PropTypes.object,
+
         breadcrumbNameMap: PropTypes.object,
     };
     onChange = key => {
@@ -67,6 +73,8 @@ export default class PageHeader extends PureComponent<any, any> {
             </Breadcrumb>
         );
     };
+
+
     conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
         const {breadcrumbSeparator, linkElement = 'a'} = this.props;
         // Convert the url to an array
@@ -110,6 +118,10 @@ export default class PageHeader extends PureComponent<any, any> {
     conversionBreadcrumbList = () => {
         const {breadcrumbList, breadcrumbSeparator} = this.props;
         const {routes, params, routerLocation, breadcrumbNameMap} = this.getBreadcrumbProps();
+        // console.log(routes);
+        // console.log(params);
+        // console.log(routerLocation);
+        // console.log(breadcrumbNameMap);
         if (breadcrumbList && breadcrumbList.length) {
             return this.conversionFromProps();
         }
@@ -165,6 +177,9 @@ export default class PageHeader extends PureComponent<any, any> {
             tabDefaultActiveKey,
             tabBarExtraContent,
         } = this.props;
+
+        // console.log(this.props);
+
         const clsString = classNames(styles.pageHeader, className);
         const breadcrumb = this.conversionBreadcrumbList();
         const activeKeyProps: any = {};

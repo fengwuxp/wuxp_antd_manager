@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Tabs} from 'antd';
 import classNames from 'classnames';
-import LoginItem from './LoginItem';
+import LoginItem, {LoginItemProps} from './LoginItem';
 import LoginTab from './LoginTab';
 import LoginSubmit from './LoginSubmit';
 import * as styles from './style.scss';
@@ -48,12 +48,20 @@ class Login extends React.Component<LoginProps, any> {
         updateActive: PropTypes.func,
     };
 
-    static Tab;
-    static UserName;
-    static Password;
-    static Mobile;
-    static Captcha;
-    static Submit;
+    static Tab: typeof LoginTab;
+
+    static Submit: typeof LoginSubmit;
+
+    static UserName: React.Component<LoginItemProps, any>;
+
+    static Password: React.Component<LoginItemProps, any>;
+
+    static Mobile: React.Component<LoginItemProps, any>;
+
+    static Captcha: React.Component<LoginItemProps, any>;
+
+
+    static PictureCode: React.Component<LoginItemProps, any>;
 
     state = {
         type: this.props.defaultActiveKey,

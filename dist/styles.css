@@ -33454,3 +33454,25 @@ i.style__trigger-1QgmL {
     background: #fff; }
     .style__header-2MLKt .style__right-3BZEs .style__account-1ioeg .style__avatar-1mkE9 {
       margin-right: 0; } }
+html,
+body,
+#root {
+  height: 100%; }
+
+.ant-layout {
+  min-height: 100%; }
+
+canvas {
+  display: block; }
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.index__globalSpin-1FRlX {
+  width: 100%;
+  margin: 40px 0 !important; }
+
+.ant-spin-container {
+  overflow: visible !important; }

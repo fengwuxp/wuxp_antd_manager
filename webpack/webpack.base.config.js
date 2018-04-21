@@ -96,7 +96,7 @@ const config = {
                             }
                         }
                     ],
-                    fallback: "style-loader"
+                    // fallback: "style-loader"
                 })
             },
             {

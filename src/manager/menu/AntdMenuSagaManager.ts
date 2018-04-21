@@ -42,7 +42,7 @@ function queryMenus(params) {
         setTimeout(() => {
             console.log(menuData)
             resolve(getMenuData(menuData))
-        }, 1200);
+        }, 200);
     });
     // return getMenuData();
 }
