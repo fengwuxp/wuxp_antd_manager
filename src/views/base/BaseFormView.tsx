@@ -20,7 +20,7 @@ export default class BaseFormView<P extends AntdFromBaseProps, S extends BaseFor
     componentDidMount(): void {
 
         //cong url中获取参数
-        console.log("-------------------------1------------------------")
+        console.log("-------------------------1------------------------");
         console.log(this.props);
         const {search, state} = this.props.history.location;
         const path = this.props.match.path;
