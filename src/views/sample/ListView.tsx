@@ -1,6 +1,6 @@
 import * as React from "react";
 import Table from "antd/es/table/Table";
-import BaseListView from "../base/BaseListView";
+import BaseListView, {BaseListState} from "../base/BaseListView";
 import {ColumnProps, TableProps} from "antd/es/table/interface";
 import {SampleInfo} from "./info/SampleInfo";
 
@@ -22,11 +22,14 @@ const columns: Array<ColumnProps<SampleInfo>> = [
     },
 ];
 
+interface SampleState extends BaseListState<SampleInfo> {
+
+}
 
 /**
  * 实例列表页面
  */
-export default class ListView extends BaseListView<any, any> {
+export default class ListView extends BaseListView<any, SampleState, any> {
 
 
     constructor(props: any, context: any) {
@@ -34,30 +37,18 @@ export default class ListView extends BaseListView<any, any> {
     }
 
 
-    state = {
-        data: [],
-        pagination: {},
-        loading: false,
-    };
-
-    //分页处理
-    handleTableChange = (pagination, filters, sorter) => {
-
-    };
-
-
     render() {
+        const {page, loading} = this.state;
         return (
             <Table columns={columns}
-                   rowKey={record => record.registered}
-                   dataSource={this.state.data}
+                   rowKey={this.generateTableRowKey}
+                   dataSource={page.records}
                    pagination={this.state.pagination}
-                   loading={this.state.loading}
+                   loading={loading}
                    scroll={{
                        x: 1200,
                        y: 200
                    }}
-                   onChange={this.handleTableChange}
             />
         );
     }
