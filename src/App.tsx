@@ -11,7 +11,7 @@ import {Provider} from "react-redux";
 import {ConnectedRouter} from 'react-router-redux'
 import {antdAdminStore} from "./manager/store/StoreManager";
 import {pushRoutes} from "./routes/router";
-import routes from "./views/demo";
+import routes from "./views/sample";
 import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
 import {Spin} from "antd";
 import * as styles from "./index.scss";

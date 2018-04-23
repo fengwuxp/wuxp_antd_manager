@@ -1,9 +1,47 @@
 import {call, put} from "redux-saga/effects";
-import {SessionSaga} from "../../saga/session/SessionSaga";
-import {AdminLoginReq} from "../../saga/session/req/AdminLoginReq";
 import {SessionStatus} from "../../model/session/AntdAdmin";
 import * as routerRedux from "react-router-redux"
 import {setAuthority} from "../../utils/auth/authority";
+import {LoginType} from "../../enums/AdminLoginType";
+import apiClient from "../../fetch/BuildFetchClient";
+import {DataType} from "typescript_api_sdk/src/api/enums/DataType";
+
+
+export interface AdminLoginReq {
+
+    /**
+     * 登录类型
+     */
+    type: LoginType;
+
+    /**
+     * 用户名
+     */
+    userName?: string;
+
+    /**
+     * 登录密码
+     */
+    password?: string;
+
+    /**
+     * 手机号码
+     */
+    mobilePhone?: string;
+
+    /**
+     * 验证码
+     */
+    captcha?: string;
+}
+
+
+export interface SessionSaga {
+
+    login: (req: AdminLoginReq) => any;
+
+    logout: (...p) => any;
+}
 
 
 export class SessionSagaManager implements SessionSaga {
@@ -14,33 +52,55 @@ export class SessionSagaManager implements SessionSaga {
      * @param payload
      * @returns {IterableIterator<ForkEffect>}
      */
-    * login(payload: AdminLoginReq) {
+    * login(payload) {
 
         const type = "setAdmin";
 
         try {
-            const response = yield call(adminLogin, payload);
-            setAuthority("user");
             yield put({
                 type,
-                payload: {
-                    admin: response,
-                    status: SessionStatus.LOGIN_SUCCESS
-                },
+                payload: {submitting: true},
             });
-            console.log("跳转到首页");
-            //跳转到首页
-            yield put(routerRedux.push('/'));
+            const resp = yield call(adminLogin, payload);
+            if (resp.success) {
+                //登录成功
+                setAuthority("user");
+                yield put({
+                    type,
+                    payload: {
+                        admin: resp,
+                        status: SessionStatus.LOGIN_SUCCESS,
+                        submitting: false
+                    },
+                });
+                console.log("跳转到首页");
+                //跳转到首页
+                yield put(routerRedux.push('/'));
+            } else {
+                console.log("登录请求失败")
+                console.log(resp)
+                yield put({
+                    type,
+                    payload: {
+                        status: SessionStatus.LOGIN_ERROR,
+                        submitting: false,
+                        errorMessage: resp.message
+                    },
+                });
+            }
+
         } catch (e) {
+            console.log("登录请求异常");
             console.log(e);
             yield put({
                 type,
                 payload: {
-                    status: SessionStatus.LOGIN_ERROR
+                    status: SessionStatus.LOGIN_ERROR,
+                    submitting: false,
+                    errorMessage: "登录出现异常"
                 },
             });
         }
-
     }
 
 
@@ -65,15 +125,29 @@ export class SessionSagaManager implements SessionSaga {
 }
 
 
-function adminLogin(payload: AdminLoginReq) {
-    console.log("调用登录");
+function adminLogin({type, payload}) {
+    console.log("调用登录，请求参数");
     console.log(payload);
+
+    const {userName, password, captcha} = payload;
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
+        apiClient.post({
+            url: "/login_json",
+            data: {
+                loginName: userName,
+                password,
+                captcha
+            }
+        }).then((e) => {
             resolve({
-                name: "张三"
+                name: "张三",
+                success:true,
+                message:e.message
             })
-        }, 1500);
+        }).catch((e) => {
+            reject(e)
+        });
+
     });
 }
 

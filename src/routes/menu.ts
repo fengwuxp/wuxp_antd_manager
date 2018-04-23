@@ -22,27 +22,18 @@ const menuData: Array<AntdMenuItem> = [
         ],
     },
     {
-        name: '表单页',
+        name: '示例',
         icon: 'form',
-        path: 'demo',
+        path: 'sample',
         children: [
             {
-                name: '基础表单',
-                path: 'form',
+                name: '示例列表',
+                path: 'list',
             },
             {
                 name: '富文本示例',
                 path: 'rich_text',
-            },
-            {
-                name: '分步表单',
-                path: 'step-form',
-            },
-            {
-                name: '高级表单',
-                authority: 'admin',
-                path: 'advanced-form',
-            },
+            }
         ],
     },
     {

@@ -6,6 +6,8 @@ import * as styles from './style.scss';
 import map from './map';
 import TimerUtil from "../../utils/timer/TimerUtil"
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
+import {findDOMNode} from "react-dom";
+import {isNullOrUndefined} from "util";
 
 
 const FormItem = Form.Item;
@@ -75,6 +77,18 @@ function generator({defaultProps, defaultRules, type}) {
 
             };
 
+            //更换图片验证码
+            onChangePictureCode = (event?) => {
+                let element;
+                if (isNullOrUndefined(event)) {
+                    element = findDOMNode(this.refs.PictureCode)
+                } else {
+                    element = event.target as HTMLImageElement;
+                }
+                element.src = element.src.split("?")[0] + new Date().getTime();
+
+            };
+
             render() {
                 const {getFieldDecorator} = this.context.form;
 
@@ -101,7 +115,7 @@ function generator({defaultProps, defaultRules, type}) {
                                         <WrappedComponent {...defaultProps} {...inputProps} />
                                     )}
                                 </Col>
-                                <Col span={8} style={{textAlign:"right"}}>
+                                <Col span={8} style={{textAlign: "right"}}>
                                     {
                                         type === 'Captcha' ? <Button
                                             disabled={count}
@@ -110,12 +124,9 @@ function generator({defaultProps, defaultRules, type}) {
                                             onClick={this.onGetCaptcha}>
                                             {count ? `${count} s` : '获取验证码'}
                                         </Button> : <img src={this.props.pictureCodeSrc}
-                                                         style={{width:100,height:38,paddingBottom:4}}
-                                                         onClick={(event) => {
-                                                             let element = event.target as HTMLImageElement;
-                                                             element.src = element.src.split("?")[0] + new Date().getTime();
-                                                         }
-                                                         }/>
+                                                         ref="PictureCode"
+                                                         style={{width: 100, height: 38, paddingBottom: 4}}
+                                                         onClick={this.onChangePictureCode}/>
                                     }
                                 </Col>
                             </Row>

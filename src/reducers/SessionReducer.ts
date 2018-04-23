@@ -21,10 +21,23 @@ export interface SessionReducer extends ReduxReducer<AntdSession> {
 }
 
 let defaultSession = {
+
     admin: null,
+
     type: LoginType.ACCOUNT,
+
+    /**
+     * 登录状态
+     */
     status: null,
-    submitting: false
+
+    /**
+     * 提交状态
+     */
+    submitting: false,
+
+    errorMessage:null
+
 };
 /**
  * 会话相关的 reducer管理者

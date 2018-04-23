@@ -10,8 +10,7 @@ import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
 import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
 import {push} from "react-router-redux";
 import {sessionManager} from "../../manager/session/SessionManager";
-import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
-import {MapStateToPropsParam} from "react-redux";
+import {connect, MapStateToPropsParam} from "react-redux";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
@@ -98,7 +97,7 @@ const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, men
 /**
  * 导航布局
  */
-@ReactReduxConnect(mapStateToPropsParam)
+@(connect as any)(mapStateToPropsParam)
 export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, any> {
 
     /**
@@ -232,14 +231,15 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         let fetchingNotices = false;
         // console.log("---------------------------1111-----------")
         // console.log(this.props);
+        const {session, menus} = this.props;
         const currentUser = {
             notifyCount: 10,
-            name: "李四",//session.name,
-            avatar: ""
+            ...session.admin
         };
 
         if (redirectData.length === 0) {
-            this.props.menus.forEach(getRedirect);
+            //获取重定向数据
+            menus.forEach(getRedirect);
         }
 
         // console.log(this.props);

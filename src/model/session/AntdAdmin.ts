@@ -55,5 +55,8 @@ export interface AntdSession {
     /**
      * 提交状态
      */
-    submitting: boolean
+    submitting: boolean;
+
+    //登录失败的错误提示
+    errorMessage: string;
 }

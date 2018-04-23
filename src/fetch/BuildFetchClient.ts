@@ -2,6 +2,8 @@ import EsServiceSimpleProxyFactory from "typescript_api_sdk/src/api/impl/es/EsSe
 import ApiClientFetch from "typescript_api_sdk/src/api/impl/es/ApiClientFetch"
 import {FilterItem} from "typescript_api_sdk/src/api/filter/model/FilterItem";
 import {UnifiedRespHandleFilter} from "./filter/UnifiedRespHandleFilter";
+import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
+import {DataType} from "typescript_api_sdk/src/api/enums/DataType";
 
 
 const filters: Array<FilterItem> = [
@@ -11,4 +13,10 @@ const filters: Array<FilterItem> = [
     }
 ];
 
-export default EsServiceSimpleProxyFactory.newProxyInstances<ApiClientFetch>(filters);
+let defaultOptions = {
+    // credentials: "same-origin",
+    credentials: "include",
+    dataType: DataType.JSON
+} as FetchOption;
+
+export default EsServiceSimpleProxyFactory.newProxyInstances<ApiClientFetch>(filters, defaultOptions);

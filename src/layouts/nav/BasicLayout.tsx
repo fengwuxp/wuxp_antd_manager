@@ -4,12 +4,10 @@ import {ContainerQuery} from "react-container-query";
 import classNames from 'classnames';
 import MediaQuery from "./MediaQuery";
 import AntdNavLayout, {AntdNavLayoutProps} from "./AntdNavLayout";
-import {MapStateToPropsParam} from "react-redux";
-import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
+import {MapStateToPropsParam, connect} from "react-redux";
 import {isNullOrUndefined} from "util";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import _ from "lodash";
-
 
 const DEFAULT_TITLE = "Ant Design Pro";
 
@@ -34,7 +32,7 @@ const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, men
     menus
 });
 
-@ReactReduxConnect(mapStateToPropsParam)
+@(connect as any)(mapStateToPropsParam)
 export default class BasicLayout extends React.Component<AntdNavLayoutProps, any> {
 
 

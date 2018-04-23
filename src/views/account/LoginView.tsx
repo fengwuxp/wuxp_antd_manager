@@ -6,20 +6,14 @@ import {sessionManager} from "../../manager/session/SessionManager";
 import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
 import {LoginType} from "../../enums/AdminLoginType";
 import {MapStateToPropsParam} from 'react-redux';
-import {AntdAdmin, SessionStatus} from "../../model/session/AntdAdmin";
+import {AntdAdmin, AntdSession, SessionStatus} from "../../model/session/AntdAdmin";
+import GlobalAipConfig from "typescript_api_sdk/src/config/GlobalAipConfig"
 
 const {Tab, UserName, Password, Mobile, Captcha, Submit, PictureCode} = Login as any;
 
 
 export interface LoginPageProps {
-    session: {
-        admin: AntdAdmin,
-        status: SessionStatus,
-        type: string,
-        submitting?: string
-    },
-
-    submitting: boolean
+    session: AntdSession,
 }
 
 const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session}) => ({
@@ -52,8 +46,7 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
         if (!err) {
             sessionManager.login({
                 type: this.state.type,
-                userName: "123",
-                password: "455"
+                ...values
             });
         }
     };
@@ -65,6 +58,10 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
     };
 
     renderMessage = content => {
+        if (this.props.session.type === LoginType.ACCOUNT) {
+            //登录失败切换图片验证吗
+            this.refs.picture_captcha['onChangePictureCode']();
+        }
         return <Alert style={{marginBottom: 24}} message={content} type="error" showIcon/>;
     };
 
@@ -94,18 +91,16 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
             return Promise.reject(false)
         }
 
-        //TODO请求手机验证码
-
+        //TODO 请求手机验证码
         return Promise.resolve(true);
 
     };
 
     render() {
 
-        const {session, submitting} = this.props;
+        const {session} = this.props;
 
-        const {type} = this.state;
-        console.log(this.props);
+        // console.log(`提交状态${session.submitting}`);
 
         return (
             <div className={styles.main}>
@@ -115,15 +110,16 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
                        onTabChange={this.onTabChange}
                        onSubmit={this.handleSubmit}>
                     <Tab key={LoginType.ACCOUNT} tab="账户密码登录">
-                        {session.status === SessionStatus.LOGIN_ERROR && session.type === LoginType.ACCOUNT && !session.submitting && this.renderMessage('账户或密码错误')}
+                        {session.status === SessionStatus.LOGIN_ERROR && session.type === LoginType.ACCOUNT && !session.submitting && this.renderMessage(session.errorMessage)}
                         <UserName rules={[{required: true, message: "登录账号"}]}
                                   name="userName"
                                   placeholder="请填写登录账号"/>
                         <Password rules={[{required: true, message: '写登录密码'}]}
                                   name="password"
                                   placeholder="请填写登录密码"/>
-                        <PictureCode name="pictureCode"
-                                     pictureCodeSrc={`${process.env.ROOT_DOMAIN}/login/captcha.htm`}/>
+                        <PictureCode name="captcha"
+                                     ref='picture_captcha'
+                                     pictureCodeSrc={`${GlobalAipConfig.API_BASE_URL}/login/captcha.htm`}/>
 
                     </Tab>
                     <Tab key={LoginType.MOBILE_PHONE} tab="手机号登录">
@@ -135,7 +131,7 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
                         <Checkbox checked={this.state.autoLogin} onChange={this.changeAutoLogin}>自动登录</Checkbox>
                         <a style={{float: 'right'}} href="">忘记密码</a>
                     </div>
-                    <Submit loading={submitting}>登录</Submit>
+                    <Submit loading={session.submitting}>登录</Submit>
                 </Login>
             </div>
         );

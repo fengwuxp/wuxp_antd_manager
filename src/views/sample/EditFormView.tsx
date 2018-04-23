@@ -6,6 +6,7 @@ import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFr
 import {UploadChangeParam, UploadFile} from "antd/lib/upload/interface";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
+import BaseFormView from "../base/BaseFormView";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -59,10 +60,18 @@ const selectAfter = (
 );
 
 export interface FormDemoProps extends AntdFromBaseProps {
+
 }
 
-class FormDemo extends React.Component<FormDemoProps, any> {
+/**
+ * 编辑表单的例子
+ */
+class InputFormView extends BaseFormView<FormDemoProps, any> {
 
+
+    constructor(props: FormDemoProps, context: any) {
+        super(props, context);
+    }
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -166,7 +175,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                             )}
                             <div>图标建议使用200*200的正方形的png图片</div>
                         </FormItem>
-
                         <FormItem
                             label="简介"
                             labelCol={{span: 5}}
@@ -188,7 +196,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                             )}
                             <div>名称长度为2-5</div>
                         </FormItem>
-
                         <FormItem
                             label="发布时间"
                             labelCol={{span: 5}}
@@ -219,8 +226,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                             )}
                             <div>请选择时间</div>
                         </FormItem>
-
-
                         <FormItem
                             label="活动介绍"
                             labelCol={{span: 5}}
@@ -233,7 +238,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <TextArea autosize={{minRows: 4}} cols={15}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="发布类型"
                             labelCol={{span: 5}}
@@ -268,8 +272,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <Input type="hidden"/>
                             )}
                         </FormItem>
-
-
                         <FormItem
                             label="活动url"
                             labelCol={{span: 5}}
@@ -282,8 +284,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <Input addonBefore={selectBefore} addonAfter={selectAfter}/>
                             )}
                         </FormItem>
-
-
                         <FormItem
                             label="数量"
                             labelCol={{span: 5}}
@@ -296,7 +296,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <InputNumber style={{width: 200}}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="费率（百分比）"
                             labelCol={{span: 5}}
@@ -309,7 +308,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <InputNumber style={{width: 200}}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="手续费（分）"
                             labelCol={{span: 5}}
@@ -322,7 +320,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <InputNumber style={{width: 200}}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="手续费（元）"
                             labelCol={{span: 5}}
@@ -335,7 +332,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <InputNumber style={{width: 200}}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="销售额（万元）"
                             labelCol={{span: 5}}
@@ -348,7 +344,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <InputNumber style={{width: 200}}/>
                             )}
                         </FormItem>
-
                         <FormItem
                             label="启用"
                             labelCol={{span: 5}}
@@ -361,8 +356,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>
                             )}
                         </FormItem>
-
-
                         <FormItem
                             label="上级"
                             labelCol={{span: 5}}
@@ -375,8 +368,6 @@ class FormDemo extends React.Component<FormDemoProps, any> {
                                 <Input/>
                             )}
                         </FormItem>
-
-
                         <FormItem
                             label="地区信息"
                             labelCol={{span: 5}}
@@ -407,6 +398,10 @@ class FormDemo extends React.Component<FormDemoProps, any> {
         console.log(value, selectedOptions);
     };
 
+    /**
+     * 级联数据处理
+     * @param {CascaderOptionType[]} selectedOptions
+     */
     loadAreaInfo = (selectedOptions?: CascaderOptionType[]) => {
 
         console.log(selectedOptions);
@@ -433,4 +428,4 @@ class FormDemo extends React.Component<FormDemoProps, any> {
     }
 }
 
-export default Form.create()(FormDemo);
+export default Form.create()(InputFormView);

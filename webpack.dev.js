@@ -1,13 +1,14 @@
 const webpack = require('webpack');
 const config = require("./webpack.config");
 const path = require("path");
-const host = require('quick-local-ip').getLocalIP4();
+// const host = require('quick-local-ip').getLocalIP4();
+const host = "localhost";
 const port = '9091';
 
 config.plugins.push(
     new webpack.DefinePlugin({
         'process.env': {
-            ROOT_DOMAIN: JSON.stringify(`${host}:8086/udf`),
+            ROOT_DOMAIN: JSON.stringify(`${host}:9091`),
             BASE_NAME: JSON.stringify("/")
         }
     })
@@ -24,11 +25,36 @@ config.devServer = {
     publicPath: '/',
     proxy: {
         '/api': {
-            target: `http://${host}:9899/react/`,
+            // target: `http://${host}:9899/react/`,
+            target: `http://localhost:8086/udf`,
             pathRewrite: {'^/api': '/'},
-            changeOrigin: true
-        }
+            changeOrigin: true,
+            secure: false,
+            cookieDomainRewrite: {
+                "*":"/"
+            },
+            //重写cookie
+            onProxyRes: function(proxyRes, req, res) {
+                // console.log("重写cookie");
+                let cookies = proxyRes.headers['set-cookie'];
+                let cookieRegex = /Path=\/udf\//i;
+                //修改cookie Path
+                if (cookies) {
+                    let newCookie = cookies.map(function(cookie) {
+                        if (cookieRegex.test(cookie)) {
+                            return cookie.replace(cookieRegex, 'Path=/');
+                        }
+                        return cookie;
+                    });
+                    //修改cookie path
+                    delete proxyRes.headers['set-cookie'];
+                    proxyRes.headers['set-cookie'] = newCookie;
+                }
+            }
+        },
+
     },
+
     //如果你的应用使用HTML5 history API，
     //你可能需要使用index.html响应404或者问题请求，只需要设置g historyApiFallback: true即可
     historyApiFallback: true,
@@ -43,6 +69,12 @@ config.devServer = {
     //         next();
     //     });
     // },
+    // after(app) {
+    //     console.log("执行after");
+    //     app.use(function (req, res, next) {
+    //     });
+    // }
+
 };
 
 module.exports = config;
