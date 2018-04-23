@@ -8,6 +8,7 @@ import {MapStateToPropsParam, connect} from "react-redux";
 import {isNullOrUndefined} from "util";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import _ from "lodash";
+import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
 
 const DEFAULT_TITLE = "Ant Design Pro";
 
@@ -67,13 +68,23 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
         return title;
     }
 
+    /**
+     * 在渲染前调用,在客户端也在服务端
+     */
+    componentWillMount() {
+
+        //加载菜单
+        antdMenuManager.getMenus();
+
+
+    }
+
     render() {
+        const showMenu = this.props.menus.length > 0;
+
         return (
             <DocumentTitle title={this.getPageTitle()}>
-                <ContainerQuery query={MediaQuery}>
-                    {params => <AntdNavLayout {...this.props}
-                                              className={classNames(params) as string}/>}
-                </ContainerQuery>
+                {showMenu ? <ContainerQuery query={MediaQuery}>{params => <AntdNavLayout {...this.props} className={classNames(params) as string}/>}</ContainerQuery> : null}
             </DocumentTitle>
         );
     }

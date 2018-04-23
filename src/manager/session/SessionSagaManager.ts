@@ -1,9 +1,10 @@
 import {call, put} from "redux-saga/effects";
-import {SessionStatus} from "../../model/session/AntdAdmin";
+import {AntdAdmin, SessionStatus} from "../../model/session/AntdAdmin";
 import * as routerRedux from "react-router-redux"
 import {setAuthority} from "../../utils/auth/authority";
 import {LoginType} from "../../enums/AdminLoginType";
 import apiClient from "../../fetch/BuildFetchClient";
+import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 
 
 export interface AdminLoginReq {
@@ -60,14 +61,14 @@ export class SessionSagaManager implements SessionSaga {
                 type,
                 payload: {submitting: true},
             });
-            const resp = yield call(adminLogin, payload);
-            if (resp.success) {
+            const {success, data, message, code}: ApiResp<AntdAdmin> = yield call(adminLogin, payload);
+            if (success) {
                 //登录成功
                 setAuthority("user");
                 yield put({
                     type,
                     payload: {
-                        admin: resp,
+                        admin: data,
                         status: SessionStatus.LOGIN_SUCCESS,
                         submitting: false
                     },
@@ -77,13 +78,13 @@ export class SessionSagaManager implements SessionSaga {
                 yield put(routerRedux.push('/'));
             } else {
                 console.log("登录请求失败");
-                console.log(resp);
+                console.log(`message-> ${message} , code->${code}`);
                 yield put({
                     type,
                     payload: {
                         status: SessionStatus.LOGIN_ERROR,
                         submitting: false,
-                        errorMessage: resp.message
+                        errorMessage: message
                     },
                 });
             }
@@ -124,7 +125,7 @@ export class SessionSagaManager implements SessionSaga {
 }
 
 
-function adminLogin({type, payload}) {
+function adminLogin({type, payload}): Promise<ApiResp<AntdAdmin>> {
     console.log("调用登录，请求参数");
     console.log(payload);
 
@@ -137,15 +138,8 @@ function adminLogin({type, payload}) {
                 password,
                 captcha
             }
-        }).then((e) => {
-            resolve({
-                data: {
-                    name: "张三",
-                    avatar:null,
-                },
-                success: true,
-                message: e.message
-            })
+        }).then((data) => {
+            resolve(data);
         }).catch((e) => {
             reject(e)
         });

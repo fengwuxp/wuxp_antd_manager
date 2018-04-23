@@ -76,6 +76,7 @@ export interface AntdNavLayoutProps extends GlobalHeaderProps {
 
     //匹配
     match: match<any>
+
 }
 
 
@@ -126,8 +127,8 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         const {location} = this.props;
         const result = {};
         convertRoutesToMap(routeConfigs, result);
-        console.log("-----------------ddd-----------");
-        console.log(result);
+        // console.log("-----------------ddd-----------");
+        // console.log(result);
         return {
             location,
             breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(this.props.menus), result),
@@ -189,17 +190,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
 
     /**
-     * 在渲染前调用,在客户端也在服务端
-     */
-    componentWillMount() {
-
-        //加载菜单
-        antdMenuManager.getMenus();
-
-
-    }
-
-    /**
      * 在第一次渲染后调用，只在客户端。之后组件已经生成了对应的DOM结构
      */
     componentDidMount() {
@@ -229,12 +219,12 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     render() {
         let fetchingNotices = false;
-        // console.log("---------------------------1111-----------")
-        // console.log(this.props);
         const {session, menus} = this.props;
         const currentUser = {
             notifyCount: 10,
-            ...session.admin
+            name:"张三",
+            avatar:"",
+            // ...session.admin
         };
 
         if (redirectData.length === 0) {
@@ -242,7 +232,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             menus.forEach(getRedirect);
         }
 
-        // console.log(this.props);
+
         const bashRedirect = this.getBashRedirect();
 
         return (
@@ -250,7 +240,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                 <SiderMenu
                     {...this.props}
                     collapsed={this.state.collapsed}
-                    location={location}
                     isMobile={this.state.isMobile}
                     onCollapse={this.handleMenuCollapse}
                 />

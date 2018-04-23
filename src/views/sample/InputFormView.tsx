@@ -66,7 +66,8 @@ export interface FormDemoProps extends AntdFromBaseProps {
 /**
  * 新增表单的例子
  */
-class InputFormView extends BaseFormView<FormDemoProps, any> {
+@(Form.create as any)()
+export default class InputFormView extends BaseFormView<FormDemoProps, any> {
 
 
     constructor(props: FormDemoProps, context: any) {
@@ -428,4 +429,3 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
     }
 }
 
-export default Form.create()(InputFormView);

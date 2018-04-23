@@ -1,12 +1,12 @@
 import * as React from "react";
 import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo"
-import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {TablePaginationConfig} from "antd/es/table/interface";
 import {message} from "antd";
-
+import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
+import {isBoolean} from "util";
 
 /**
  * 列表视图的 base state
@@ -23,19 +23,18 @@ export interface BaseListState<T> {
     pagination: TablePaginationConfig | false
 }
 
-// type E= E extends ApiQueryReq
-
 /**
  * base list view
+ * 泛型说明 P props  S state E 查询查询对象
  */
-export default class BaseListView<P extends ReduxRouterProps, S extends BaseListState<any>> extends React.Component<P, S> {
+export default abstract class BaseListView<P extends ReduxRouterProps, S extends BaseListState<any>, E extends ApiQueryReq> extends React.Component<P, S> {
 
 
     //抓取数据的url
     protected fetchUrl: string = "";
 
     //查询请求参数
-    protected reqParams: any;
+    protected reqParams: E;
 
     //默认的查询大小
     protected DEFAULT_QUERY_PAGE: number = 20;
@@ -46,7 +45,7 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
 
     state = {
         page: {
-            records: null
+            records: []
         },
         loading: false,
 
@@ -60,71 +59,73 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
             showQuickJumper: true,
             showSizeChanger: true,
             position: "bottom",
-            onChange: this.onQueryPageChange,
-            onShowSizeChange: this.onShowSizeChange
         }
     } as S;
 
-    // componentDidMount() {
-    //     const {search} = this.props.history.location;
-    //     const path = this.props.match.path;
-    //     const params = parse(search);
-    //
-    //     this.fetchUrl = path.replace("/list", "/page");
-    //     console.log(`fetchUrl --> ${fetchUrl}`);
-    //     this.reqParams = {
-    //         queryPage: this.DEFAULT_QUERY_PAGE,
-    //         querySize: 1,
-    //         ...params
-    //     };
-    //     //发起请求
-    //     // this.fetchListData();
-    // }
+    componentDidMount() {
+        const {search} = this.props.history.location;
+        const path = this.props.match.path;
+
+        //获取查询参数
+        const params = parse(search);
+        this.fetchUrl = path.replace("/list", "/page");
+        console.log(`fetchUrl --> ${this.fetchUrl}`);
+        this.reqParams = {
+            queryPage: 1,
+            querySize: this.DEFAULT_QUERY_PAGE,
+            ...params
+        };
+        //发起请求
+        this.fetchListData();
+    }
 
 
     /**
      * 加载列表数据
      */
-    // protected fetchListData = () => {
-    //     this.setState({
-    //         loading: true
-    //     });
-    //
-    //     apiClient.post({
-    //         url: this.fetchUrl,
-    //         data: this.reqParams,
-    //         useFilter: false
-    //     }).then((data: PageInfo<any>) => {
-    //         this.updatePagination(data)
-    //     }).catch(this.fetchListDataFailure)['finally'](() => {
-    //         this.setState({
-    //             loading: false
-    //         });
-    //     });
-    // };
+    protected fetchListData = () => {
+        this.setState({
+            loading: true
+        });
 
-    /**
-     * 查询页码发生变化
-     * @param current
-     * @param size
-     */
-    protected onQueryPageChange = (current, size) => {
-        console.log("----------------1----------2------")
-        // this.reqParams = Object.assign(this.reqParams, {
-        //     queryPage: current,
-        //     querySize: size
-        // });
-        //  this.fetchListData()
+        apiClient.post({
+            url: this.fetchUrl,
+            data: this.reqParams,
+            useFilter: false
+        }).then((data: PageInfo<any>) => {
+            this.updatePagination(data)
+        }).catch(this.fetchListDataFailure)['finally'](() => {
+            this.setState({
+                loading: false
+            });
+        });
     };
 
+
     /**
-     * 查询大小发生变化
-     * @param current
-     * @param size
+     * 分页、排序、筛选变化时触发
+     * @param {TablePaginationConfig | boolean} pagination
+     * @param {string[]} filters
+     * @param {Object} sorter
      */
-    protected onShowSizeChange = (current, size) => {
-        this.onQueryPageChange(current, size);
+    protected onTableChange = (pagination: TablePaginationConfig, filters: string[], sorter: Object) => {
+
+        if (isBoolean(pagination)) {
+            // TODO 不分页的处理
+        } else {
+            const {current, pageSize, total} = pagination;
+            console.log(pagination);
+            this.reqParams = Object.assign(this.reqParams, {
+                queryPage: current,
+                querySize: pageSize,
+                total
+            });
+            //重新加载数据
+            this.fetchListData()
+        }
+
     };
+
 
     /**
      * 更新当前分页器以及分页数据
@@ -139,14 +140,16 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
             pageSize: querySize
         };
         pagination = {
-            ...pagination,
+            ...pagination as any,
             ...updater
         };
         this.setState({
             page: data,
             pagination
         });
+        console.log(this.state.pagination)
     };
+
 
     /**
      * 失败处理
@@ -157,6 +160,7 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
         message.error(`请求列表数据失败`);
     };
 
+
     /**
      * 表格行 key 的取值，可以是字符串或一个函数
      * 默认使用表格的id生成rowKey，如果当前数据没有id字段则需要使用自定义的生成方法
@@ -166,5 +170,21 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
     protected generateTableRowKey = (rowData: any): string => {
 
         return rowData.id.toString();
+    };
+
+
+    protected getRowSelection = () => {
+        // rowSelection object indicates the need for row selection
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            },
+            getCheckboxProps: record => ({
+                disabled: record.name === 'Disabled User', // Column configuration not to be checked
+                name: record.name,
+            }),
+        };
+
+        return rowSelection;
     }
 }

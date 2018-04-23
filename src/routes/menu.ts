@@ -12,6 +12,10 @@ const menuData: Array<AntdMenuItem> = [
                 path: 'list',
             },
             {
+                name: '示例表单',
+                path: 'input',
+            },
+            {
                 name: '富文本示例',
                 path: 'rich_text',
             }

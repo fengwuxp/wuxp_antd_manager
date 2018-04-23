@@ -6,7 +6,7 @@ const routes: Array<RouteConfig> = [
     {
         path: '/sample/list',
         exact: true,
-        component: asyncComponent(() => import(/* webpackChunkName: "sample/input" */ './ListView'))
+        component: asyncComponent(() => import(/* webpackChunkName: "sample/list" */ './ListView'))
     },
     {
         path: '/sample/input',

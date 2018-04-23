@@ -37,12 +37,10 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
 function queryMenus(params) {
     // console.log("获取菜单列表");
-    // console.log(params);
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             console.log(menuData);
             resolve(getMenuData(menuData))
         }, 200);
     });
-    // return getMenuData();
 }

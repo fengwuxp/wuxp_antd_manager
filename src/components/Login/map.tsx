@@ -54,6 +54,7 @@ const map = {
         component: Input,
         props: {
             size: 'large',
+            maxLength:6,
             prefix: <Icon type="mail" className={styles.prefixIcon}/>,
             placeholder: '手机验证码',
         },
@@ -68,6 +69,7 @@ const map = {
         component: Input,
         props: {
             size: 'large',
+            maxLength:4,
             prefix: <Icon type="mail" className={styles.prefixIcon}/>,
             placeholder: '图片验证码',
         },

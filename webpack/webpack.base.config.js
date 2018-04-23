@@ -48,7 +48,7 @@ const config = {
                     {
                         loader: "babel-loader",
                         options: {
-                            presets: ['env', 'react', 'flow'],
+                            presets: ['es2015', 'stage-2'],
                             plugins: [
                                 'syntax-dynamic-import',
                                 'transform-object-rest-spread'
@@ -65,8 +65,7 @@ const config = {
                         loader: "babel-loader",
                         options: {
                             cacheDirectory: true,
-                            // presets: ['es2015', 'stage-2'],
-                            presets: ['env', 'react', 'flow'],
+                            presets: ['es2015', 'stage-2'],
                             plugins: [
                                 'syntax-dynamic-import',
                                 'transform-object-rest-spread'

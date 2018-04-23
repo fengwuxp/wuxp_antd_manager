@@ -115,9 +115,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                     doing: 'gold',
                 }[newNotice.status];
                 newNotice.extra = (
-                    <Tag color={color} style={{marginRight: 0}}>
-                        {newNotice.extra}
-                    </Tag>
+                    <Tag color={color} style={{marginRight: 0}}>{newNotice.extra}</Tag>
                 );
             }
             return newNotice;
@@ -153,6 +151,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
             onMenuClick,
             onNoticeClear,
         } = this.props;
+
         const menu = (
             <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
                 <Menu.Item disabled><Icon type="user"/>个人中心</Menu.Item>
