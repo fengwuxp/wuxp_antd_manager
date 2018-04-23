@@ -40,7 +40,7 @@ function queryMenus(params) {
     // console.log(params);
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            console.log(menuData)
+            console.log(menuData);
             resolve(getMenuData(menuData))
         }, 200);
     });

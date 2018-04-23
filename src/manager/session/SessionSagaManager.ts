@@ -4,7 +4,6 @@ import * as routerRedux from "react-router-redux"
 import {setAuthority} from "../../utils/auth/authority";
 import {LoginType} from "../../enums/AdminLoginType";
 import apiClient from "../../fetch/BuildFetchClient";
-import {DataType} from "typescript_api_sdk/src/api/enums/DataType";
 
 
 export interface AdminLoginReq {
@@ -77,8 +76,8 @@ export class SessionSagaManager implements SessionSaga {
                 //跳转到首页
                 yield put(routerRedux.push('/'));
             } else {
-                console.log("登录请求失败")
-                console.log(resp)
+                console.log("登录请求失败");
+                console.log(resp);
                 yield put({
                     type,
                     payload: {
@@ -140,9 +139,12 @@ function adminLogin({type, payload}) {
             }
         }).then((e) => {
             resolve({
-                name: "张三",
-                success:true,
-                message:e.message
+                data: {
+                    name: "张三",
+                    avatar:null,
+                },
+                success: true,
+                message: e.message
             })
         }).catch((e) => {
             reject(e)

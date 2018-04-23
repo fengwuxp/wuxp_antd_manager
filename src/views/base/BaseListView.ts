@@ -36,6 +36,7 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
     //查询请求参数
     protected reqParams: E;
 
+    //默认的查询大小
     protected DEFAULT_QUERY_PAGE: number = 20;
 
     constructor(props: any, context: any) {
@@ -66,7 +67,7 @@ export default class BaseListView<P extends ReduxRouterProps, S extends BaseList
 
 
     componentDidMount() {
-        const {search, state} = this.props.history.location;
+        const {search} = this.props.history.location;
         const path = this.props.match.path;
         const params = parse(search);
 
