@@ -21,7 +21,8 @@ export class UpLoadHelper {
         const helper: UpLoadHelper = this;
 
         const uploadProps: UploadProps = {
-            action: '/api/upload/upFile',
+            action: `/api/upload/upFile`,
+            // action: `${process.env.NODE_ENV = 'dev' ? '/api' : ''}/upload/upFile`,
             listType: 'picture',
             headers: {},
             //默认只支持传图片
@@ -41,7 +42,7 @@ export class UpLoadHelper {
             onRemove(file: UploadFile) {
                 console.log("---------onRemove---------");
                 const {response} = file;
-                const urlList: Array<string> = helper.form.getFieldValue(helper.formItemName);
+                const urlList: Array<string> = helper.form.getFieldValue(helper.formItemName).split(",");
                 console.log(urlList);
                 helper.setUploadValue(urlList.filter(url => url != response.url));
             },
@@ -67,7 +68,7 @@ export class UpLoadHelper {
             //点击文件链接或预览图标时的回调
             onPreview(file: UploadFile) {
                 console.log("---------onPreview---------");
-                const {response} = file;
+                // const {response} = file;
             }
         };
 
@@ -87,9 +88,9 @@ export class UpLoadHelper {
     };
 
 
-    public setUploadValue = (value: any) => {
+    public setUploadValue = (value: Array<string>) => {
         const formItem = {};
-        formItem[this.formItemName] = value;
+        formItem[this.formItemName] = value.join(",");
         this.form.setFieldsValue(formItem)
     };
 

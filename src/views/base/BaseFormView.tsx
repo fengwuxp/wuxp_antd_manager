@@ -95,7 +95,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
             }
 
             //复制一份数据
-            const formData = [...values];
+            const formData = {...values};
             const b = this.beforeSerialize(formData);
 
             if (!b) {
@@ -105,6 +105,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
                 });
                 return;
             }
+            console.log(formData);
             //提交数据
             apiClient.post({
                 url: this.submitUrl,

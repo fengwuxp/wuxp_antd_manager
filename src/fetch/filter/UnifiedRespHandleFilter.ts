@@ -10,15 +10,26 @@ import {analysisAction} from "../action/ActionStrategy";
 export class UnifiedRespHandleFilter extends ApiAbstractFilter {
 
 
+    preHandle(params: any): boolean | Promise<boolean> {
+        return super.preHandle(params);
+    }
+
     postHandle(resp: ApiResp<any>, context?: any): boolean {
 
         const {message, success, actions} = resp;
+        console.log(`进入统一处理过滤器：UnifiedRespHandleFilter`);
+
+        if ('records' in resp) {
+            //返回列表数据的请求
+            return true;
+        }
         if (success) {
-            if (isNullOrUndefined(actions) || actions.length === 0) {
-                AntdMessage.warn(message ? message : "操作成功");
-            } else {
-                analysisAction(actions[0])
-            }
+            AntdMessage.success(message ? message : "操作成功", 2, () => {
+                if (isNullOrUndefined(actions) || actions.length === 0) {
+                    return;
+                }
+                analysisAction(actions[0]);
+            });
 
         } else {
             //请求失败

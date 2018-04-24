@@ -72,7 +72,11 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
             });
         }).catch((e) => {
             console.log("加载地区数据失败", e);
-        })
+        });
+
+        // setTimeout(()=>{
+        //     this.props.history.goBack();
+        // },1000)
     }
 
     /**
@@ -86,7 +90,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
             ...params,
             querySize: -1
         }).then((data) => {
-            console.log(data);
             const {records} = data;
             //数据转换
             return records.map(({id, name, level}) => {
@@ -169,7 +172,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             {getFieldDecorator('icon', {
                                 rules: [
                                     {
-                                        required: true,
+                                        required: false,
                                         message: '请上传图标'
                                     },
                                 ],
@@ -266,7 +269,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             {getFieldDecorator('downFile', {
                                 rules: [
                                     {
-                                        required: true,
+                                        required: false,
                                         message: '请上传附件'
                                     },
                                 ],
@@ -293,7 +296,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('number', {
                                 rules: [
-                                    {required: false, message: '请填写数量'}
+                                    {required: true, message: '请填写数量'}
                                 ],
                             })(
                                 <InputNumber style={{width: 200}}/>
@@ -379,7 +382,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
 
                             {getFieldDecorator('areaId', {
                                 rules: [
-                                    {required: false, message: '请选择地区信息'}
+                                    {required: true, message: '请选择地区信息'}
                                 ],
                             })(
                                 <Cascader options={this.state.areaOptions}
