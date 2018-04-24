@@ -9,6 +9,7 @@ import Dropdown from "antd/lib/dropdown/dropdown";
 import {Card, Icon, Menu, Popover} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
+import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";
 
 const columns: Array<ColumnProps<SampleInfo>> = [
     {
@@ -68,6 +69,18 @@ const columns: Array<ColumnProps<SampleInfo>> = [
         dataIndex: 'downFile',
         sorter: false,
         width: 80,
+        render: (cellValue) => {
+            if (!StringUtils.hasText(cellValue)) {
+                return null;
+            }
+            return <Popover content={<Button icon="download"
+                                             type="primary"
+                                             size="small"
+                                             onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}
+                                             >下载</Button>}>
+                <Icon type="file"/>
+            </Popover>
+        },
     },
     {
         title: '活动URL',
