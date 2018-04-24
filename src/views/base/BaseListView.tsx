@@ -6,7 +6,7 @@ import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxR
 import {TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
 import {message} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
-import {isBoolean} from "util";
+import {isBoolean, isNullOrUndefined} from "util";
 
 /**
  * 列表视图的 base state
@@ -43,7 +43,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     protected reqParams: E;
 
     //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 20;
+    protected DEFAULT_QUERY_PAGE: number = 3;
 
     constructor(props: P, context: any) {
         super(props, context);
@@ -129,13 +129,25 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
         } else {
             const {current, pageSize, total} = pagination;
             const {field, order} = sorter;
+            let orderPrams = {};
+            if (isNullOrUndefined(field)) {
+                let defaultOrder = this.getDefaultOrder();
+                orderPrams = {
+                    orderBy: [defaultOrder[0]],
+                    orderType: [defaultOrder[1]],
+                }
+            } else {
+                orderPrams = {
+                    orderBy: [field],
+                    orderType: [order.replace("end", "")]
+                }
+            }
             console.log(pagination);
             this.reqParams = Object.assign(this.reqParams, {
                 queryPage: current,
                 querySize: pageSize,
                 total,
-                orderBy: [field],
-                orderType: [order.replace("end", "")]
+                ...orderPrams
             });
             //重新加载数据
             this.fetchListData()

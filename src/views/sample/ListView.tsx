@@ -168,8 +168,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                        title={this.getTableTile}
                        onChange={this.onTableChange}
                        rowSelection={this.getRowSelection()}
-                       scroll={{x: 2000}}
-                />
+                       scroll={{x: 2000}}/>
                 </Card>
             </PageHeaderLayout>
         );
