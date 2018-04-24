@@ -26,6 +26,7 @@ export interface BaseListState<T> {
      * 选中的行
      */
     selectedRows: Array<T>;
+
 }
 
 /**
@@ -65,21 +66,26 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             showSizeChanger: true,
             position: "bottom",
         },
-        selectedRows: []
+        selectedRows: [],
     } as S;
 
     componentDidMount() {
         const {search} = this.props.history.location;
         const path = this.props.match.path;
 
+        const defaultOrder: Array<string> = this.getDefaultOrder();
+
         //获取查询参数
         const params = parse(search);
         this.fetchUrl = path.replace("/list", "/page");
         console.log(`fetchUrl --> ${this.fetchUrl}`);
+        console.log(`this.state.orderBy -->`, this.state);
         this.reqParams = {
             queryPage: 1,
             querySize: this.DEFAULT_QUERY_PAGE,
-            ...params
+            ...params,
+            orderBy: [defaultOrder[0]],
+            orderType: [defaultOrder[1]]
         };
         //发起请求
         this.fetchListData();
@@ -114,24 +120,35 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
      * @param {string[]} filters
      * @param {Object} sorter
      */
-    protected onTableChange = (pagination: TablePaginationConfig, filters: string[], sorter: Object) => {
+    protected onTableChange = (pagination: TablePaginationConfig, filters: string[], sorter: any) => {
+
+        console.log("排序处理", sorter);
 
         if (isBoolean(pagination)) {
             // TODO 不分页的处理
         } else {
             const {current, pageSize, total} = pagination;
+            const {field, order} = sorter;
             console.log(pagination);
             this.reqParams = Object.assign(this.reqParams, {
                 queryPage: current,
                 querySize: pageSize,
-                total
+                total,
+                orderBy: [field],
+                orderType: [order.replace("end", "")]
             });
             //重新加载数据
             this.fetchListData()
         }
-
     };
 
+    /**
+     * 获取默认的排序字段和类型
+     * @returns {Array<string>}
+     */
+    protected getDefaultOrder(): Array<string> {
+        return ["id", "desc"];
+    }
 
     /**
      * 更新当前分页器以及分页数据
@@ -153,7 +170,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             page: data,
             pagination
         });
-        console.log(this.state.pagination)
+        // console.log(this.state.pagination)
     };
 
 
@@ -205,7 +222,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
              * @returns {{}}
              */
             getCheckboxProps: (record: any) => {
-                console.log(`getCheckboxProps`, record);
+                // console.log(`getCheckboxProps`, record);
                 return record.id;
             },
             /**

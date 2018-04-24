@@ -15,9 +15,7 @@ export class UnifiedRespHandleFilter extends ApiAbstractFilter {
     }
 
     postHandle(resp: ApiResp<any>, context?: any): boolean {
-
         const {message, success, actions} = resp;
-        console.log(`进入统一处理过滤器：UnifiedRespHandleFilter`);
 
         if ('records' in resp) {
             //返回列表数据的请求
