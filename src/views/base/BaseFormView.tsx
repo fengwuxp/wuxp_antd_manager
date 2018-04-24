@@ -4,10 +4,20 @@ import {parse} from "querystring";
 import {UploadChangeParam, UploadFile, UploadProps} from "antd/lib/upload/interface";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
+import {UpLoadHelper} from "./UpLoadHelper";
+
 
 export interface BaseFormSate<E> {
 
-    formData: E
+    /**
+     * 提交的表单数据
+     */
+    formData: E;
+
+    /**
+     * 表单提交状态
+     */
+    submitting: boolean
 }
 
 /**
@@ -69,10 +79,18 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
      * @param e
      */
     handleSubmit = (e) => {
+        //阻止默认动作
         e.preventDefault();
+        this.setState({
+            submitting: true
+        });
         this.props.form.validateFields((err, values) => {
+            console.log(values);
             if (err) {
                 //表单验证失败
+                this.setState({
+                    submitting: false
+                });
                 return;
             }
 
@@ -81,6 +99,10 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
             const b = this.beforeSerialize(formData);
 
             if (!b) {
+                //不提交
+                this.setState({
+                    submitting: false
+                });
                 return;
             }
             //提交数据
@@ -91,6 +113,10 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
                 this.submitSuccess(data)
             }).catch((e) => {
                 this.submitFailure(e);
+            })["finally"](() => {
+                this.setState({
+                    submitting: false
+                });
             })
         });
     };
@@ -99,86 +125,32 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
      * 表单序列化之前的处理
      * return false 则不提交
      */
-    protected beforeSerialize = (values: Array<any>): boolean => {
-        return true;
-    };
+    protected abstract beforeSerialize: (formData: any) => boolean;
 
 
     protected submitSuccess = (data: ApiResp<any>) => {
-
+        console.log("请求处理成功")
     };
 
     protected submitFailure = (e) => {
-
+        console.log("请求处理失败", e);
     };
 
     /**
      * 参考文档：https://ant.design/components/upload-cn/
      * 获取一个文件上传对象的props
      * @param {string} formItemName 表单属性的名称
+     * @param {Array<string>} defaultFileList 已经上传的文件列表
      * @param {UploadProps} props
      * @returns {UploadProps}
      */
-    public getUploadUploadProps = (formItemName: string, props: UploadProps = {}): UploadProps => {
+    protected getUploadUploadProps = (formItemName: string, defaultFileList: Array<string> = [], props: UploadProps = {}): UploadProps => {
 
         const {form} = this.props;
 
-        const uploadProps: UploadProps = {
-            action: '/upload/upFile',
-            listType: 'picture',
-            headers: {},
-            //默认只支持传图片
-            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
-            accept: "image/*",
+        const helper = new UpLoadHelper(form, formItemName);
 
-            //是否支持多选文件，ie10+ 支持。开启后按住 ctrl 可选择多个文件
-            multiple: false,
 
-            //发到后台的文件参数名
-            name: "file",
-
-            //默认已经上传的文件列表
-            defaultFileList: [],
-
-            //上传请求时是否携带 cookie
-            withCredentials: true,
-
-            //点击移除文件时的回调，返回值为 false 时不移除。支持返回一个 Promise 对象，Promise 对象 resolve(false) 或 reject 时不移除。
-            onRemove(file: UploadFile) {
-                console.log("---------onRemove---------");
-                const {response} = file;
-
-                form.setFieldsValue({formItemName: []});
-            },
-
-            //上传文件改变时的状态，详见 onChange
-            onChange(info: UploadChangeParam) {
-                console.log("---------onChange---------");
-
-                let {fileList} = info;
-
-                // 3. filter successfully uploaded files according to response from server
-                fileList = fileList.filter((file) => {
-                    console.log(file.response);
-                    if (file.response) {
-                        return file.response.status === 'success';
-                    }
-                    return true;
-                });
-
-                if (fileList.length > 0) {
-                    form.setFieldsValue({formItemName: fileList})
-                }
-            },
-            //点击文件链接或预览图标时的回调
-            onPreview(file: UploadFile) {
-                console.log("---------onPreview---------");
-            }
-        };
-
-        return {
-            ...uploadProps,
-            ...props
-        };
+        return helper.upload(defaultFileList, props);
     }
 }

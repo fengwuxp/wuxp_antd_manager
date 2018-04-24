@@ -1,51 +1,20 @@
 import {Form, Input, DatePicker, Button, Select, Upload, Cascader, InputNumber, Card, Icon, Switch} from 'antd';
+import locale from "antd/lib/date-picker/locale/zh_CN"
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
-import {WrappedFormUtils} from "antd/lib/form/Form";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
-import {UploadChangeParam, UploadFile} from "antd/lib/upload/interface";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
-import BaseFormView from "../base/BaseFormView";
+import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
 import InfoProvideService from "../../services/infoprovide/InfoProvideService";
-import {AreaInfo} from "../../services/infoprovide/info/AreaInfo";
-import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
+import {CreateSampleReq} from "./req/CreateSampleReq";
+import SendMode from "./enums/SendMode";
+import {SampleInfo} from "./info/SampleInfo";
+import {AreaInfo} from "../../services/infoprovide/info/AreaInfo";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-
-function getUploadOptions(form: WrappedFormUtils, options: any): any {
-    const uploadProps: any = {
-        action: 'https//jsonplaceholder.typicode.com/posts/',
-        listType: 'picture',
-        accept: "*",
-        name: "file",
-        defaultFileList: [],
-        onRemove(file: UploadFile) {
-            console.log("---------onRemove---------");
-            const {response} = file;
-
-            form.setFieldsValue({
-                icon: ""
-            });
-            console.log("设置icon的值")
-        },
-        onChange(info: UploadChangeParam) {
-            console.log("---------onChange---------");
-
-            const {fileList} = info;
-            if (fileList.length > 0) {
-                form.setFieldsValue({
-                    icon: "456"
-                });
-            }
-        }
-    };
-
-    return uploadProps;
-}
 
 
 const selectBefore = (
@@ -63,24 +32,33 @@ const selectAfter = (
     </Select>
 );
 
-export interface FormDemoProps extends AntdFromBaseProps {
+export interface SampleFormProps extends AntdFromBaseProps {
 
+}
+
+export interface SampleFormState extends BaseFormSate<CreateSampleReq> {
+
+    areaOptions: Array<CascaderOptionType>
 }
 
 /**
  * 新增表单的例子
  */
 @(Form.create as any)()
-export default class InputFormView extends BaseFormView<FormDemoProps, any> {
+export default class InputFormView extends BaseFormView<SampleFormProps, SampleFormState> {
 
 
-    constructor(props: FormDemoProps, context: any) {
+    constructor(props: SampleFormProps, context: any) {
         super(props, context);
+        this.submitUrl = "/sample/create";
+        this.isCreated = true;
     }
 
 
     state = {
-        areaOptions: []
+        areaOptions: [],
+        submitting: false,
+        formData: null
     };
 
     componentDidMount() {
@@ -132,9 +110,16 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
     };
 
 
+    protected beforeSerialize = (req: CreateSampleReq) => {
+
+        //TODO
+
+        return true;
+    };
+
+
     render() {
         const {getFieldDecorator} = this.props.form;
-        // console.log(this.props);
         return (
             <PageHeaderLayout
                 title="基础表单"
@@ -181,11 +166,6 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                             label="图标"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            <Upload {...this.getUploadUploadProps('icon')}>
-                                <Button>
-                                    <Icon type="upload"/> 请选择要上传的图标
-                                </Button>
-                            </Upload>
                             {getFieldDecorator('icon', {
                                 rules: [
                                     {
@@ -197,6 +177,11 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                             })(
                                 <Input type="hidden"/>
                             )}
+                            <Upload {...this.getUploadUploadProps('icon')}>
+                                <Button>
+                                    <Icon type="upload"/> 请选择要上传的图标
+                                </Button>
+                            </Upload>
                             <div>图标建议使用200*200的正方形的png图片</div>
                         </FormItem>
                         <FormItem
@@ -226,21 +211,12 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                             wrapperCol={{span: 12}}>
 
                             {getFieldDecorator('publicDate', {
-                                rules: [
-                                    {
-                                        max: 5,
-                                        message: '名称长度最大为5'
-                                    },
-                                    {
-                                        min: 2,
-                                        message: '名称长度最小为2'
-                                    }
-                                ],
+                                rules: [],
                                 initialValue: null
                             })(
                                 <DatePicker
                                     showTime
-                                    locale="zb_CN"
+                                    locale={locale}
                                     format="YYYY-MM-DD HH:mm:ss"
                                     placeholder="请选择发布时间"
                                     style={{width: 200}}
@@ -269,9 +245,12 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                             {getFieldDecorator('sendMode', {
                                 rules: [{required: true, message: '请选择发布类型'}],
                             })(
-                                <Select placeholder="请选择发布类型">
-                                    <Option value="SYNC">同步</Option>
-                                    <Option value="ASYNC">异步</Option>
+                                <Select placeholder="请选择发布类型" allowClear={true}>
+                                    {
+                                        Object.keys(SendMode).map((key: string) => {
+                                            return <Option value={key}>{SendMode[key].desc}</Option>;
+                                        })
+                                    }
                                 </Select>
                             )}
                         </FormItem>
@@ -279,7 +258,7 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                             label="附件"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            <Upload {...getUploadOptions(this.props.form, {})}>
+                            <Upload {...this.getUploadUploadProps("downFile", [], {accept: "*"})}>
                                 <Button>
                                     <Icon type="file"/> 请选择要上传的文件
                                 </Button>
@@ -376,6 +355,7 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: true, message: '请选择启用状态'}
                                 ],
+                                initialValue: true
                             })(
                                 <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>
                             )}
@@ -405,12 +385,12 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 <Cascader options={this.state.areaOptions}
                                           loadData={this.loadAreaInfo}
                                           placeholder="请选择地区信息"
-                                          onChange={this.onChange}
+                                          onChange={this.onCascadeAreaChange}
                                           changeOnSelect/>
                             )}
                         </FormItem>
                         <FormItem wrapperCol={{span: 12, offset: 5}}>
-                            <Button type="primary" htmlType="submit">提交参数</Button>
+                            <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>
                         </FormItem>
                     </Form>
                 </Card>
@@ -418,7 +398,12 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
         );
     }
 
-    onChange = (value, selectedOptions) => {
+    /**
+     * 级联选中地区
+     * @param value
+     * @param selectedOptions
+     */
+    onCascadeAreaChange = (value, selectedOptions) => {
         console.log(value, selectedOptions);
     };
 
@@ -443,7 +428,6 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
         }).catch((e) => {
             console.log("加载级联地区数据失败", e);
         });
-
 
     }
 }

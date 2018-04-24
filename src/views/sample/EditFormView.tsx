@@ -7,6 +7,7 @@ import {UploadChangeParam, UploadFile} from "antd/lib/upload/interface";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
 import BaseFormView from "../base/BaseFormView";
+import {EditSampleReq} from "./req/EditSampleReq";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -106,6 +107,9 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
     selectDateTimeOnOk = (value) => {
         console.log('onOk: ', value);
     };
+    protected beforeSerialize: (formData: Array<any>) => boolean;
+
+
 
 
     render() {
