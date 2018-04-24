@@ -43,7 +43,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     protected reqParams: E;
 
     //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 3;
+    protected DEFAULT_QUERY_PAGE: number = 20;
 
     constructor(props: P, context: any) {
         super(props, context);
@@ -207,6 +207,16 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
         return rowData.id.toString();
     };
 
+
+    protected getTableLocal = (): any => {
+
+        return {
+            filterTitle: '筛选',
+            filterConfirm: '确定',
+            filterReset: '重置',
+            emptyText: '暂无数据',
+        }
+    };
 
     /**
      * 列表项可选择项配置

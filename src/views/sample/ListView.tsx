@@ -6,10 +6,9 @@ import {SampleInfo} from "./info/SampleInfo";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import Button from "antd/es/button/button";
 import Dropdown from "antd/lib/dropdown/dropdown";
-import {Card, Icon, Menu} from "antd";
-import {push} from "react-router-redux";
+import {Card, Icon, Menu, Popover} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
-
+import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 
 const columns: Array<ColumnProps<SampleInfo>> = [
     {
@@ -37,6 +36,14 @@ const columns: Array<ColumnProps<SampleInfo>> = [
         dataIndex: 'icon',
         sorter: true,
         width: 100,
+        render: (cellValue) => {
+            if (!StringUtils.hasText(cellValue)) {
+                return null;
+            }
+            return <Popover content={<img src={cellValue} style={{maxWidth: 140}}/>}>
+                <img src={cellValue} style={{maxWidth: 40}}/>;
+            </Popover>
+        },
     },
     {
         title: '简介',
@@ -147,28 +154,29 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                 title="示例列表"
                 content="示例列表">
                 <Card bordered={false}>
-                <div>
-                    <Button icon="plus"
-                            type="primary"
-                            onClick={() => this.handleModalVisible()}>新建</Button>
-                    {selectedRows.length > 0 && (
-                        <span>
+                    <div>
+                        <Button icon="plus"
+                                type="primary"
+                                onClick={() => this.handleModalVisible()}>新建</Button>
+                        {selectedRows.length > 0 && (
+                            <span>
                   <Button>批量操作</Button>
                   <Dropdown overlay={menu}>
                     <Button>更多操作 <Icon type="down"/></Button>
                   </Dropdown>
                 </span>
-                    )}
-                </div>
-                <Table columns={columns}
-                       rowKey={this.generateTableRowKey}
-                       dataSource={page.records}
-                       pagination={pagination}
-                       loading={loading}
-                       title={this.getTableTile}
-                       onChange={this.onTableChange}
-                       rowSelection={this.getRowSelection()}
-                       scroll={{x: 2000}}/>
+                        )}
+                    </div>
+                    <Table columns={columns}
+                           rowKey={this.generateTableRowKey}
+                           dataSource={page.records}
+                           pagination={pagination}
+                           loading={loading}
+                           locale={this.getTableLocal()}
+                           title={this.getTableTile}
+                           onChange={this.onTableChange}
+                           rowSelection={this.getRowSelection()}
+                           scroll={{x: 2000, y: 600}}/>
                 </Card>
             </PageHeaderLayout>
         );

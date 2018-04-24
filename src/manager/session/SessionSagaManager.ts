@@ -137,7 +137,8 @@ function adminLogin({type, payload}): Promise<ApiResp<AntdAdmin>> {
                 loginName: userName,
                 password,
                 captcha
-            }
+            },
+            useFilter:false
         }).then((data) => {
             resolve(data);
         }).catch((e) => {
