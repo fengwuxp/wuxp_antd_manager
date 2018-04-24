@@ -1,7 +1,7 @@
 import React, {PureComponent, createElement} from 'react';
 import PropTypes from 'prop-types';
 import pathToRegexp from 'path-to-regexp';
-import {Breadcrumb, Tabs} from 'antd';
+import {Breadcrumb, Icon, Tabs} from 'antd';
 import classNames from 'classnames';
 import * as styles from './index.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
@@ -57,17 +57,12 @@ export default class PageHeader extends PureComponent<any, any> {
         const {breadcrumbList, breadcrumbSeparator, linkElement = 'a'} = this.props;
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
+                <Breadcrumb.Item href="">
+                    <Icon type="arrow-left" />
+                </Breadcrumb.Item>
                 {breadcrumbList.map(item => (
                     <Breadcrumb.Item key={item.title}>
-                        {item.href
-                            ? createElement(
-                                linkElement,
-                                {
-                                    [linkElement === 'a' ? 'href' : 'to']: item.href,
-                                },
-                                item.title
-                            )
-                            : item.title}
+                        {item.href ? createElement(linkElement, {[linkElement === 'a' ? 'href' : 'to']: item.href,}, item.title) : item.title}
                     </Breadcrumb.Item>
                 ))}
             </Breadcrumb>
@@ -105,6 +100,14 @@ export default class PageHeader extends PureComponent<any, any> {
                 )}
             </Breadcrumb.Item>
         );
+
+        //添加返回
+        extraBreadcrumbItems.unshift(
+            <Breadcrumb.Item href="">
+                <Icon type="arrow-left" />
+            </Breadcrumb.Item>
+        );
+
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
                 {extraBreadcrumbItems}
@@ -129,6 +132,7 @@ export default class PageHeader extends PureComponent<any, any> {
         // If pass routes and params attributes
         if (routes && params) {
             return (
+
                 <Breadcrumb
                     className={styles.breadcrumb}
                     routes={routes.filter(route => route.breadcrumbName)}

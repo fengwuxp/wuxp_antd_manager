@@ -3,7 +3,7 @@ import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo"
 import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
-import {TablePaginationConfig} from "antd/es/table/interface";
+import {TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
 import {message} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import {isBoolean} from "util";
@@ -20,7 +20,12 @@ export interface BaseListState<T> {
     loading: boolean;
 
     //分页信息
-    pagination: TablePaginationConfig | false
+    pagination: TablePaginationConfig | false,
+
+    /**
+     * 选中的行
+     */
+    selectedRows: Array<T>;
 }
 
 /**
@@ -59,7 +64,8 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             showQuickJumper: true,
             showSizeChanger: true,
             position: "bottom",
-        }
+        },
+        selectedRows: []
     } as S;
 
     componentDidMount() {
@@ -173,18 +179,46 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     };
 
 
-    protected getRowSelection = () => {
+    /**
+     * 列表项可选择项配置
+     * @returns {TableRowSelection<any>}
+     */
+    protected getRowSelection = (): TableRowSelection<any> => {
         // rowSelection object indicates the need for row selection
-        const rowSelection = {
-            onChange: (selectedRowKeys, selectedRows) => {
+        const rowSelection: TableRowSelection<any> = {
+
+            /**
+             * 发生选择/取消事件
+             * @param {string[] | number[]} selectedRowKeys
+             * @param {Object[]} selectedRows
+             */
+            onChange: (selectedRowKeys: string[] | number[], selectedRows: Object[]) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                console.log(selectedRowKeys);
+                this.setState({
+                    selectedRows: selectedRows
+                });
             },
-            getCheckboxProps: record => ({
-                disabled: record.name === 'Disabled User', // Column configuration not to be checked
-                name: record.name,
-            }),
+            /**
+             * 选择框的默认属性配置
+             * @param record
+             * @returns {{}}
+             */
+            getCheckboxProps: (record: any) => {
+                console.log(`getCheckboxProps`, record);
+                return record.id;
+            },
+            /**
+             * 多选/单选，checkbox or radio
+             */
+            type: "checkbox"
         };
 
         return rowSelection;
-    }
+    };
+
+
+    protected abstract getTableTile: (currentPageData: Object[]) => React.ReactNode
+
 }
+

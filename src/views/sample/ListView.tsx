@@ -4,6 +4,11 @@ import BaseListView, {BaseListState} from "../base/BaseListView";
 import {ColumnProps} from "antd/es/table/interface";
 import {SampleInfo} from "./info/SampleInfo";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
+import Button from "antd/es/button/button";
+import Dropdown from "antd/lib/dropdown/dropdown";
+import {Card, Icon, Menu} from "antd";
+import {push} from "react-router-redux";
+import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 
 
 const columns: Array<ColumnProps<SampleInfo>> = [
@@ -120,20 +125,60 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
         super(props, context);
     }
 
+    handleMenuClick = () => {
+
+    };
+
+    handleModalVisible = () => {
+        this.props.history.push("/sample/input");
+    };
 
     render() {
-        const {page, loading, pagination} = this.state;
+        const {page, loading, pagination, selectedRows} = this.state;
+        console.log(this.props);
+        const menu = (
+            <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
+                <Menu.Item key="remove">删除</Menu.Item>
+                <Menu.Item key="approval">批量审批</Menu.Item>
+            </Menu>
+        );
         return (
-            <Table columns={columns}
-                   rowKey={this.generateTableRowKey}
-                   dataSource={page.records}
-                   pagination={pagination}
-                   loading={loading}
-                   onChange={this.onTableChange}
-                   rowSelection={this.getRowSelection()}
-                   scroll={{x: 2000}}
-            />
+            <PageHeaderLayout
+                title="示例列表"
+                content="示例列表">
+                <Card bordered={false}>
+                <div>
+                    <Button icon="plus"
+                            type="primary"
+                            onClick={() => this.handleModalVisible()}>新建</Button>
+                    {selectedRows.length > 0 && (
+                        <span>
+                  <Button>批量操作</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>更多操作 <Icon type="down"/></Button>
+                  </Dropdown>
+                </span>
+                    )}
+                </div>
+                <Table columns={columns}
+                       rowKey={this.generateTableRowKey}
+                       dataSource={page.records}
+                       pagination={pagination}
+                       loading={loading}
+                       title={this.getTableTile}
+                       onChange={this.onTableChange}
+                       rowSelection={this.getRowSelection()}
+                       scroll={{x: 2000}}
+                />
+                </Card>
+            </PageHeaderLayout>
         );
     }
+
+    protected getTableTile = (currentPageData: Object[]): React.ReactNode => {
+
+        return "示例表格"
+    }
+
 
 }

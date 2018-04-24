@@ -7,6 +7,10 @@ import {UploadChangeParam, UploadFile} from "antd/lib/upload/interface";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
 import BaseFormView from "../base/BaseFormView";
+import InfoProvideService from "../../services/infoprovide/InfoProvideService";
+import {AreaInfo} from "../../services/infoprovide/info/AreaInfo";
+import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
+import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -74,28 +78,47 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
         super(props, context);
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
-    };
 
     state = {
-        options: [
-            {
-                value: "35",
-                label: "福建",
-                isLeaf: false
-            },
-            {
-                value: "11",
-                label: "北京",
-                isLeaf: false
-            }
-        ]
+        areaOptions: []
+    };
+
+    componentDidMount() {
+        super.componentDidMount();
+
+        this.getAreaInfo({
+            level: 1
+        }).then((areaOptions) => {
+            this.setState({
+                areaOptions
+            });
+        }).catch((e) => {
+            console.log("加载地区数据失败", e);
+        })
+    }
+
+    /**
+     * 获取地区信息
+     * @param {QueryAreaReq} params
+     * @returns {Promise<CascaderOptionType[]>}
+     */
+    getAreaInfo = (params: QueryAreaReq): Promise<CascaderOptionType[]> => {
+        //查询地区
+        return InfoProvideService.queryArea({
+            ...params,
+            querySize: -1
+        }).then((data) => {
+            console.log(data);
+            const {records} = data;
+            //数据转换
+            return records.map(({id, name, level}) => {
+                return {
+                    value: id,
+                    label: name,
+                    isLeaf: level >= 3
+                };
+            });
+        });
     };
 
 
@@ -379,7 +402,7 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
                                     {required: false, message: '请选择地区信息'}
                                 ],
                             })(
-                                <Cascader options={this.state.options}
+                                <Cascader options={this.state.areaOptions}
                                           loadData={this.loadAreaInfo}
                                           placeholder="请选择地区信息"
                                           onChange={this.onChange}
@@ -405,27 +428,23 @@ export default class InputFormView extends BaseFormView<FormDemoProps, any> {
      */
     loadAreaInfo = (selectedOptions?: CascaderOptionType[]) => {
 
-        console.log(selectedOptions);
-
-
+        //上一个选中的选项
         const targetOption = selectedOptions[selectedOptions.length - 1];
 
         console.log(targetOption.value);
 
-
-        // load options lazily
-        setTimeout(() => {
-            targetOption.children = [{
-                label: `${targetOption.label} Dynamic 1`,
-                value: 'dynamic1',
-            }, {
-                label: `${targetOption.label} Dynamic 2`,
-                value: 'dynamic2',
-            }];
+        this.getAreaInfo({
+            parentId: targetOption.value,
+        }).then((children) => {
+            targetOption.children = children;
             this.setState({
-                options: [...this.state.options],
+                areaOptions: [...this.state.areaOptions],
             });
-        }, 1000);
+        }).catch((e) => {
+            console.log("加载级联地区数据失败", e);
+        });
+
+
     }
 }
 

@@ -20,3 +20,7 @@ let defaultOptions = {
 } as FetchOption;
 
 export default EsServiceSimpleProxyFactory.newProxyInstances<ApiClientFetch>(filters, defaultOptions);
+
+export function buildProxyService<T>(service: T): T {
+    return EsServiceSimpleProxyFactory.newProxyInstances<T>([], defaultOptions, service);
+}

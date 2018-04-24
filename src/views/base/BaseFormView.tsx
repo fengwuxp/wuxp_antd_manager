@@ -3,13 +3,29 @@ import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
 import {UploadChangeParam, UploadFile, UploadProps} from "antd/lib/upload/interface";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
+import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 
 export interface BaseFormSate<E> {
 
     formData: E
 }
 
-export default class BaseFormView<P extends AntdFromBaseProps, S extends BaseFormSate<any>> extends React.Component<P, S> {
+/**
+ * 基础表单
+ */
+export default abstract class BaseFormView<P extends AntdFromBaseProps, S extends BaseFormSate<any>> extends React.Component<P, S> {
+
+
+    /**
+     * 提交表单的url
+     */
+    protected submitUrl: string;
+
+    /**
+     * 是否为创建
+     * @type {boolean}
+     */
+    protected isCreated: boolean = true;
 
 
     constructor(props: P, context: any) {
@@ -19,24 +35,23 @@ export default class BaseFormView<P extends AntdFromBaseProps, S extends BaseFor
 
     componentDidMount(): void {
 
-        //cong url中获取参数
-        // console.log("-------------------------1------------------------");
-        // console.log(this.props);
-        const {search, state} = this.props.history.location;
-        const path = this.props.match.path;
-        const params = parse(search);
+        if (!this.isCreated) {
+            //在编辑是先加载表单数据
 
-        // console.log(params)
-        // console.log(path);
-        //加载表单数据
-        apiClient.post({
-            url: path,
-            data: params
-        }).then((data) => {
-            this.setState({
-                formData: data
-            });
-        }).catch(this.fetchFormDataFailure)
+            const {search, state} = this.props.history.location;
+            const path = this.props.match.path;
+            const params = parse(search);
+
+            //加载表单数据
+            apiClient.post({
+                url: path,
+                data: params
+            }).then((data) => {
+                this.setState({
+                    formData: data
+                });
+            }).catch(this.fetchFormDataFailure)
+        }
     }
 
 
@@ -48,6 +63,54 @@ export default class BaseFormView<P extends AntdFromBaseProps, S extends BaseFor
 
     };
 
+
+    /**
+     * 提交
+     * @param e
+     */
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (err) {
+                //表单验证失败
+                return;
+            }
+
+            //复制一份数据
+            const formData = [...values];
+            const b = this.beforeSerialize(formData);
+
+            if (!b) {
+                return;
+            }
+            //提交数据
+            apiClient.post({
+                url: this.submitUrl,
+                data: formData
+            }).then((data: ApiResp<any>) => {
+                this.submitSuccess(data)
+            }).catch((e) => {
+                this.submitFailure(e);
+            })
+        });
+    };
+
+    /**
+     * 表单序列化之前的处理
+     * return false 则不提交
+     */
+    protected beforeSerialize = (values: Array<any>): boolean => {
+        return true;
+    };
+
+
+    protected submitSuccess = (data: ApiResp<any>) => {
+
+    };
+
+    protected submitFailure = (e) => {
+
+    };
 
     /**
      * 参考文档：https://ant.design/components/upload-cn/
