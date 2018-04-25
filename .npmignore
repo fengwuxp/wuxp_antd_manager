@@ -2,3 +2,6 @@
 webpack.dev.js
 tsconfig.json
 .babelrc
+.idea
+mock
+dist

@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "基于antd的通用管理后台壳子",
   "main": "index.js",
+  "publishConfig": {
+    "registry": "http://nexus.oaknt.com:18081/repository/oak_npm_hosted/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fengwuxp/wuxp_antd_manager.git"
