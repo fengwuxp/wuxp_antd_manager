@@ -10,15 +10,28 @@ import {Card, Icon, Menu, Popover} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";
+import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 
+
+const history = BrowserNavigatorFactory.get();
 const columns: Array<ColumnProps<SampleInfo>> = [
     {
         title: '操作',
         fixed: true,
-        dataIndex: "",
+        dataIndex: "operation",
         width: 100,
-        key: "operation",
-        render: () => <a href="javascript:;">action</a>,
+        render: (cellval,rowData) => {
+            return (
+                <div>
+                    <Button type="primary"
+                            icon="edit"
+                            onClick={()=>{
+                                history.push(`/sample/load?id=${rowData.id}`)
+                            }}
+                            size={"small"}>编辑</Button>
+                </div>
+            )
+        }
     },
     {
         title: 'sn',
@@ -76,11 +89,10 @@ const columns: Array<ColumnProps<SampleInfo>> = [
             return <Popover content={<Button icon="download"
                                              type="primary"
                                              size="small"
-                                             onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}
-                                             >下载</Button>}>
+                                             onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}>下载</Button>}>
                 <Icon type="file"/>
             </Popover>
-        },
+        }
     },
     {
         title: '活动URL',
@@ -92,46 +104,46 @@ const columns: Array<ColumnProps<SampleInfo>> = [
         title: '数量',
         dataIndex: 'number',
         sorter: true,
-        width: 80,
+        width: 80
     },
     {
         title: '费率（百分比）',
         dataIndex: 'feePct',
         sorter: true,
-        width: 120,
+        width: 120
     },
     {
         title: '费率（千分比）',
         dataIndex: 'feePpt',
         sorter: true,
-        width: 120,
+        width: 120
     },
     {
         title: '费率（千分比）',
         dataIndex: 'feePpt',
         sorter: true,
-        width: 120,
+        width: 120
     },
     {
         title: '销售额（万元）',
         dataIndex: 'sale',
         sorter: true,
-        width: 120,
+        width: 120
     },
     {
         title: '启用禁用',
         dataIndex: 'enabled',
         sorter: true,
-        width: 120,
+        width: 120
     },
 
 ];
 
-interface SampleState extends BaseListState<SampleInfo> {
+export interface SampleState extends BaseListState<SampleInfo> {
 
 }
 
-interface SampleListProps extends ReduxRouterProps {
+export interface SampleListProps extends ReduxRouterProps {
 
 }
 
@@ -155,13 +167,13 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
     render() {
         const {page, loading, pagination, selectedRows} = this.state;
-        console.log(this.props);
+
         const menu = (
             <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
                 <Menu.Item key="remove">删除</Menu.Item>
-                <Menu.Item key="approval">批量审批</Menu.Item>
             </Menu>
         );
+
         return (
             <PageHeaderLayout
                 title="示例列表"
@@ -171,14 +183,17 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                         <Button icon="plus"
                                 type="primary"
                                 onClick={() => this.handleModalVisible()}>新建</Button>
-                        {selectedRows.length > 0 && (
-                            <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>更多操作 <Icon type="down"/></Button>
-                  </Dropdown>
-                </span>
-                        )}
+                        {
+                            selectedRows.length > 0
+                            &&
+                            (
+                                <span style={{marginLeft: 10}}>
+                                    <Dropdown overlay={menu}>
+                                     <Button>更多操作 <Icon type="down"/></Button>
+                                    </Dropdown>
+                                </span>
+                            )
+                        }
                     </div>
                     <Table columns={columns}
                            rowKey={this.generateTableRowKey}
@@ -189,7 +204,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                            title={this.getTableTile}
                            onChange={this.onTableChange}
                            rowSelection={this.getRowSelection()}
-                           scroll={{x: 2000, y: 600}}/>
+                           scroll={{x: 2000,y:600}}/>
                 </Card>
             </PageHeaderLayout>
         );

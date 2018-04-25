@@ -27,7 +27,10 @@ const defaultOptions = {
     // credentials: "same-origin",
     //请求是带上cookie，允许跨越
     credentials: "include",
-    dataType: DataType.JSON
+    dataType: DataType.JSON,
+    headers: {
+        viewType: 'react'
+    }
 } as FetchOption;
 
 //http强求处理错误处理者

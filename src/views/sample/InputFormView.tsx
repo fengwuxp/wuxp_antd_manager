@@ -11,7 +11,6 @@ import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import {CreateSampleReq} from "./req/CreateSampleReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
-import {AreaInfo} from "../../services/infoprovide/info/AreaInfo";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -32,11 +31,11 @@ const selectAfter = (
     </Select>
 );
 
-export interface SampleFormProps extends AntdFromBaseProps {
+interface SampleFormProps extends AntdFromBaseProps {
 
 }
 
-export interface SampleFormState extends BaseFormSate<CreateSampleReq> {
+interface SampleFormState extends BaseFormSate<SampleInfo, CreateSampleReq> {
 
     areaOptions: Array<CascaderOptionType>
 }
@@ -51,14 +50,14 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
     constructor(props: SampleFormProps, context: any) {
         super(props, context);
         this.submitUrl = "/sample/create";
-        this.isCreated = true;
+
     }
 
 
     state = {
         areaOptions: [],
         submitting: false,
-        formData: null
+        // submitData: null
     };
 
     componentDidMount() {
@@ -73,10 +72,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         }).catch((e) => {
             console.log("加载地区数据失败", e);
         });
-
-        // setTimeout(()=>{
-        //     this.props.history.goBack();
-        // },1000)
     }
 
     /**
@@ -112,7 +107,11 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         console.log('onOk: ', value);
     };
 
-
+    /**
+     * 在提交表单之前对参数进行处理，在这里可以进行值转换等操作
+     * @param {CreateSampleReq} req
+     * @returns {boolean}
+     */
     protected beforeSerialize = (req: CreateSampleReq) => {
 
         //TODO
@@ -125,8 +124,8 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         const {getFieldDecorator} = this.props.form;
         return (
             <PageHeaderLayout
-                title="基础表单"
-                content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+                title="新增示例"
+                content="这是一个示例的表单页面，聚合了常见的表单控件，演示了基于antd UI框架的的基本用法">
                 <Card bordered={false}>
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem
@@ -192,19 +191,10 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('description', {
-                                rules: [
-                                    {
-                                        max: 5,
-                                        message: '名称长度最大为5'
-                                    },
-                                    {
-                                        min: 2,
-                                        message: '名称长度最小为2'
-                                    }
-                                ],
+                                rules: [],
                                 initialValue: null
                             })(
-                                <Input placeholder="请填写编号"/>
+                                <Input placeholder="请填写简介"/>
                             )}
                             <div>名称长度为2-5</div>
                         </FormItem>

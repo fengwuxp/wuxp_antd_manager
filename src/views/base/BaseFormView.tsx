@@ -5,14 +5,21 @@ import {UploadChangeParam, UploadFile, UploadProps} from "antd/lib/upload/interf
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 import {UpLoadHelper} from "./UpLoadHelper";
+import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 
 
-export interface BaseFormSate<E> {
+export interface BaseFormSate<E, Q extends ApiReq> {
 
     /**
-     * 提交的表单数据
+     * 初始化表单数据
      */
-    formData: E;
+    initFormData?: E;
+
+
+    /**
+     * 提交的数据
+     */
+    submitData?: Q
 
     /**
      * 表单提交状态
@@ -23,7 +30,7 @@ export interface BaseFormSate<E> {
 /**
  * 基础表单
  */
-export default abstract class BaseFormView<P extends AntdFromBaseProps, S extends BaseFormSate<any>> extends React.Component<P, S> {
+export default abstract class BaseFormView<P extends AntdFromBaseProps, S extends BaseFormSate<any, any>> extends React.Component<P, S> {
 
 
     /**
@@ -47,18 +54,22 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
 
         if (!this.isCreated) {
             //在编辑是先加载表单数据
-
             const {search, state} = this.props.history.location;
+
+            //TODO  判断查询参数是否有值
+
             const path = this.props.match.path;
-            const params = parse(search);
+            const params = parse(search.split("?")[1]);
 
             //加载表单数据
             apiClient.post({
                 url: path,
-                data: params
+                data: params,
+                useFilter: false
             }).then((data) => {
+                console.log("初始化表单的数据", data);
                 this.setState({
-                    formData: data
+                    initFormData: data
                 });
             }).catch(this.fetchFormDataFailure)
         }
@@ -123,7 +134,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
     };
 
     /**
-     * 表单序列化之前的处理
+     * 表单提交之前的处理
      * return false 则不提交
      */
     protected abstract beforeSerialize: (formData: any) => boolean;
@@ -152,6 +163,6 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
         const helper = new UpLoadHelper(form, formItemName);
 
 
-        return helper.upload(defaultFileList, props);
+        return helper.upload(defaultFileList.filter(item => item.trim().length > 0), props);
     }
 }

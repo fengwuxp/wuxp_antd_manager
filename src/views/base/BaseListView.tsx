@@ -7,6 +7,7 @@ import {TablePaginationConfig, TableRowSelection} from "antd/es/table/interface"
 import {message} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import {isBoolean, isNullOrUndefined} from "util";
+import zh_CN from 'rc-pagination/lib/locale/zh_CN';
 
 /**
  * 列表视图的 base state
@@ -28,7 +29,6 @@ export interface BaseListState<T> {
     selectedRows: Array<T>;
 
 }
-
 /**
  * base list view
  * 泛型说明 P props  S state E 查询查询对象
@@ -43,7 +43,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     protected reqParams: E;
 
     //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 20;
+    protected DEFAULT_QUERY_PAGE: number = 3;
 
     constructor(props: P, context: any) {
         super(props, context);
@@ -65,6 +65,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             showQuickJumper: true,
             showSizeChanger: true,
             position: "bottom",
+            locale: zh_CN
         },
         selectedRows: [],
     } as S;
@@ -78,8 +79,6 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
         //获取查询参数
         const params = parse(search);
         this.fetchUrl = path.replace("/list", "/page");
-        console.log(`fetchUrl --> ${this.fetchUrl}`);
-        console.log(`this.state.orderBy -->`, this.state);
         this.reqParams = {
             queryPage: 1,
             querySize: this.DEFAULT_QUERY_PAGE,
@@ -99,7 +98,6 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
         this.setState({
             loading: true
         });
-
         apiClient.post({
             url: this.fetchUrl,
             data: this.reqParams,
@@ -111,6 +109,32 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
                 loading: false
             });
         });
+
+        // let list = [];
+        //
+        // let max = 50;
+        // for (let i = 0; i < max; i++) {
+        //     list.push({
+        //         id: parseInt(i + ""),
+        //         sn: i + "",
+        //         addTime: 1524562998000,
+        //         icon: "",
+        //         sendModeDesc: "异步",
+        //         description: "ds",
+        //         enabled: true
+        //     })
+        // }
+        //
+        // const data: PageInfo<any> = {
+        //     total: max,
+        //     queryPage: 1,
+        //     querySize: max,
+        //     records: list,
+        //
+        // } as PageInfo<any>;
+        //
+        //
+        // this.updatePagination(data)
     };
 
 
@@ -178,6 +202,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             ...pagination as any,
             ...updater
         };
+        console.log(data.records)
         this.setState({
             page: data,
             pagination
@@ -203,7 +228,6 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
      * @returns {string}
      */
     protected generateTableRowKey = (rowData: any): string => {
-
         return rowData.id.toString();
     };
 
@@ -244,7 +268,6 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
              * @returns {{}}
              */
             getCheckboxProps: (record: any) => {
-                // console.log(`getCheckboxProps`, record);
                 return record.id;
             },
             /**

@@ -11,7 +11,7 @@ const history = BrowserNavigatorFactory.get();
  * @returns {boolean | void}
  */
 export function httpCode301Handler<Response, FetchOption>(resp: Response, option: FetchOption): boolean | void {
-    message.warn("会话已失效，请重新登录", 2000, () => {
+    message.warn("会话已失效，请重新登录", 2, () => {
         history.push("/login");
     });
 }

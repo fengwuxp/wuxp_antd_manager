@@ -3,6 +3,7 @@ import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 import {isNullOrUndefined} from "util";
 import {message as AntdMessage} from "antd";
 import {analysisAction} from "../action/ActionStrategy";
+import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 
 /**
  * 统一响应处理过滤器
@@ -10,9 +11,15 @@ import {analysisAction} from "../action/ActionStrategy";
 export class UnifiedRespHandleFilter extends ApiAbstractFilter {
 
 
-    preHandle(params: any): boolean | Promise<boolean> {
-        return super.preHandle(params);
-    }
+    // preHandle(params: FetchOption): boolean | Promise<boolean> {
+    //
+    //     const {headers} = params;
+    //     params.headers = {
+    //         ...headers,
+    //         viewType: 'react'
+    //     };
+    //     return true;
+    // }
 
     postHandle(resp: ApiResp<any>, context?: any): boolean {
         const {message, success, actions} = resp;

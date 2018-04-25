@@ -1,5 +1,7 @@
 import {UploadChangeParam, UploadFile, UploadProps} from "antd/lib/upload/interface";
 import {WrappedFormUtils} from "antd/lib/form/Form";
+import {message} from "antd";
+import {isNullOrUndefined} from "util";
 
 
 export class UpLoadHelper {
@@ -10,10 +12,22 @@ export class UpLoadHelper {
     //表单提交的名称
     public formItemName: string;
 
+    /**
+     * 上传文件大小限制 默认1MB
+     * @type {number}
+     */
+    public maxFileSize: number;
 
-    constructor(form: WrappedFormUtils, formItemName: string) {
+    //上传检查的错误提示消息
+    public errorMessage: string;
+
+    constructor(form: WrappedFormUtils, formItemName: string, maxFileSize: number = 1, errorMessage?: string) {
         this.form = form;
         this.formItemName = formItemName;
+        this.maxFileSize = maxFileSize * 1024 * 1024;
+        if (isNullOrUndefined(errorMessage)) {
+            this.errorMessage = `上传文件不能超过${maxFileSize}MB`;
+        }
     }
 
     public upload = (defaultFileList: Array<string> = [], props: UploadProps = {}): UploadProps => {
@@ -37,6 +51,18 @@ export class UpLoadHelper {
 
             //上传请求时是否携带 cookie
             withCredentials: true,
+
+            /**
+             * 上传文件之前的钩子，参数为上传的文件，若返回 false 则停止上传。
+             * 支持返回一个 Promise 对象，Promise 对象 reject 时则停止上传，resolve 时开始上传。
+             * 注意：IE9 不支持该方法。
+             * @param {UploadFile} file
+             * @param {UploadFile[]} FileList
+             * @returns {boolean}
+             */
+            beforeUpload(file: UploadFile, FileList: UploadFile[]) {
+                return helper.beforeUpload(file)
+            },
 
             //点击移除文件时的回调，返回值为 false 时不移除。支持返回一个 Promise 对象，Promise 对象 resolve(false) 或 reject 时不移除。
             onRemove(file: UploadFile) {
@@ -87,6 +113,17 @@ export class UpLoadHelper {
         };
     };
 
+
+    public beforeUpload = (file: UploadFile): boolean => {
+
+        //检查上传文件大小
+        let exceedLimit = file.size > this.maxFileSize;
+
+        if (exceedLimit) {
+            message.error(this.errorMessage);
+        }
+        return !exceedLimit
+    };
 
     public setUploadValue = (value: Array<string>) => {
         const formItem = {};

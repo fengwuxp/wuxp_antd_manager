@@ -1,48 +1,20 @@
 import {Form, Input, DatePicker, Button, Select, Upload, Cascader, InputNumber, Card, Icon, Switch} from 'antd';
+import locale from "antd/lib/date-picker/locale/zh_CN"
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
-import {WrappedFormUtils} from "antd/lib/form/Form";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
-import {UploadChangeParam, UploadFile} from "antd/lib/upload/interface";
+import {fenToYuan} from "wuxp_react_dynamic_router/src/utils/common/NumberFormatterUtil";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
-import BaseFormView from "../base/BaseFormView";
+import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
+import InfoProvideService from "../../services/infoprovide/InfoProvideService";
+import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
+import SendMode from "./enums/SendMode";
+import {SampleInfo} from "./info/SampleInfo";
 import {EditSampleReq} from "./req/EditSampleReq";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-
-function getUploadOptions(form: WrappedFormUtils, options: any): any {
-    const uploadProps: any = {
-        action: 'https//jsonplaceholder.typicode.com/posts/',
-        listType: 'picture',
-        accept: "*",
-        name: "file",
-        defaultFileList: [],
-        onRemove(file: UploadFile) {
-            console.log("---------onRemove---------");
-            const {response} = file;
-
-            form.setFieldsValue({
-                icon: ""
-            });
-            console.log("设置icon的值")
-        },
-        onChange(info: UploadChangeParam) {
-            console.log("---------onChange---------");
-
-            const {fileList} = info;
-            if (fileList.length > 0) {
-                form.setFieldsValue({
-                    icon: "456"
-                });
-            }
-        }
-    };
-
-    return uploadProps;
-}
 
 
 const selectBefore = (
@@ -60,42 +32,71 @@ const selectAfter = (
     </Select>
 );
 
-export interface FormDemoProps extends AntdFromBaseProps {
+interface SampleFormProps extends AntdFromBaseProps {
 
+}
+
+interface SampleFormState extends BaseFormSate<SampleInfo, EditSampleReq> {
+
+    areaOptions: Array<CascaderOptionType>
 }
 
 /**
  * 编辑表单的例子
  */
-class InputFormView extends BaseFormView<FormDemoProps, any> {
+@(Form.create as any)()
+export default class EditFormView extends BaseFormView<SampleFormProps, SampleFormState> {
 
 
-    constructor(props: FormDemoProps, context: any) {
+    constructor(props: SampleFormProps, context: any) {
         super(props, context);
+        this.submitUrl = "/sample/update";
+        this.isCreated = false;
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
-    };
 
     state = {
-        options: [
-            {
-                value: "35",
-                label: "福建",
-                isLeaf: false
-            },
-            {
-                value: "11",
-                label: "北京",
-                isLeaf: false
-            }
-        ]
+        areaOptions: [],
+        submitting: false,
+        submitData: null,
+        initFormData: {} as SampleInfo
+    };
+
+    componentDidMount() {
+        super.componentDidMount();
+
+        this.getAreaInfo({
+            level: 1
+        }).then((areaOptions) => {
+            this.setState({
+                areaOptions
+            });
+        }).catch((e) => {
+            console.log("加载地区数据失败", e);
+        });
+    }
+
+    /**
+     * 获取地区信息
+     * @param {QueryAreaReq} params
+     * @returns {Promise<CascaderOptionType[]>}
+     */
+    getAreaInfo = (params: QueryAreaReq): Promise<CascaderOptionType[]> => {
+        //查询地区
+        return InfoProvideService.queryArea({
+            ...params,
+            querySize: -1
+        }).then((data) => {
+            const {records} = data;
+            //数据转换
+            return records.map(({id, name, level}) => {
+                return {
+                    value: id,
+                    label: name,
+                    isLeaf: level >= 3
+                };
+            });
+        });
     };
 
 
@@ -107,30 +108,45 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
     selectDateTimeOnOk = (value) => {
         console.log('onOk: ', value);
     };
-    protected beforeSerialize: (formData: Array<any>) => boolean;
 
 
+    /**
+     * 在表单提交之前做参数序列化操作，
+     * @param {EditSampleReq} req
+     * @returns {boolean}
+     */
+    protected beforeSerialize = (req: EditSampleReq) => {
+
+        //TODO
+
+        return true;
+    };
 
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        // console.log(this.props);
+        const {initFormData} = this.state;
         return (
             <PageHeaderLayout
-                title="基础表单"
-                content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+                title="编辑示例"
+                content="这是一个示例的表单页面，聚合了常见的表单控件，演示了基于antd UI框架的的基本用法">
                 <Card bordered={false}>
                     <Form onSubmit={this.handleSubmit}>
+                        {getFieldDecorator('id', {
+                            initialValue: initFormData.id
+                        })(
+                            <Input type={'hidden'}/>
+                        )}
                         <FormItem
                             label="编号"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('note', {
+                            {getFieldDecorator('sn', {
                                 rules: [{
                                     required: true,
                                     message: '编码未填写'
                                 }],
-                                initialValue: null
+                                initialValue: initFormData.sn
                             })(
                                 <Input placeholder="请填写编号"/>
                             )}
@@ -151,7 +167,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                         message: '名称长度最小为2'
                                     }
                                 ],
-                                initialValue: null
+                                initialValue: initFormData.name
                             })(
                                 <Input placeholder="请填写编号"/>
                             )}
@@ -161,22 +177,22 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             label="图标"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            <Upload {...getUploadOptions(this.props.form, {})}>
+                            {getFieldDecorator('icon', {
+                                rules: [
+                                    {
+                                        required: false,
+                                        message: '请上传图标'
+                                    },
+                                ],
+                                initialValue: initFormData.icon
+                            })(
+                                <Input type="hidden"/>
+                            )}
+                            <Upload {...this.getUploadUploadProps('icon', [initFormData.icon])}>
                                 <Button>
                                     <Icon type="upload"/> 请选择要上传的图标
                                 </Button>
                             </Upload>
-                            {getFieldDecorator('icon', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请上传图标'
-                                    },
-                                ],
-                                initialValue: null
-                            })(
-                                <Input type="hidden"/>
-                            )}
                             <div>图标建议使用200*200的正方形的png图片</div>
                         </FormItem>
                         <FormItem
@@ -184,19 +200,10 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('description', {
-                                rules: [
-                                    {
-                                        max: 5,
-                                        message: '名称长度最大为5'
-                                    },
-                                    {
-                                        min: 2,
-                                        message: '名称长度最小为2'
-                                    }
-                                ],
-                                initialValue: null
+                                rules: [],
+                                initialValue: initFormData.description
                             })(
-                                <Input placeholder="请填写编号"/>
+                                <Input placeholder="请填写简介"/>
                             )}
                             <div>名称长度为2-5</div>
                         </FormItem>
@@ -206,21 +213,12 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             wrapperCol={{span: 12}}>
 
                             {getFieldDecorator('publicDate', {
-                                rules: [
-                                    {
-                                        max: 5,
-                                        message: '名称长度最大为5'
-                                    },
-                                    {
-                                        min: 2,
-                                        message: '名称长度最小为2'
-                                    }
-                                ],
-                                initialValue: null
+                                rules: [],
+                                initialValue: initFormData.publicDate
                             })(
                                 <DatePicker
                                     showTime
-                                    locale="zb_CN"
+                                    locale={locale}
                                     format="YYYY-MM-DD HH:mm:ss"
                                     placeholder="请选择发布时间"
                                     style={{width: 200}}
@@ -238,6 +236,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: true, message: '请填写活动介绍'}
                                 ],
+                                initialValue: initFormData.mediumBody
                             })(
                                 <TextArea autosize={{minRows: 4}} cols={15}/>
                             )}
@@ -247,11 +246,17 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('sendMode', {
-                                rules: [{required: true, message: '请选择发布类型'}],
+                                rules: [
+                                    {required: true, message: '请选择发布类型'},
+                                ],
+                                initialValue: initFormData.sendMode
                             })(
-                                <Select placeholder="请选择发布类型">
-                                    <Option value="SYNC">同步</Option>
-                                    <Option value="ASYNC">异步</Option>
+                                <Select placeholder="请选择发布类型" allowClear={true}>
+                                    {
+                                        Object.keys(SendMode).map((key: string) => {
+                                            return <Option value={key}>{SendMode[key].desc}</Option>;
+                                        })
+                                    }
                                 </Select>
                             )}
                         </FormItem>
@@ -259,22 +264,22 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             label="附件"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            <Upload {...getUploadOptions(this.props.form, {})}>
+                            {getFieldDecorator('downFile', {
+                                rules: [
+                                    {
+                                        required: false,
+                                        message: '请上传附件'
+                                    },
+                                ],
+                                initialValue: initFormData.downFile
+                            })(
+                                <Input type="hidden"/>
+                            )}
+                            <Upload {...this.getUploadUploadProps("downFile", [initFormData.downFile], {accept: "*"})}>
                                 <Button>
                                     <Icon type="file"/> 请选择要上传的文件
                                 </Button>
                             </Upload>
-                            {getFieldDecorator('downFile', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请上传附件'
-                                    },
-                                ],
-                                initialValue: null
-                            })(
-                                <Input type="hidden"/>
-                            )}
                         </FormItem>
                         <FormItem
                             label="活动url"
@@ -282,8 +287,9 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('hdUrl', {
                                 rules: [
-                                    {required: true, message: '请填写活动url'}
+                                    {required: true, message: '请填写活动url'},
                                 ],
+                                initialValue: initFormData.hdUrl
                             })(
                                 <Input addonBefore={selectBefore} addonAfter={selectAfter}/>
                             )}
@@ -294,8 +300,11 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('number', {
                                 rules: [
-                                    {required: false, message: '请填写数量'}
+                                    {
+                                        required: true, message: '请填写数量',
+                                    },
                                 ],
+                                initialValue: initFormData.number
                             })(
                                 <InputNumber style={{width: 200}}/>
                             )}
@@ -306,10 +315,17 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                             wrapperCol={{span: 12}}>
                             {getFieldDecorator('feePct', {
                                 rules: [
-                                    {required: false, message: '请填写费率（百分比）'}
+                                    {required: false, message: '请填写费率（百分比）'},
+                                    {
+                                        max: 100, message: '百分比最大值为100',
+                                    },
+                                    {
+                                        min: 0, message: '百分比最小值为0',
+                                    }
                                 ],
+                                initialValue: initFormData.feePct
                             })(
-                                <InputNumber style={{width: 200}}/>
+                                <InputNumber placeholder={'请填写0-100'} style={{width: 200}}/>
                             )}
                         </FormItem>
                         <FormItem
@@ -320,6 +336,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: false, message: '请填写手续费（分）'}
                                 ],
+                                initialValue: fenToYuan(initFormData.feeFen)
                             })(
                                 <InputNumber style={{width: 200}}/>
                             )}
@@ -332,6 +349,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: false, message: '请填写手续费（元）'}
                                 ],
+                                initialValue: initFormData.sale
                             })(
                                 <InputNumber style={{width: 200}}/>
                             )}
@@ -344,6 +362,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: false, message: '请选择上级'}
                                 ],
+                                initialValue: initFormData.sale
                             })(
                                 <InputNumber style={{width: 200}}/>
                             )}
@@ -356,6 +375,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: true, message: '请选择启用状态'}
                                 ],
+                                initialValue: initFormData.enabled
                             })(
                                 <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>
                             )}
@@ -368,6 +388,7 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
                                 rules: [
                                     {required: false, message: '请选择上级'}
                                 ],
+                                initialValue: initFormData.parentId
                             })(
                                 <Input/>
                             )}
@@ -379,18 +400,19 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
 
                             {getFieldDecorator('areaId', {
                                 rules: [
-                                    {required: false, message: '请选择地区信息'}
+                                    {required: true, message: '请选择地区信息'}
                                 ],
+                                initialValue: initFormData.areaId
                             })(
-                                <Cascader options={this.state.options}
+                                <Cascader options={this.state.areaOptions}
                                           loadData={this.loadAreaInfo}
                                           placeholder="请选择地区信息"
-                                          onChange={this.onChange}
+                                          onChange={this.onCascadeAreaChange}
                                           changeOnSelect/>
                             )}
                         </FormItem>
                         <FormItem wrapperCol={{span: 12, offset: 5}}>
-                            <Button type="primary" htmlType="submit">提交参数</Button>
+                            <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>
                         </FormItem>
                     </Form>
                 </Card>
@@ -398,7 +420,12 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
         );
     }
 
-    onChange = (value, selectedOptions) => {
+    /**
+     * 级联选中地区
+     * @param value
+     * @param selectedOptions
+     */
+    onCascadeAreaChange = (value, selectedOptions) => {
         console.log(value, selectedOptions);
     };
 
@@ -408,28 +435,22 @@ class InputFormView extends BaseFormView<FormDemoProps, any> {
      */
     loadAreaInfo = (selectedOptions?: CascaderOptionType[]) => {
 
-        console.log(selectedOptions);
-
-
+        //上一个选中的选项
         const targetOption = selectedOptions[selectedOptions.length - 1];
 
         console.log(targetOption.value);
 
-
-        // load options lazily
-        setTimeout(() => {
-            targetOption.children = [{
-                label: `${targetOption.label} Dynamic 1`,
-                value: 'dynamic1',
-            }, {
-                label: `${targetOption.label} Dynamic 2`,
-                value: 'dynamic2',
-            }];
+        this.getAreaInfo({
+            parentId: targetOption.value,
+        }).then((children) => {
+            targetOption.children = children;
             this.setState({
-                options: [...this.state.options],
+                areaOptions: [...this.state.areaOptions],
             });
-        }, 1000);
+        }).catch((e) => {
+            console.log("加载级联地区数据失败", e);
+        });
+
     }
 }
 
-export default Form.create()(InputFormView);
