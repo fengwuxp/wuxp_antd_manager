@@ -5,7 +5,7 @@ import FormItem from "antd/lib/form/FormItem";
 import Input from "antd/lib/input/Input";
 import Button from "antd/lib/button/button";
 import {Icon, message, Modal} from "antd";
-import apiClient from "../../fetch/BuildFetchClient";
+import apiClient from "../fetch/BuildFetchClient";
 
 
 export default class ListQueryHelper {

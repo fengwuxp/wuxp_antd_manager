@@ -11,6 +11,8 @@ import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import {CreateSampleReq} from "./req/CreateSampleReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
+import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
+import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -97,16 +99,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         });
     };
 
-
-    selectDateTimes = (value, dateString) => {
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
-    };
-
-    selectDateTimeOnOk = (value) => {
-        console.log('onOk: ', value);
-    };
-
     /**
      * 在提交表单之前对参数进行处理，在这里可以进行值转换等操作
      * @param {CreateSampleReq} req
@@ -115,6 +107,9 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
     protected beforeSerialize = (req: CreateSampleReq) => {
 
         //TODO
+
+        //时间处理
+        req.publicDate = MomentHelper.handlerMoment(req.publicDate, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
 
         return true;
     };
@@ -210,11 +205,9 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                                 <DatePicker
                                     showTime
                                     locale={locale}
-                                    format="YYYY-MM-DD HH:mm:ss"
+                                    format={MomentFormatString.YYYY_MM_DD_HH_mm}
                                     placeholder="请选择发布时间"
                                     style={{width: 200}}
-                                    onChange={this.selectDateTimes}
-                                    onOk={this.selectDateTimeOnOk}
                                 />
                             )}
                             <div>请选择时间</div>

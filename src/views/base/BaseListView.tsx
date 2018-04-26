@@ -10,8 +10,8 @@ import zh_CN from 'rc-pagination/lib/locale/zh_CN';
 import {SelectValue} from "antd/lib/select";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
-import {ExportExcelDesc} from "./ExportExcelFileHelper";
-import ListQueryHelper from "./ExportExcelFileHelper";
+import {ExportExcelDesc} from "../../helper/ExportExcelFileHelper";
+import ListQueryHelper from "../../helper/ExportExcelFileHelper";
 
 const Option = Select.Option;
 
@@ -45,6 +45,10 @@ export interface BaseListState<T> {
      */
     simpleFilterItems?: Array<SimpleSearchFilterItem>;
 
+    /**
+     * 高级搜索面板控制
+     */
+    toggleAdvancedForm: boolean;
 }
 
 /**
@@ -104,7 +108,8 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
         },
         selectedRows: [],
         simpleFilterIndex: 0,
-        simpleFilterItems: []
+        simpleFilterItems: [],
+        toggleAdvancedForm: false
     } as S;
 
     componentDidMount() {
@@ -241,7 +246,6 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             ...pagination as any,
             ...updater
         };
-        console.log(data.records)
         this.setState({
             page: data,
             pagination
@@ -260,17 +264,21 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
     };
 
 
+    // /**
+    //  * 表格行 key 的取值，可以是字符串或一个函数
+    //  * 默认使用表格的id生成rowKey，如果当前数据没有id字段则需要使用自定义的生成方法
+    //  * @param rowData
+    //  * @returns {string}
+    //  */
+    // protected generateTableRowKey = (rowData: any): string => {
+    //     return rowData.id.toString();
+    // };
+
+
     /**
-     * 表格行 key 的取值，可以是字符串或一个函数
-     * 默认使用表格的id生成rowKey，如果当前数据没有id字段则需要使用自定义的生成方法
-     * @param rowData
-     * @returns {string}
+     * 表格local配置
+     * @returns {any}
      */
-    protected generateTableRowKey = (rowData: any): string => {
-        return rowData.id.toString();
-    };
-
-
     protected getTableLocal = (): any => {
 
         return {
@@ -329,6 +337,7 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             const {simpleFilterIndex, simpleFilterItems} = this.state;
 
 
+            console.log("高级查询参数", values)
             //simple 查询条件
             let simpleParam: any = {};
             if (StringUtils.hasText(simpleFilterValue)) {
@@ -354,9 +363,9 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
                 }
             );
             delete this.reqParams.total;
-
+            console.log("查询参数", this.reqParams)
             //查询
-            this.fetchListData();
+            // this.fetchListData();
         });
 
 
@@ -365,36 +374,47 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
 
     renderAdvancedForm() {
         return (
-            <Form onSubmit={this.submitQueryForm} layout="inline">
+            <Form layout="inline">
                 {this.getQueryFrom()}
-                {this.renderQueryFromButtons()}
             </Form>
         );
     }
 
     renderQueryFromButtons = () => {
-
+        const {toggleAdvancedForm} = this.state;
         return (
             <span>
-              <Button type="primary" htmlType="submit">查询</Button>
+              <Button type="primary" onClick={() => {
+                  this.submitQueryForm();
+              }}>查询</Button>
               <Button style={{marginLeft: 8}} onClick={this.resetQueryParams}>重置</Button>
-              <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>
+                {
+                    toggleAdvancedForm ?
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>
+                        : <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a>
+                }
+
             </span>
         )
     };
 
 
+    /**
+     * 重置查询表单
+     */
     protected resetQueryParams = () => {
-        const {form, dispatch} = this.props;
+        const {form} = this.props;
         //重置查询参数
         form.resetFields();
-
         //查询
         this.fetchListData();
     };
 
     protected toggleAdvanceQueryForm = () => {
-
+        const {toggleAdvancedForm} = this.state;
+        this.setState({
+            toggleAdvancedForm: !toggleAdvancedForm
+        })
     };
 
 
@@ -443,8 +463,7 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             )}
 
             {getFieldDecorator('simpleFilterValue', {
-
-                initialValue: simpleFilterItems[0].name
+                initialValue: null
             })(
                 <Input type={'text'}
                        style={{width: 220, marginLeft: 5}}
