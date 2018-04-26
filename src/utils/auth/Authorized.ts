@@ -1,4 +1,5 @@
-import RenderAuthorized from "ant-design-pro/lib/Authorized";
+// import RenderAuthorized from "ant-design-pro/lib/Authorized";
+ import RenderAuthorized from "../../components/Authorized";
 
 import {getAuthority} from "./authority";
 

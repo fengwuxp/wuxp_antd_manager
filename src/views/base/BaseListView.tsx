@@ -2,12 +2,18 @@ import * as React from "react";
 import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo"
 import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
-import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
-import {message} from "antd";
+import {Button, Form, Icon, Input, message, Select} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import {isBoolean, isNullOrUndefined} from "util";
 import zh_CN from 'rc-pagination/lib/locale/zh_CN';
+import {SelectValue} from "antd/lib/select";
+import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
+import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
+import {ExportExcelDesc} from "./ExportExcelFileHelper";
+import ListQueryHelper from "./ExportExcelFileHelper";
+
+const Option = Select.Option;
 
 /**
  * 列表视图的 base state
@@ -28,12 +34,34 @@ export interface BaseListState<T> {
      */
     selectedRows: Array<T>;
 
+    /**
+     * simple默认查询的index
+     */
+    simpleFilterIndex?: number;
+
+
+    /**
+     * 简单的查询过滤配置
+     */
+    simpleFilterItems?: Array<SimpleSearchFilterItem>;
+
 }
+
+/**
+ * 简单的查询选项
+ */
+export interface SimpleSearchFilterItem {
+
+    display: string,
+
+    name: string
+}
+
 /**
  * base list view
  * 泛型说明 P props  S state E 查询查询对象
  */
-export default abstract class BaseListView<P extends ReduxRouterProps, S extends BaseListState<any>, E extends ApiQueryReq> extends React.Component<P, S> {
+export default abstract class BaseListView<P extends AntdFromBaseProps, S extends BaseListState<any>, E extends ApiQueryReq> extends React.Component<P, S> {
 
 
     //抓取数据的url
@@ -42,11 +70,18 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     //查询请求参数
     protected reqParams: E;
 
-    //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 3;
+    /**
+     * 默认的查询条件
+     */
+    protected defaultPrams: any;
 
-    constructor(props: P, context: any) {
+    //默认的查询大小
+    protected DEFAULT_QUERY_PAGE: number = 20;
+
+
+    constructor(props: P, context: any, defaultPrams: E = {} as E) {
         super(props, context);
+        this.defaultPrams = defaultPrams;
     }
 
     state = {
@@ -68,6 +103,8 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             locale: zh_CN
         },
         selectedRows: [],
+        simpleFilterIndex: 0,
+        simpleFilterItems: []
     } as S;
 
     componentDidMount() {
@@ -83,6 +120,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
             queryPage: 1,
             querySize: this.DEFAULT_QUERY_PAGE,
             ...params,
+            ...this.defaultPrams,
             orderBy: [defaultOrder[0]],
             orderType: [defaultOrder[1]]
         };
@@ -171,6 +209,7 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
                 queryPage: current,
                 querySize: pageSize,
                 total,
+                ...this.defaultPrams,
                 ...orderPrams
             });
             //重新加载数据
@@ -280,7 +319,175 @@ export default abstract class BaseListView<P extends ReduxRouterProps, S extends
     };
 
 
-    protected abstract getTableTile: (currentPageData: Object[]) => React.ReactNode
+    /**
+     * 提交查询
+     */
+    protected submitQueryForm = () => {
 
+        this.props.form.validateFields((err, values) => {
+            const {simpleFilterValue} = values;
+            const {simpleFilterIndex, simpleFilterItems} = this.state;
+
+
+            //simple 查询条件
+            let simpleParam: any = {};
+            if (StringUtils.hasText(simpleFilterValue)) {
+                simpleParam[simpleFilterItems[simpleFilterIndex].name] = simpleFilterValue;
+            }
+
+            const req: any = {...values};
+            delete req.simpleFilterItemKey;
+            delete req.simpleFilterValue;
+
+            let isSubmit = this.beforeSerialize(req);
+            if (!isSubmit) {
+                return;
+            }
+
+            //组合查询参数
+            this.reqParams = Object.assign(
+                this.defaultPrams,
+                simpleParam,
+                ...req,
+                {
+                    queryPage: 1
+                }
+            );
+            delete this.reqParams.total;
+
+            //查询
+            this.fetchListData();
+        });
+
+
+    };
+
+
+    renderAdvancedForm() {
+        return (
+            <Form onSubmit={this.submitQueryForm} layout="inline">
+                {this.getQueryFrom()}
+                {this.renderQueryFromButtons()}
+            </Form>
+        );
+    }
+
+    renderQueryFromButtons = () => {
+
+        return (
+            <span>
+              <Button type="primary" htmlType="submit">查询</Button>
+              <Button style={{marginLeft: 8}} onClick={this.resetQueryParams}>重置</Button>
+              <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>
+            </span>
+        )
+    };
+
+
+    protected resetQueryParams = () => {
+        const {form, dispatch} = this.props;
+        //重置查询参数
+        form.resetFields();
+
+        //查询
+        this.fetchListData();
+    };
+
+    protected toggleAdvanceQueryForm = () => {
+
+    };
+
+
+    /**
+     * 右侧查询条件变更
+     * @param {SelectValue} value
+     * @param {React.ReactElement<any>} option
+     */
+    protected searchQueryChange = (value: SelectValue, option: React.ReactElement<any>) => {
+        let index = -1;
+        this.state.simpleFilterItems.some(({name}, i) => {
+            index = i;
+            return value === name;
+        });
+
+        this.setState({
+            simpleFilterIndex: index
+        })
+    };
+
+    /**
+     * 获取右侧的简单查询组件
+     */
+    protected getRightSimpleSearch() {
+        let {simpleFilterItems} = this.state;
+        let keys = simpleFilterItems || [];
+        if (keys.length === 0) {
+            return null;
+        }
+        const {getFieldDecorator} = this.props.form;
+
+        return <div>
+            {getFieldDecorator('simpleFilterItemKey', {
+
+                initialValue: simpleFilterItems[0].name
+            })(
+                <Select style={{minWidth: 120}}
+                        placeholder="请选择查询条件"
+                        optionFilterProp="children"
+                        onChange={this.searchQueryChange}>
+                    {keys.map(({display, name}) => {
+
+                        return <Option value={name}>{display}</Option>
+                    })}
+                </Select>
+            )}
+
+            {getFieldDecorator('simpleFilterValue', {
+
+                initialValue: simpleFilterItems[0].name
+            })(
+                <Input type={'text'}
+                       style={{width: 220, marginLeft: 5}}
+                       placeholder={`请输入${this.state.simpleFilterItems[this.state.simpleFilterIndex].display}`}/>
+            )}
+            <Button style={{marginLeft: 10}}
+                    onClick={this.submitQueryForm}
+                    type={"ghost"}>确认</Button>
+        </div>
+    }
+
+
+    /**
+     * 导出export excel file
+     * @param {string} exportUrl
+     * @param {Array<ExportExcelDesc>} exportItems
+     * @param {string} fileName
+     */
+    protected exportExcelFile = (exportUrl: string, exportItems: Array<ExportExcelDesc>, fileName: string = "export.xlsx") => {
+
+        ListQueryHelper.exportExcelFile(exportUrl, this.reqParams, exportItems, fileName);
+
+    };
+
+    /**
+     * 导入 import excel file
+     */
+    protected importExcelFile = () => {
+
+    };
+
+    protected abstract getTableTile: (currentPageData: Object[]) => React.ReactNode;
+
+    /**
+     * 获取查询页面的表单
+     */
+    protected abstract getQueryFrom: () => React.ReactNode;
+
+
+    /**
+     * 提交查询表单之前的序列化操作
+     * return false 则不提交查询
+     */
+    protected abstract beforeSerialize: (req: E) => boolean;
 }
 

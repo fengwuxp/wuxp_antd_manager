@@ -8,7 +8,7 @@ const port = '9091';
 config.plugins.push(
     new webpack.DefinePlugin({
         'process.env': {
-            NODE_ENV:JSON.stringify("dev"),
+            NODE_ENV: JSON.stringify("dev"),
             ROOT_DOMAIN: JSON.stringify(`${host}:9091`),
             BASE_NAME: JSON.stringify("/")
         }
@@ -26,22 +26,21 @@ config.devServer = {
     publicPath: '/',
     proxy: {
         '/api': {
-            // target: `http://${host}:9899/react/`,
             target: `http://localhost:8086/udf`,
             pathRewrite: {'^/api': '/'},
             changeOrigin: true,
             secure: false,
-            cookieDomainRewrite: {
-                "*":"/"
-            },
+            // cookieDomainRewrite: {
+            //     "*": "/"
+            // },
             //重写cookie
-            onProxyRes: function(proxyRes, req, res) {
+            onProxyRes: function (proxyRes, req, res) {
                 // console.log("重写cookie");
                 let cookies = proxyRes.headers['set-cookie'];
                 let cookieRegex = /Path=\/udf\//i;
                 //修改cookie Path
                 if (cookies) {
-                    let newCookie = cookies.map(function(cookie) {
+                    let newCookie = cookies.map(function (cookie) {
                         if (cookieRegex.test(cookie)) {
                             return cookie.replace(cookieRegex, 'Path=/');
                         }

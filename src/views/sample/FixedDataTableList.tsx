@@ -15,10 +15,17 @@ export default class FixedDataTableListextends extends BaseListView<SampleListPr
     protected getTableTile: (currentPageData: Object[]) => React.ReactNode;
 
 
+    constructor(props: SampleListProps, context: any) {
+        super(props, context, {});
+    }
+
     render() {
 
         return <div></div>
     }
+
+    protected beforeSerialize: (req: any) => boolean;
+    protected getQueryFrom: () => React.ReactNode;
 
 
 }
