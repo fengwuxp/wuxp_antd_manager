@@ -8,6 +8,7 @@ import {getMenuData, menuData} from "../../routes/menu";
 export interface AntdMenuSaga {
 
     getMenus: (...p) => void;
+
 }
 
 
@@ -20,18 +21,17 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
      * @returns {IterableIterator<any>}
      */
     * getMenus(payload: any) {
-
         const type = "updateMenus";
 
         const menus = yield call(queryMenus, payload);
 
-        // console.log(menus);
-
         yield put({
             type,
-            payload: menus
+            payload:menus
         });
     }
+
+
 
 }
 

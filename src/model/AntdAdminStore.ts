@@ -30,6 +30,12 @@ export interface AntdAdminStore {
      */
     menus: Array<AntdMenuItem>;
 
+
+    /**
+     * 当前选中的导航菜单
+     */
+    currentSelectedMenu: number;
+
     /**
      * 系统配置列表
      */

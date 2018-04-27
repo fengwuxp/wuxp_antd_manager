@@ -48,7 +48,7 @@ i.trigger {
   transition: all 0.3s, padding 0s;
   padding: 0 24px;
   &:hover {
-    background-color: rgba($primary-1,0.2);
+    background-color: rgba($primary-1, 0.2);
   }
 }
 
@@ -68,7 +68,7 @@ i.trigger {
     }
     &:hover,
     &:global(.ant-popover-open) {
-      background-color: rgba($primary-1,0.3);
+      background-color: rgba($primary-1, 0.3);
     }
   }
   .search {
@@ -115,5 +115,18 @@ i.trigger {
       }
     }
   }
+}
 
+.nav_menu_tab {
+  padding: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba($primary-1, 0.4);
+  }
+}
+
+.nav_menu_tab_selected {
+  background-color: $primary-1;
+  color: #ffffff;
 }

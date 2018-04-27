@@ -1,14 +1,16 @@
 import React, {PureComponent} from 'react';
-import {Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip} from 'antd';
+import {Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip, Row, Col} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
-// import HeaderSearch from 'ant-design-pro/lib/HeaderSearch';
 import {Link} from "react-router-dom";
 import * as styles from './style.scss';
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 import HeaderSearch from "../HeaderSearch/index";
+import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
+import {menuChooseManager} from "../../manager/menu/MenuChooseManager";
+
 
 /**
  * 管理员
@@ -33,6 +35,17 @@ export interface GlobalManager {
 
 export interface GlobalHeaderProps extends ReactBaseProps {
 
+
+    /**
+     * 菜单列表
+     */
+    menus: Array<AntdMenuItem>;
+
+
+    /**
+     * 当前选中的菜单
+     */
+    currentSelectedMenu: number;
 
     /**
      * 通知列表
@@ -164,7 +177,8 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
         );
         const noticeData = this.getNoticeData();
         return (
-            <div className={styles.header}>
+            <Row type="flex"
+                 className={styles.header}>
                 {isMobile && [
                     <Link to="/" className={styles.logo} key="logo">
                         <img src={logo} alt="logo" width="32"/>
@@ -176,7 +190,24 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                     type={collapsed ? 'menu-unfold' : 'menu-fold'}
                     onClick={this.toggleMenu}
                 />
-                <div className={styles.right}>
+                <Col style={{flex: 1}}>
+                    {
+                        this.props.menus.map((item, i) => {
+                            let classNames = [styles.nav_menu_tab];
+                            if (i === this.props.currentSelectedMenu) {
+                                classNames.push(styles.nav_menu_tab_selected)
+                            }
+                            return <span data-index={i}
+                                         onClick={(event) => {
+                                             const target: HTMLElement = event.target as HTMLElement;
+                                             const domStringMap: DOMStringMap = target.dataset;
+                                             //切换导航
+                                             menuChooseManager.changeTopMenuNav(parseInt(domStringMap.index));
+                                         }} className={classNames.join(" ")}>{item.name}</span>
+                        })
+                    }
+                </Col>
+                <Col className={styles.right}>
                     <HeaderSearch
                         className={`${styles.action} ${styles.search}`}
                         placeholder="站内搜索"
@@ -231,8 +262,8 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                             size="small" className={styles.avatar} src={currentUser.avatar}/><span
                             className={styles.name}>{currentUser.name}</span></span></Dropdown>) : (
                         <Spin size="small" style={{marginLeft: 8}}/>)}
-                </div>
-            </div>
+                </Col>
+            </Row>
         );
     }
 }

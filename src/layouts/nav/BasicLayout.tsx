@@ -28,8 +28,9 @@ function findMenuItemByPath(menus: Array<AntdMenuItem>, paths: Array<string>, i 
 }
 
 
-const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus}) => ({
+const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, currentSelectedMenu}) => ({
     session,
+    currentSelectedMenu,
     menus
 });
 
@@ -80,11 +81,13 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
     }
 
     render() {
-        const showMenu = this.props.menus.length > 0;
 
+        const {menus} = this.props;
+        const showMenu = menus && menus.length > 0;
         return (
             <DocumentTitle title={this.getPageTitle()}>
-                {showMenu ? <ContainerQuery query={MediaQuery}>{params => <AntdNavLayout {...this.props} className={classNames(params) as string}/>}</ContainerQuery> : null}
+                {showMenu ? <ContainerQuery query={MediaQuery}>{params => <AntdNavLayout {...this.props}
+                                                                                         className={classNames(params) as string}/>}</ContainerQuery> : null}
             </DocumentTitle>
         );
     }

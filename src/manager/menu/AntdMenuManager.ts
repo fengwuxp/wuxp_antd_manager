@@ -24,7 +24,6 @@ class AntdMenuManager extends AntdMenuAction implements AntdMenuSaga {
         return reduxHandlerFactory<AntdMenuManager>(this, antdAdminStore);
     }
 
-
     getMenus: () => void;
 
 }

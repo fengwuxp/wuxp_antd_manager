@@ -12,20 +12,23 @@ export interface AntdMenuReducer extends ReduxReducer<AntdMenuItem> {
      * 更新菜单
      */
     updateMenus: Reducer<AntdMenuItem>;
+
+
 }
 
-const AntdMenuReducerMaganer: AntdMenuReducer = {
+const AntdMenuReducerManager: AntdMenuReducer = {
 
     //菜单默认为空
     default: [],
 
 
-    updateMenus: undefined
+    updateMenus: undefined,
+
 
 };
 
 //创建Reducer
-const menus: Reducer<AntdMenuItem> = reducerFactory<AntdMenuReducer, AntdMenuItem>(AntdMenuReducerMaganer);
+const menus: Reducer<AntdMenuItem> = reducerFactory<AntdMenuReducer, AntdMenuItem>(AntdMenuReducerManager);
 
 export {
     menus

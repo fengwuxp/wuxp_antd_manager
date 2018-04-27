@@ -3,60 +3,83 @@ import {AntdMenuItem} from "../model/menu/AntdMenuItem";
 
 const menuData: Array<AntdMenuItem> = [
     {
-        name: '示例',
-        icon: 'form',
-        path: 'sample',
+        name: '网站',
+        icon: 'site',
+        path: '',
         children: [
             {
-                name: '示例列表',
-                path: 'list',
+                name: '示例',
+                icon: 'form',
+                path: 'sample',
+                children: [
+                    {
+                        name: '示例列表',
+                        path: 'list',
+                    },
+                    {
+                        name: '富文本示例',
+                        path: 'rich_text',
+                    }
+                ],
             },
+        ]
+    },
+    {
+        name: '商城',
+        icon: 'site',
+        path: '',
+        children: [
             {
-                name: '富文本示例',
-                path: 'rich_text',
+                name: '结果页',
+                icon: 'check-circle-o',
+                path: 'result',
+                children: [
+                    {
+                        name: '成功',
+                        path: 'success',
+                    },
+                    {
+                        name: '失败',
+                        path: 'fail',
+                    },
+                ],
+            },
+        ]
+
+    },
+    {
+        name: "客户端",
+        path: '',
+        children: [
+            {
+                name: '异常页',
+                icon: 'warning',
+                path: 'exception',
+                children: [
+                    {
+                        name: '403',
+                        path: '403',
+                    },
+                    {
+                        name: '404',
+                        path: '404',
+                    },
+                    {
+                        name: '500',
+                        path: '500',
+                    },
+                    {
+                        name: '触发异常',
+                        path: 'trigger',
+                        hideInMenu: true,
+                    },
+                ],
             }
-        ],
-    },
-    {
-        name: '结果页',
-        icon: 'check-circle-o',
-        path: 'result',
-        children: [
-            {
-                name: '成功',
-                path: 'success',
-            },
-            {
-                name: '失败',
-                path: 'fail',
-            },
-        ],
-    },
-    {
-        name: '异常页',
-        icon: 'warning',
-        path: 'exception',
-        children: [
-            {
-                name: '403',
-                path: '403',
-            },
-            {
-                name: '404',
-                path: '404',
-            },
-            {
-                name: '500',
-                path: '500',
-            },
-            {
-                name: '触发异常',
-                path: 'trigger',
-                hideInMenu: true,
-            },
-        ],
+        ]
     }
+
 ];
+
 
 /**
  * push menu items
@@ -78,9 +101,10 @@ export {
  * @param parentAuthority
  * @returns {Array<AntdMenuItem>}
  */
-function formatter(data: Array<AntdMenuItem>, parentPath = '/', parentAuthority?): Array<AntdMenuItem> {
+function formatter(data: Array<AntdMenuItem>, parentPath = '', parentAuthority?): Array<AntdMenuItem> {
+
     return data.map(item => {
-        let {path} = item;
+        let {path, name} = item;
         if (!isUrl(path)) {
             path = parentPath + item.path;
         }

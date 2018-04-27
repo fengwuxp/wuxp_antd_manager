@@ -1,10 +1,13 @@
 import React, {PureComponent, createElement} from 'react';
 import PropTypes from 'prop-types';
 import pathToRegexp from 'path-to-regexp';
-import {Breadcrumb, Icon, Tabs} from 'antd';
+import {Breadcrumb, Col, Icon, Row, Tabs} from 'antd';
 import classNames from 'classnames';
 import * as styles from './index.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
+import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
+
+const history = BrowserNavigatorFactory.get();
 
 const {TabPane} = Tabs;
 
@@ -58,7 +61,7 @@ export default class PageHeader extends PureComponent<any, any> {
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
                 <Breadcrumb.Item href="">
-                    <Icon type="arrow-left" />
+                    <Icon type="arrow-left"/>
                 </Breadcrumb.Item>
                 {breadcrumbList.map(item => (
                     <Breadcrumb.Item key={item.title}>
@@ -101,17 +104,27 @@ export default class PageHeader extends PureComponent<any, any> {
             </Breadcrumb.Item>
         );
 
-        //添加返回
-        extraBreadcrumbItems.unshift(
-            <Breadcrumb.Item href="">
-                <Icon type="arrow-left" />
-            </Breadcrumb.Item>
-        );
 
         return (
-            <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
-                {extraBreadcrumbItems}
-            </Breadcrumb>
+            <Row type="flex">
+                {/*返回按钮*/}
+                <Col>
+                    <Icon style={{fontSize: 46}}
+                          type="arrow-left"
+                          onClick={() => {
+                              history.goBack();
+                          }}/>
+                </Col>
+                <Col span={23} style={{
+                    height: 20,
+                    marginTop: 10,
+                    marginLeft: 10
+                }}>
+                    <Breadcrumb className={styles.breadcrumb}
+                                separator={breadcrumbSeparator}>{extraBreadcrumbItems}</Breadcrumb>
+                </Col>
+            </Row>
+
         );
     };
     /**
@@ -121,10 +134,6 @@ export default class PageHeader extends PureComponent<any, any> {
     conversionBreadcrumbList = () => {
         const {breadcrumbList, breadcrumbSeparator} = this.props;
         const {routes, params, routerLocation, breadcrumbNameMap} = this.getBreadcrumbProps();
-        // console.log(routes);
-        // console.log(params);
-        // console.log(routerLocation);
-        // console.log(breadcrumbNameMap);
         if (breadcrumbList && breadcrumbList.length) {
             return this.conversionFromProps();
         }

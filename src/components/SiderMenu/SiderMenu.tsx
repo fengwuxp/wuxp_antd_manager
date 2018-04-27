@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
 import {Layout, Menu, Icon} from 'antd';
-import pathToRegexp from 'path-to-regexp';
+
 import * as styles from './style.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
-
+import {MatchMenuKeyStrategy} from "./strategy/MatchMenuKeyStrategy";
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -19,6 +19,8 @@ export interface SiderMenuProps extends ReduxRouterProps {
      * 菜单列表
      */
     menus: Array<AntdMenuItem>;
+
+
     /**
      * 是否为手机端
      */
@@ -51,6 +53,11 @@ export interface SiderMenuProps extends ReduxRouterProps {
      * 鉴权
      */
     Authorized?: any;
+
+    /**
+     * 匹配菜单策略
+     */
+    matchMenuKeyStrategy: MatchMenuKeyStrategy
 }
 
 const getIcon = icon => {
@@ -63,17 +70,6 @@ const getIcon = icon => {
     return icon;
 };
 
-/**
- * 获取菜单匹配的key
- * @param {Array<string>} flatMenuKeys
- * @param {string} path
- * @returns {string[]}
- */
-export const getMeunMatcheys = (flatMenuKeys: Array<string>, path: string): string[] => {
-    return flatMenuKeys.filter(item => {
-        return pathToRegexp(item).test(path);
-    });
-};
 
 export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
 
@@ -104,13 +100,13 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         const {location: {pathname}} = props || this.props;
         let openKeys = urlToList(pathname).map(item => {
 
-            let meunMatcheys = getMeunMatcheys(this.getFlatMenuKeys(props.menus), item);
-            if (meunMatcheys.length === 0) {
+            let menuMatchKeys = this.props.matchMenuKeyStrategy.matchSelectKeys(this.getFlatMenuKeys(props.menus), item);
+            if (menuMatchKeys.length === 0) {
                 return null;
             }
-            return meunMatcheys[0];
+            return menuMatchKeys[0];
         }).filter(item => item !== null);
-
+        console.log("-----openKeys-------", openKeys);
         return openKeys;
     }
 
@@ -202,7 +198,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
      */
     getSelectedMenuKeys = (): string[] => {
         const {location: {pathname}} = this.props;
-        return urlToList(pathname).map(itemPath => getMeunMatcheys(this.getFlatMenuKeys(this.props.menus), itemPath).pop());
+        return urlToList(pathname).map(itemPath => this.props.matchMenuKeyStrategy.matchSelectKeys(this.getFlatMenuKeys(this.props.menus), itemPath).pop());
     };
 
     /**
@@ -267,6 +263,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         if (!selectedKeys.length) {
             selectedKeys = [openKeys[openKeys.length - 1]];
         }
+        console.log("------selectedKeys----", selectedKeys)
         return (
             <Sider
                 trigger={null}

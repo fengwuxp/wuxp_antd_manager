@@ -125,7 +125,7 @@ export class SessionSagaManager implements SessionSaga {
 }
 
 
-function adminLogin({type, payload}): Promise<ApiResp<AntdAdmin>> {
+function adminLogin(payload): Promise<ApiResp<AntdAdmin>> {
     console.log("调用登录，请求参数");
     console.log(payload);
 
