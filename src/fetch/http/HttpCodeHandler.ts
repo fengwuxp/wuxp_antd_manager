@@ -14,6 +14,7 @@ export function httpCode301Handler<Response, FetchOption>(resp: Response, option
     message.warn("会话已失效，请重新登录", 2, () => {
         history.push("/login");
     });
+    return true;
 }
 
 /**

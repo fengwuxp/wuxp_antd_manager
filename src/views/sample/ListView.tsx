@@ -18,6 +18,8 @@ import FormItem from "antd/lib/form/FormItem";
 import * as styles from "./TableList.scss";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
+import * as moment from "moment";
+import {isNullOrUndefined} from "util";
 
 const {RangePicker} = DatePicker;
 
@@ -193,6 +195,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
 
     componentDidMount() {
+        super.componentDidMount();
         this.setState({
             simpleFilterItems: [
                 {display: "编号", name: "sn"},
@@ -281,8 +284,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
     protected beforeSerialize = (req: QuerySampleReq) => {
         //处理时间参数
-        // MomentHelper.handlerFormRangerDateParam(req, "publicDate", MomentFormatString.YYYY_MM_DD_HH_mm);
-        console.log("参数处理", req);
+        MomentHelper.handlerFormRangerDateParam(req, "publicDate", MomentFormatString.YYYY_MM_DD_HH_mm);
         return true;
     };
 
@@ -366,10 +368,23 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                                              format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
                             )}
                         </FormItem>
+                    </Col>
+
+                </Row>
+                <Row gutter={{md: "8", lg: "24", xl: "48"}}>
+                    <Col md={8} sm={24}>
                         <FormItem label="请选择最小发布时间">
                             {getFieldDecorator('minPublicDate')(
                                 <DatePicker locale={locale}
                                             placeholder="请选择最小发布时间"
+                                            disabledDate={(current: moment.Moment) => {
+                                                let maxPublicDate = this.props.form.getFieldValue("maxPublicDate") as  moment.Moment;
+                                                if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
+                                                    return false;
+                                                }
+
+                                                return current.toDate().getTime() > maxPublicDate.toDate().getTime()
+                                            }}
                                             showTime={{format: MomentFormatString.HH_mm}}
                                             format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
                             )}
@@ -377,7 +392,16 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                         <FormItem label="请选择最大发布时间">
                             {getFieldDecorator('maxPublicDate')(
                                 <DatePicker locale={locale}
-                                            placeholder="请选择最小发布时间"
+                                            placeholder="请选择最大发布时间"
+                                            disabledDate={(current: moment.Moment) => {
+
+                                                let minPublicDate = this.props.form.getFieldValue("minPublicDate") as  moment.Moment;
+                                                if (isNullOrUndefined(minPublicDate) || isNullOrUndefined(current)) {
+                                                    return false;
+                                                }
+
+                                                return current.toDate().getTime() < minPublicDate.toDate().getTime()
+                                            }}
                                             showTime={{format: MomentFormatString.HH_mm}}
                                             format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
                             )}

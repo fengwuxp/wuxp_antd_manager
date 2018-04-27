@@ -113,6 +113,7 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
     } as S;
 
     componentDidMount() {
+        console.log("发起查询请求-> ")
         const {search} = this.props.history.location;
         const path = this.props.match.path;
 
@@ -250,7 +251,6 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             page: data,
             pagination
         });
-        // console.log(this.state.pagination)
     };
 
 
@@ -260,7 +260,7 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
      */
     protected fetchListDataFailure = (e: any): void => {
         console.log(e);
-        message.error(`请求列表数据失败`);
+        // message.error(`请求列表数据失败`);
     };
 
 
@@ -337,7 +337,6 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             const {simpleFilterIndex, simpleFilterItems} = this.state;
 
 
-            console.log("高级查询参数", values)
             //simple 查询条件
             let simpleParam: any = {};
             if (StringUtils.hasText(simpleFilterValue)) {
@@ -352,20 +351,26 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
             if (!isSubmit) {
                 return;
             }
+            console.log("默认查询参数", this.defaultPrams);
+            console.log("简单", this.defaultPrams);
+            console.log("高级查询参数", req);
 
             //组合查询参数
             this.reqParams = Object.assign(
                 this.defaultPrams,
                 simpleParam,
-                ...req,
+                req,
                 {
-                    queryPage: 1
+                    queryPage: 1,
+                    querySize: this.reqParams.querySize,
+                    orderBy: this.reqParams.orderBy,
+                    orderType: this.reqParams.orderType
                 }
             );
             delete this.reqParams.total;
-            console.log("查询参数", this.reqParams)
+            console.log("查询参数", this.reqParams);
             //查询
-            // this.fetchListData();
+            this.fetchListData();
         });
 
 

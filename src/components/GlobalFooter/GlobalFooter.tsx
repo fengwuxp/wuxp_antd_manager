@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import * as styles from './style.scss';
-import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 
 
 export interface GlobalFooterProps extends ReactBaseProps {

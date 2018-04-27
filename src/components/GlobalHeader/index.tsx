@@ -4,10 +4,11 @@ import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
-import HeaderSearch from 'ant-design-pro/lib/HeaderSearch';
+// import HeaderSearch from 'ant-design-pro/lib/HeaderSearch';
 import {Link} from "react-router-dom";
 import * as styles from './style.scss';
-import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/model/ReactBaseProps";
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
+import HeaderSearch from "../HeaderSearch/index";
 
 /**
  * 管理员
