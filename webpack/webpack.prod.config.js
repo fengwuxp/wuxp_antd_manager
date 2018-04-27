@@ -1,20 +1,17 @@
 const webpack = require('webpack');
 const baseConfig = require("./webpack.base.config");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-/**
- * 抓取要打包成原生js的tsx文件
- * @param root
- * @param dir
- * @param entry
- * @param outPath
- */
+
+
 const config = {
     ...baseConfig,
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                API_ROOT:JSON.stringify( "127.0.0.1:9000"),
+                NODE_ENV: JSON.stringify("dev"),
+                ROOT_DOMAIN: JSON.stringify(`/`),
                 BASE_NAME: JSON.stringify("/react/views")
             }
         }),
@@ -48,10 +45,10 @@ const config = {
             title: "react App",
             chunks: ['app', 'common'],
             inject: true,
-        })
+        }),
+        new ExtractTextPlugin('styles.css'),
     ]
 };
 
-config.output.publicPath = "http://localhost:9899/react/views/";
 
 module.exports = config;

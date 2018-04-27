@@ -1,5 +1,8 @@
 import {call, put} from "redux-saga/effects";
 import {getMenuData, menuData} from "../../routes/menu";
+import apiClient from "../../fetch/BuildFetchClient";
+import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
+import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 
 
 /**
@@ -24,23 +27,57 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
         const type = "updateMenus";
 
         const menus = yield call(queryMenus, payload);
-
+        console.log("---菜单数据-->", menus);
         yield put({
             type,
-            payload:menus
+            payload: menus
         });
     }
-
 
 
 }
 
 function queryMenus(params) {
-    // console.log("获取菜单列表");
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // console.log(menuData);
-            resolve(getMenuData(menuData))
-        }, 200);
+
+    // return new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         // console.log(menuData);
+    //         resolve(getMenuData(menuData))
+    //     }, 200);
+    // });
+
+    return apiClient.post({
+        url: "/common/menus",
+        data: {
+            enabled: true,
+            level: 0
+        },
+        useFilter: false
+    }).then((data) => {
+        console.log("---菜单数据--->", data);
+        return convertMenuItem(data.data);
+    });
+}
+
+/**
+ * 转化菜单数据
+ * @param list
+ * @returns {any}
+ */
+function convertMenuItem(list) {
+
+    return list.map((item) => {
+
+        const {name, path, icon, subMenus} = item;
+        let menu: AntdMenuItem = {
+            name,
+            path,
+            icon,
+        };
+        if (subMenus) {
+            menu.children = convertMenuItem(subMenus)
+        }
+
+        return menu;
     });
 }

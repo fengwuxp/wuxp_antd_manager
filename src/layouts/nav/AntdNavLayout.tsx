@@ -143,7 +143,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     private getCurrentMenus = () => {
         const {menus, currentSelectedMenu} = this.props;
 
-        return menus[currentSelectedMenu].children;
+        return menus[currentSelectedMenu].children || [];
     };
 
 
@@ -170,11 +170,9 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         } else {
 
             // get the first authorized route path in routerData
-            const authorizedPath = this.getCurrentMenus().find(
+            const authorizedPath: any = this.getCurrentMenus().forEach(
                 ({authority, path}) => check(authority, path as any, undefined) && path !== '/'
             );
-            // console.log("------------------")
-            // console.log(authorizedPath);
             return isUndefined(authorizedPath) ? '/' : authorizedPath.path;
         }
 

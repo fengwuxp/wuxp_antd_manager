@@ -27,9 +27,6 @@
     "mock": "node --harmony ./mock/server.js"
   },
   "dependencies": {
-
-  },
-  "devDependencies": {
     "@types/lodash": "^4.14.106",
     "@types/lodash-decorators": "^4.0.0",
     "@types/node": "^7.0.61",
@@ -104,6 +101,7 @@
     "quick-local-ip": "^1.0.7",
     "rc-drawer-menu": "^0.5.0",
     "react": "^16.2.0",
+    "redux": "^4.0.0",
     "react-container-query": "^0.9.1",
     "react-custom-scrollbars": "^4.2.1",
     "react-document-title": "^2.0.3",
@@ -131,7 +129,10 @@
     "webpack": "^3.8.1",
     "webpack-cleanup-plugin": "^0.5.1",
     "webpack-dev-server": "^2.9.4",
-    "wuxp_react_dynamic_router": "0.0.1",
+    "wuxp_react_dynamic_router": "0.0.1"
+
+  },
+  "devDependencies": {
     "@types/fixed-data-table-2": "^0.8.1",
     "faker": "^4.1.0",
     "fixed-data-table-2": "^0.8.12",
