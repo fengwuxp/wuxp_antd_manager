@@ -38,9 +38,12 @@ export default class PageHeader extends PureComponent<any, any> {
 
         menus: PropTypes.object,
 
+        currentSelectedMenu: PropTypes.number,
+
         location: PropTypes.object,
 
         breadcrumbNameMap: PropTypes.object,
+
     };
     onChange = key => {
         if (this.props.onTabChange) {
@@ -53,6 +56,7 @@ export default class PageHeader extends PureComponent<any, any> {
             params: this.props.params || this.context.params,
             routerLocation: this.props.location || this.context.location,
             breadcrumbNameMap: this.props.breadcrumbNameMap || this.context.breadcrumbNameMap,
+
         };
     };
     // Generated according to props
@@ -91,6 +95,7 @@ export default class PageHeader extends PureComponent<any, any> {
                 </Breadcrumb.Item>
             ) : null;
         });
+        const {menus, currentSelectedMenu} = this.context;
         // Add home breadcrumbs to your head
         extraBreadcrumbItems.unshift(
             <Breadcrumb.Item key="home">
@@ -99,7 +104,7 @@ export default class PageHeader extends PureComponent<any, any> {
                     {
                         [linkElement === 'a' ? 'href' : 'to']: '/',
                     },
-                    '首页'
+                    menus[currentSelectedMenu].name
                 )}
             </Breadcrumb.Item>
         );

@@ -20,7 +20,7 @@ import {routeConfigs} from "../../routes/router";
 
 import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
-import {isUndefined} from "util";
+import {isNullOrUndefined, isUndefined} from "util";
 import {getMenuData} from "../../routes/menu";
 import {RouteConfig} from "react-router-config";
 import {DefaultMenuMatchStrategy} from "../../components/SiderMenu/strategy/MatchMenuKeyStrategy";
@@ -114,24 +114,24 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     static childContextTypes = {
         location: PropTypes.object,
         breadcrumbNameMap: PropTypes.object,
-        menus: PropTypes.object
+        menus: PropTypes.object,
+        currentSelectedMenu: PropTypes.number
     };
 
     getChildContext() {
 
-        const {location} = this.props;
+        const {location, menus, currentSelectedMenu} = this.props;
 
         const menuItems = this.getCurrentMenus();
 
         const result = {};
         convertRoutesToMap(routeConfigs, result);
         const breadcrumbNameMap = getBreadcrumbNameMap(menuItems, result);
-
-        console.log("----------breadcrumbNameMap---------",breadcrumbNameMap);
         return {
             location,
             breadcrumbNameMap,
-            menus: menuItems,
+            menus,
+            currentSelectedMenu
         };
     }
 
@@ -144,7 +144,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         const {menus, currentSelectedMenu} = this.props;
 
         return menus[currentSelectedMenu].children;
-    }
+    };
 
 
     /**
@@ -345,28 +345,27 @@ const getRedirect = item => {
 
 /**
  * 获取面包屑映射
- * @param {Array<AntdMenuItem>} menuData 菜单配置
+ * @param {Array<AntdMenuItem>} menus 菜单配置
  * @param {Array<RouteConfig>} routerData 路由配置
  * @returns {{} & Array<RouteConfig>}
  */
-const getBreadcrumbNameMap = (menuData: Array<AntdMenuItem>, routerData: object) => {
+const getBreadcrumbNameMap = (menus: Array<AntdMenuItem>, routerData: object) => {
 
     const result = {};
     const childResult = {};
 
-
-    for (const i of menuData) {
-        let key = i.path;
-        // if (key in routerData) {
-        //     result[key] = i;
-        // }else {
-        //     result[key] = i;
-        // }
-        result[key] = i;
-        if (i.children) {
-            Object.assign(childResult, getBreadcrumbNameMap(i.children, routerData));
+    menus.forEach((menu) => {
+        const key = menu.path;
+        const routerItem = routerData[key];
+        if (isNullOrUndefined(routerItem)) {
+            result[key] = menu;
+        } else {
+            result[key] = Object.assign({}, routerItem, menu);
         }
-    }
+        if (menu.children && menu.children.length > 0) {
+            Object.assign(childResult, getBreadcrumbNameMap(menu.children, routerData));
+        }
+    });
 
-    return Object.assign({}, routerData, result, childResult);
+    return Object.assign({}, result, childResult);
 };

@@ -98,15 +98,8 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
      */
     getDefaultCollapsedSubMenus(props: SiderMenuProps): Array<string> {
         const {location: {pathname}} = props || this.props;
-        let openKeys = urlToList(pathname).map(item => {
-
-            let menuMatchKeys = this.props.matchMenuKeyStrategy.matchSelectKeys(this.getFlatMenuKeys(props.menus), item);
-            if (menuMatchKeys.length === 0) {
-                return null;
-            }
-            return menuMatchKeys[0];
-        }).filter(item => item !== null);
-        console.log("-----openKeys-------", openKeys);
+        const openKeys = this.props.matchMenuKeyStrategy.matchOpenKeys([], pathname);
+        // console.log("-----openKeys-------", openKeys);
         return openKeys;
     }
 
@@ -263,7 +256,8 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         if (!selectedKeys.length) {
             selectedKeys = [openKeys[openKeys.length - 1]];
         }
-        console.log("------selectedKeys----", selectedKeys)
+        // console.log("------selectedKeys----", selectedKeys)
+        // console.log("------openKeys----", openKeys)
         return (
             <Sider
                 trigger={null}

@@ -21,7 +21,47 @@ const menuData: Array<AntdMenuItem> = [
                         path: 'rich_text',
                     }
                 ],
+
             },
+            {
+                name: '结果页',
+                icon: 'check-circle-o',
+                path: 'result',
+                children: [
+                    {
+                        name: '成功',
+                        path: 'success',
+                    },
+                    {
+                        name: '失败',
+                        path: 'fail',
+                    },
+                ],
+            },
+            // {
+            //     name: '异常页',
+            //     icon: 'warning',
+            //     path: 'exception',
+            //     children: [
+            //         {
+            //             name: '403',
+            //             path: '403',
+            //         },
+            //         {
+            //             name: '404',
+            //             path: '404',
+            //         },
+            //         {
+            //             name: '500',
+            //             path: '500',
+            //         },
+            //         {
+            //             name: '触发异常',
+            //             path: 'trigger',
+            //             hideInMenu: true,
+            //         },
+            //     ],
+            // }
         ]
     },
     {

@@ -39,7 +39,7 @@ function queryMenus(params) {
     // console.log("获取菜单列表");
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            console.log(menuData);
+            // console.log(menuData);
             resolve(getMenuData(menuData))
         }, 200);
     });
