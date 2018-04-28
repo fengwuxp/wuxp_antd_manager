@@ -113,7 +113,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
         if (notices.length === 0) {
             return {};
         }
-        const newNotices = notices.map((notice,index) => {
+        const newNotices = notices.map((notice, index) => {
             const newNotice = {...notice};
             if (newNotice.datetime) {
                 newNotice.datetime = moment(notice.datetime).fromNow();
@@ -173,7 +173,9 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                 <Menu.Item disabled><Icon type="setting"/>设置</Menu.Item>
                 <Menu.Item key="triggerError"><Icon type="close-circle"/>触发报错</Menu.Item>
                 <Menu.Divider/>
-                <Menu.Item key="logout"><Icon type="logout"/>退出登录</Menu.Item>
+                <Menu.Item key="logout">
+                    <Icon type="logout"/>退出登录
+                </Menu.Item>
             </Menu>
         );
         const noticeData = this.getNoticeData();

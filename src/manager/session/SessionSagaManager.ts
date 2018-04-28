@@ -113,12 +113,13 @@ export class SessionSagaManager implements SessionSaga {
         console.log("退出登录");
         yield call(adminLogout, payload);
         setAuthority("");
-        //回到登录页面
-        yield put(routerRedux.push('/login'));
+
         yield put({
             type: "removeAdmin",
             payload: null,
         });
+        //回到登录页面
+        yield put(routerRedux.push('/login'));
     }
 
 
@@ -126,32 +127,26 @@ export class SessionSagaManager implements SessionSaga {
 
 
 function adminLogin(payload): Promise<ApiResp<AntdAdmin>> {
-    console.log("调用登录，请求参数");
-    console.log(payload);
 
     const {userName, password, captcha} = payload;
-    return new Promise((resolve, reject) => {
-        apiClient.post({
-            url: "/login_json",
-            data: {
-                loginName: userName,
-                password,
-                captcha
-            },
-            useFilter:false
-        }).then((data) => {
-            resolve(data);
-        }).catch((e) => {
-            reject(e)
-        });
-
+    return apiClient.post({
+        url: "/login_json",
+        data: {
+            loginName: userName,
+            password,
+            captcha
+        },
+        useFilter: false
     });
 }
 
 function adminLogout({type, payload}) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(payload)
-        }, 1500);
+    // return new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         resolve(payload)
+    //     }, 1500);
+    // });
+    apiClient.post({
+        url: "/logout"
     });
 }

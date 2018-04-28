@@ -42,6 +42,8 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps, 
         super(props, context, {});
 
         this.fetchUrl = "/sample/page";
+        this.tableName = "示例列表";
+
 
     }
 
@@ -91,18 +93,12 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps, 
                        pagination={pagination}
                        loading={loading}
                        locale={this.getTableLocal()}
-                       title={this.getTableTile}
+                       title={() => this.tableName}
                        onChange={this.onTableChange}
                        rowSelection={this.getRowSelection()}
                        scroll={scrollXy}/>
             </Modal>
         )
-    };
-
-
-    protected getTableTile = (currentPageData: Object[]) => {
-
-        return "示例列表";
     };
 
 

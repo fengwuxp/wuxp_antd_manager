@@ -107,6 +107,12 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
 
             //复制一份数据
             const formData = {...values};
+
+
+            //TODO 默认数据处理
+
+
+
             const b = this.beforeSerialize(formData);
 
             if (!b) {

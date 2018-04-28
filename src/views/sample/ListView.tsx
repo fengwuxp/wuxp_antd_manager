@@ -15,7 +15,7 @@ import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navig
 import {QuerySampleReq} from "./req/QuerySampleReq";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import FormItem from "antd/lib/form/FormItem";
-import * as styles from "./TableList.scss";
+import * as styles from "../TableList.scss";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 import * as moment from "moment";
@@ -27,6 +27,7 @@ const {RangePicker} = DatePicker;
 const Option = Select.Option;
 
 const history = BrowserNavigatorFactory.get();
+
 const columns: Array<ColumnProps<SampleInfo>> = [
     {
         title: '操作',
@@ -52,12 +53,13 @@ const columns: Array<ColumnProps<SampleInfo>> = [
                 <div>
 
 
-                    <Link style={{marginRight: 10}}
-                          to={`/sample/load?id=${rowData.id}`}>
-                        <Button type="primary"
-                                icon="edit"
-                                size={"small"}>编辑</Button>
-                    </Link>
+                    {/*<Link style={{marginRight: 10}}*/}
+                          {/*to={`/sample/load?id=${rowData.id}`}>*/}
+                        {/*<Button type="primary"*/}
+                                {/*icon="edit"*/}
+                                {/*size={"small"}>编辑</Button>*/}
+                    {/*</Link>*/}
+                    <a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>
                     <Dropdown overlay={menu}>
                         <Button>更多操作 <Icon type="down"/></Button>
                     </Dropdown>
@@ -185,6 +187,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
         super(props, context, {});
 
         this.fetchUrl = "/sample/page";
+        this.tableName = "示例表格";
     }
 
     handleMenuClick = () => {
@@ -259,14 +262,14 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
                     </Row>
                     <Table style={{marginTop: 20}}
-                           bordered={true}
+                           bordered={false}
                            columns={columns}
                            rowKey="id"
                            dataSource={page.records}
                            pagination={pagination}
                            loading={loading}
                            locale={this.getTableLocal()}
-                           title={this.getTableTile}
+                           title={() => this.tableName}
                            onChange={this.onTableChange}
                            rowSelection={this.getRowSelection()}
                            scroll={scrollXy}/>
@@ -274,11 +277,6 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
             </PageHeaderLayout>
         );
     }
-
-    protected getTableTile = (currentPageData: Object[]): React.ReactNode => {
-
-        return "示例表格"
-    };
 
 
     protected beforeSerialize = (req: QuerySampleReq) => {
@@ -381,7 +379,6 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                                                 if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
                                                     return false;
                                                 }
-
                                                 return current.toDate().getTime() > maxPublicDate.toDate().getTime()
                                             }}
                                             showTime={{format: MomentFormatString.HH_mm}}

@@ -8,7 +8,8 @@ import {isBoolean, isNullOrUndefined} from "util";
 import apiClient from "../../fetch/BuildFetchClient";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {SelectValue} from "antd/lib/select";
-import {Select} from "antd";
+import {QueryParamsCache} from "../../model/AntdAdminStore";
+import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
 
 /**
  * 列表视图的 base state
@@ -40,6 +41,14 @@ export interface BaseAbstractTableViewState<T> {
      */
     simpleFilterItems?: Array<SimpleSearchFilterItem>;
 
+
+}
+
+export interface BaseAbstractTableViewProps<E> extends ReduxRouterProps {
+    /**
+     *缓存的查询参数
+     */
+    queryParamsCache?: QueryParamsCache<E>;
 }
 
 /**
@@ -52,7 +61,7 @@ export interface SimpleSearchFilterItem {
     name: string
 }
 
-export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, S extends BaseAbstractTableViewState<any>, E extends ApiQueryReq>
+export default abstract class BaseAbstractTableView<P extends BaseAbstractTableViewProps<E>, S extends BaseAbstractTableViewState<any>, E extends ApiQueryReq>
     extends React.Component<P, S> {
 
 
@@ -68,7 +77,9 @@ export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, 
     protected defaultPrams: any;
 
     //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 20;
+    protected DEFAULT_QUERY_PAGE: number = 3;//DEFAULT_QUERY_SIZE;
+
+    protected tableName: string;
 
     constructor(props: P, context: any, defaultPrams: E = {} as E) {
         super(props, context);
@@ -83,17 +94,37 @@ export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, 
 
     componentDidMount() {
 
-        const defaultOrder: Array<string> = this.getDefaultOrder();
+        const defaultOrder = this.getDefaultOrder();
+        const {prevFetchUrl, params} = this.props.queryParamsCache;
+
+        let queryParamsCache;
+
+        if (isNullOrUndefined(prevFetchUrl)) {
+            queryParamsCache = {};
+            //TODO 更新查询参数缓存
+        } else {
+            if (prevFetchUrl === this.fetchUrl) {
+                //上一次查询的url和当前查询的url相同，使用缓存中的参数
+                queryParamsCache = {...params as any};
+            } else {
+                //TODO 清空查询参数缓存
+            }
+
+        }
+
+        //参数初始化
         this.reqParams = {
             queryPage: 1,
-            querySize: this.DEFAULT_QUERY_PAGE,
             ...this.defaultPrams,
-            orderBy: [defaultOrder[0]],
-            orderType: [defaultOrder[1]]
+            ...defaultOrder,
+            ...queryParamsCache,
+            querySize: this.DEFAULT_QUERY_PAGE,
         };
 
         //发起请求
         this.fetchListData();
+
+        //TODO 将查询参数映射到查询表单上
     }
 
     /**
@@ -155,6 +186,7 @@ export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, 
 
         if (isBoolean(pagination)) {
             // TODO 不分页的处理
+
         } else {
             const {current, pageSize, total} = pagination;
             const {field, order} = sorter;
@@ -186,10 +218,10 @@ export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, 
 
     /**
      * 获取默认的排序字段和类型
-     * @returns {Array<string>}
+     * @returns {object}
      */
-    protected getDefaultOrder(): Array<string> {
-        return ["id", "desc"];
+    protected getDefaultOrder(): object {
+        return {};
     }
 
     /**
@@ -291,12 +323,16 @@ export default abstract class BaseAbstractTableView<P extends ReduxRouterProps, 
             return value === name;
         });
 
+        const {simpleFilterIndex, simpleFilterItems} = this.state;
+
+        //移除右侧simple查询的值
+        delete this.reqParams[simpleFilterItems[simpleFilterIndex].name];
+
+
         this.setState({
             simpleFilterIndex: index
         })
     };
-
-    protected abstract getTableTile: (currentPageData: Object[]) => React.ReactNode;
 
 
 }

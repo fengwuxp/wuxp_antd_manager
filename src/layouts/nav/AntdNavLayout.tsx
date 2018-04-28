@@ -193,6 +193,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             return;
         }
         if (key === 'logout') {
+            console.log("退出登录","");
             sessionManager.logout();
         }
     };

@@ -15,6 +15,7 @@ import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 import LookupListView from "./LookupListView";
 import LookupHelper from "../../helper/LookupHelper";
+import FormItemBuilder from "../../builder/form/FormItemBuilder";
 // import Modal from "../../components/modal/";
 
 const FormItem = Form.Item;
@@ -118,6 +119,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
 
         //TODO
 
+
         //时间处理
         req.publicDate = MomentHelper.handlerMoment(req.publicDate, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
 
@@ -130,6 +132,8 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
 
         console.log("----showSampleLookup----", this.state.showSampleLookup);
 
+
+
         return (
             <PageHeaderLayout
                 title="新增示例"
@@ -140,7 +144,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             label="编号"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('note', {
+                            {getFieldDecorator('sn', {
                                 rules: [{
                                     required: true,
                                     message: '编码未填写'

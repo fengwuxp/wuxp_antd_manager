@@ -27,3 +27,15 @@ export function httpCode401Handler<Response, FetchOption>(resp: Response, option
 
     console.log("无权限")
 }
+
+
+/**
+ * 默认的错误处理者
+ * @param {Response} resp
+ * @param {FetchOption} option
+ * @returns {boolean | void}
+ */
+export function httpCodeDefaultHandler<Response, FetchOption>(resp: Response, option: FetchOption): boolean | void {
+
+    console.log("默认错误处理者")
+}

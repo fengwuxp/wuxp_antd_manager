@@ -5,6 +5,7 @@ import {createRootSaga} from "wuxp_react_dynamic_router/src/manager/saga/SagaMan
 import {session} from "../../reducers/SessionReducer";
 import {menus} from "../../reducers/AntdMenuReducer";
 import {currentSelectedMenu} from "../../reducers/MenuChooseReducer";
+import {queryParamsCache} from "../../reducers/QueryParamsCacheReducer";
 
 
 
@@ -18,7 +19,8 @@ import {currentSelectedMenu} from "../../reducers/MenuChooseReducer";
 const builder = reduxStoreBuilderFactory<AntdAdminStore>({
     session,
     menus,
-    currentSelectedMenu
+    currentSelectedMenu,
+    queryParamsCache
 });
 
 

@@ -1,13 +1,29 @@
-import {AntdAdmin, AntdSession} from "./session/AntdAdmin";
+import {AntdSession} from "./session/AntdAdmin";
 import {AntdMenuItem} from "./menu/AntdMenuItem";
 import {AntdNoticeItem} from "./notice/AntdNoticeItem";
-
+import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 
 /**
  * 系统配置
  */
 export interface SystemConfig {
     [k: string]: any
+}
+
+/**
+ * 查询参数缓存
+ */
+export interface QueryParamsCache<T extends ApiQueryReq> {
+
+    /**
+     * 上一次查询列表的url
+     */
+    prevFetchUrl: string;
+
+    /**
+     * 当前列表缓存的查询参数
+     */
+    params: T
 }
 
 /**
@@ -45,7 +61,13 @@ export interface AntdAdminStore {
     /**
      * 全局异常
      */
-    globalError: any
+    globalError: any;
+
+    /**
+     * 查询参数缓存对象
+     * 该对象在保证用户在操作列表数据是能记录下当前的查询条件
+     */
+    queryParamsCache: QueryParamsCache<any>
 }
 
 

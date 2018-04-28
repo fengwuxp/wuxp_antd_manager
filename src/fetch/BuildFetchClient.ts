@@ -5,7 +5,7 @@ import {FilterItem} from "typescript_api_sdk/src/api/filter/model/FilterItem";
 import {UnifiedRespHandleFilter} from "./filter/UnifiedRespHandleFilter";
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 import {DataType} from "typescript_api_sdk/src/api/enums/DataType";
-import {httpCode301Handler, httpCode401Handler} from "./http/HttpCodeHandler";
+import {httpCode301Handler, httpCode401Handler, httpCodeDefaultHandler} from "./http/HttpCodeHandler";
 
 
 /**
@@ -36,11 +36,12 @@ const defaultOptions = {
 //http强求处理错误处理者
 const httpErrorHandler: FetchHttpErrorHandler = new FetchHttpErrorHandler();
 
-//添加一个301错误状态的处理者
-httpErrorHandler.addErrorCodeHandle(301, httpCode301Handler);
+httpErrorHandler.setDefaultErrorHandler(httpCodeDefaultHandler);
 
 //添加一个301错误状态的处理者
-httpErrorHandler.addErrorCodeHandle(401, httpCode401Handler);
+httpErrorHandler.addErrorCodeHandler(301, httpCode301Handler)
+    .addErrorCodeHandler(401, httpCode401Handler);
+
 
 export default EsServiceSimpleProxyFactory.newProxyInstances<ApiClientFetch>(httpErrorHandler, filters, defaultOptions);
 
