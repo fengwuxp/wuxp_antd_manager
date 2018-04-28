@@ -114,7 +114,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     static childContextTypes = {
         location: PropTypes.object,
         breadcrumbNameMap: PropTypes.object,
-        menus: PropTypes.object,
+        menus: PropTypes.array,
         currentSelectedMenu: PropTypes.number
     };
 
@@ -170,7 +170,8 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         } else {
 
             // get the first authorized route path in routerData
-            const authorizedPath: any = this.getCurrentMenus().forEach(
+            let menus = this.getCurrentMenus();
+            const authorizedPath: any = menus.find(
                 ({authority, path}) => check(authority, path as any, undefined) && path !== '/'
             );
             return isUndefined(authorizedPath) ? '/' : authorizedPath.path;
@@ -242,7 +243,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         }
 
         const bashRedirect = this.getBashRedirect();
-
 
         return (
             <Layout>

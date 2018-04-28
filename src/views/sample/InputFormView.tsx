@@ -1,4 +1,4 @@
-import {Form, Input, DatePicker, Button, Select, Upload, Cascader, InputNumber, Card, Icon, Switch} from 'antd';
+import {Form, Input, DatePicker, Button, Select, Upload, Cascader, InputNumber, Card, Icon, Switch, Modal} from 'antd';
 import locale from "antd/lib/date-picker/locale/zh_CN"
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
@@ -13,6 +13,9 @@ import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
+import LookupListView from "./LookupListView";
+import LookupHelper from "../../helper/LookupHelper";
+// import Modal from "../../components/modal/";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -39,7 +42,13 @@ interface SampleFormProps extends AntdFromBaseProps {
 
 interface SampleFormState extends BaseFormSate<SampleInfo, CreateSampleReq> {
 
-    areaOptions: Array<CascaderOptionType>
+    areaOptions: Array<CascaderOptionType>,
+
+
+    showSampleLookup: boolean;
+
+    selectedSampleRows: Array<SampleInfo>;
+
 }
 
 /**
@@ -59,7 +68,8 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
     state = {
         areaOptions: [],
         submitting: false,
-        // submitData: null
+        selectedSampleRows: [],
+        showSampleLookup: false
     };
 
     componentDidMount() {
@@ -117,6 +127,9 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
 
     render() {
         const {getFieldDecorator} = this.props.form;
+
+        console.log("----showSampleLookup----", this.state.showSampleLookup);
+
         return (
             <PageHeaderLayout
                 title="新增示例"
@@ -234,7 +247,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                                 <Select placeholder="请选择发布类型" allowClear={true}>
                                     {
                                         Object.keys(SendMode).map((key: string) => {
-                                            return <Option value={key}>{SendMode[key].desc}</Option>;
+                                            return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
                                         })
                                     }
                                 </Select>
@@ -355,7 +368,9 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                                     {required: false, message: '请选择上级'}
                                 ],
                             })(
-                                <Input/>
+                                <Input readOnly={true} onClick={() => {
+                                    this.onShowParentTable();
+                                }}/>
                             )}
                         </FormItem>
                         <FormItem
@@ -379,10 +394,33 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>
                         </FormItem>
                     </Form>
+                    <LookupListView onSelectedRow={this.onTableOk}
+                                    visible={this.state.showSampleLookup}
+                                    onCancel={this.onShowParentTable}
+                                    selectedRows={this.state.selectedSampleRows}
+                                    location={this.props.location}
+                                    history={this.props.history}
+                                    match={this.props.match}/>
                 </Card>
             </PageHeaderLayout>
         );
     }
+
+
+    onShowParentTable = (showSampleLookup = true) => {
+        this.setState({
+            showSampleLookup
+        })
+
+    };
+
+    onTableOk = (rows: Array<SampleInfo>) => {
+        console.log("选中的行", rows);
+        this.setState({
+            selectedSampleRows: rows,
+            showSampleLookup: false
+        })
+    };
 
     /**
      * 级联选中地区

@@ -103,6 +103,7 @@ export interface GlobalHeaderProps extends ReactBaseProps {
 
 
 export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> {
+
     componentWillUnmount() {
         this.triggerResizeEvent['cancel']();
     }
@@ -112,7 +113,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
         if (notices.length === 0) {
             return {};
         }
-        const newNotices = notices.map(notice => {
+        const newNotices = notices.map((notice,index) => {
             const newNotice = {...notice};
             if (newNotice.datetime) {
                 newNotice.datetime = moment(notice.datetime).fromNow();
@@ -129,7 +130,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                     doing: 'gold',
                 }[newNotice.status];
                 newNotice.extra = (
-                    <Tag color={color} style={{marginRight: 0}}>{newNotice.extra}</Tag>
+                    <Tag key={index} color={color} style={{marginRight: 0}}>{newNotice.extra}</Tag>
                 );
             }
             return newNotice;
@@ -198,6 +199,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                                 classNames.push(styles.nav_menu_tab_selected)
                             }
                             return <span data-index={i}
+                                         key={i}
                                          onClick={(event) => {
                                              const target: HTMLElement = event.target as HTMLElement;
                                              const domStringMap: DOMStringMap = target.dataset;

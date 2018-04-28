@@ -39,24 +39,24 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
 function queryMenus(params) {
 
-    // return new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //         // console.log(menuData);
-    //         resolve(getMenuData(menuData))
-    //     }, 200);
-    // });
-
-    return apiClient.post({
-        url: "/common/menus",
-        data: {
-            enabled: true,
-            level: 0
-        },
-        useFilter: false
-    }).then((data) => {
-        console.log("---菜单数据--->", data);
-        return convertMenuItem(data.data);
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // console.log(menuData);
+            resolve(getMenuData(menuData))
+        }, 200);
     });
+
+    // return apiClient.post({
+    //     url: "/common/menus",
+    //     data: {
+    //         enabled: true,
+    //         level: 0
+    //     },
+    //     useFilter: false
+    // }).then((data) => {
+    //     console.log("---菜单数据--->", data);
+    //     return convertMenuItem(data.data);
+    // });
 }
 
 /**

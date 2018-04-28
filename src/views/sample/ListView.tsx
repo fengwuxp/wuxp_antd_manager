@@ -20,6 +20,7 @@ import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 import * as moment from "moment";
 import {isNullOrUndefined} from "util";
+import {Link} from "react-router-dom";
 
 const {RangePicker} = DatePicker;
 
@@ -49,17 +50,18 @@ const columns: Array<ColumnProps<SampleInfo>> = [
 
             return (
                 <div>
-                    <Button type="primary"
-                            icon="edit"
-                            onClick={() => {
-                                history.push(`/sample/load?id=${rowData.id}`)
-                            }}
-                            size={"small"}>编辑</Button>
-                    <span style={{marginLeft: 10}}>
-                                    <Dropdown overlay={menu}>
-                                      <Button>更多操作 <Icon type="down"/></Button>
-                                    </Dropdown>
-                                </span>
+
+
+                    <Link style={{marginRight: 10}}
+                          to={`/sample/load?id=${rowData.id}`}>
+                        <Button type="primary"
+                                icon="edit"
+                                size={"small"}>编辑</Button>
+                    </Link>
+                    <Dropdown overlay={menu}>
+                        <Button>更多操作 <Icon type="down"/></Button>
+                    </Dropdown>
+
                 </div>
             )
         }
@@ -150,12 +152,6 @@ const columns: Array<ColumnProps<SampleInfo>> = [
         width: 120
     },
     {
-        title: '费率（千分比）',
-        dataIndex: 'feePpt',
-        sorter: true,
-        width: 120
-    },
-    {
         title: '销售额（万元）',
         dataIndex: 'sale',
         sorter: true,
@@ -187,6 +183,8 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
     constructor(props: any, context: any) {
         super(props, context, {});
+
+        this.fetchUrl = "/sample/page";
     }
 
     handleMenuClick = () => {
@@ -213,6 +211,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
             </Menu>
         );
         let marginLeft10 = {marginLeft: 10};
+
 
         let scrollXy;
         if (page.records.length > 0) {

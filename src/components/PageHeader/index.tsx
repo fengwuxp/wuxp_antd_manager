@@ -36,7 +36,7 @@ export default class PageHeader extends PureComponent<any, any> {
 
         params: PropTypes.object,
 
-        menus: PropTypes.object,
+        menus: PropTypes.array,
 
         currentSelectedMenu: PropTypes.number,
 
