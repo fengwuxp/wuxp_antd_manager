@@ -13,162 +13,168 @@ export default class FormItemBuilder {
      * @param {WrappedFormUtils} form
      * @returns {T}
      */
-    public static builder<T extends any>(form: WrappedFormUtils): T {
+    public static builder<T extends Builder<any>>(form: WrappedFormUtils): T {
 
-        return builder(new ProxyFormBuilder(), form)
+        return new ProxyFormBuilder<T>(form).builder();
     }
 }
 
-class ProxyFormBuilder {
+/**
+ * 表单代理建造者
+ */
+class ProxyFormBuilder<T extends Builder<any>> {
 
-    public formItems: React.ReactNode[] = [];
+    private formItems: React.ReactNode[] = [];
 
-    public options: Map<string, ProxyFormItemOptionsAny> = new Map<string, ProxyFormItemOptionsAny>();
+    private options: Map<string, ProxyFormItemOptionsAny> = new Map<string, ProxyFormItemOptionsAny>();
 
+    private form: WrappedFormUtils;
 
-    constructor() {
+    constructor(form: WrappedFormUtils) {
+        this.form = form;
     }
-}
 
+    /**
+     * @returns {T} 返回一个表单构建造者
+     */
+    builder() {
+        const {getFieldDecorator} = this.form;
+        const ProxyFormBuilder: ProxyHandler<T> = {
 
-function builder<T extends any>(formBuilder: ProxyFormBuilder, form: WrappedFormUtils) {
-    const {getFieldDecorator, setFieldsValue, getFieldValue} = form;
-    const ProxyFormBuilder: ProxyHandler<T> = {
+            get: (target: T, prop: PropertyKey, receiver: any): any => {
 
-        get: function (target: T, prop: PropertyKey, receiver: any): any {
+                const propertyKey = prop as string;
 
-            const propertyKey = prop as string;
-
-            if (propertyKey === "build") {
-                return formBuilder.formItems;
-            } else if (propertyKey === "buildSubmitReq") {
-
-                /**
-                 * 构建要提交的对象
-                 */
-                return function <R extends ApiReq>(formData: object): R {
-                    const req = {};
-                    for (const name in formData) {
-                        const fieldValue = getFieldValue(name);
-                        req[name] = getFormatterValue(name, fieldValue, formBuilder);
-                    }
-                    return req as R;
+                if (propertyKey === "build") {
+                    //返回表单元素列表
+                    return this.formItems;
+                } else if (propertyKey === "buildFormReq") {
+                    //返回一个代理的操作对象
+                    return this.getAndSetProxy();
                 }
+                /**
+                 * 初始化
+                 * @param { React.ReactNode}表单node
+                 * @param {ProxyFormItemOptionsAny}配置
+                 */
+                return (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => {
+
+
+                    const reactNode = getFieldDecorator(propertyKey, options)(node);
+                    this.options.set(propertyKey, options);
+                    this.formItems.push(reactNode);
+
+                    return target;
+                }
+            },
+            set: (target: T, p: PropertyKey, value: any, receiver: any): boolean => {
+                throw new Error("禁止设置新的属性")
             }
-
-
-            /**
-             * 初始化
-             * @param { React.ReactNode}表单node
-             * @param {ProxyFormItemOptionsAny}配置
-             */
-            return function (node: React.ReactNode, options?: ProxyFormItemOptionsAny) {
-
-                const reactNode = getFieldDecorator(propertyKey, options)(node);
-                formBuilder.options.set(propertyKey, options);
-                formBuilder.formItems.push(reactNode);
-
-                return target;
-            }
-        }
-    };
-    return new Proxy<T>({} as T, ProxyFormBuilder);
-}
-
-/**
- * 获取被格式化的值
- * @param key
- * @param fieldValue
- * @param formBuilder
- * @returns {any}
- */
-function getFormatterValue(key, fieldValue, formBuilder) {
-    const formatter = formBuilder.options.get(key).formatter;
-
-    if (isNullOrUndefined(formatter)) {
-        return fieldValue;
+        };
+        return new Proxy<T>({} as T, ProxyFormBuilder);
     }
-    return formatter(fieldValue);
+
+    /**
+     *代理处理 setter getter
+     */
+    private getAndSetProxy() {
+
+        const {setFieldsValue, getFieldValue} = this.form;
+        const proxyHandler: ProxyHandler<T> = {
+            get: (target: T, prop: PropertyKey, receiver: any): any => {
+                //getter
+                const propertyKey = prop as string;
+                const fieldValue = getFieldValue(propertyKey);
+                return this.getFormatterValue(propertyKey, fieldValue);
+            },
+            set: (target: T, prop: PropertyKey, value: any, receiver): boolean => {
+                //setter
+                const key = prop as string;
+                let obj = {};
+                obj[key] = value;
+                setFieldsValue(obj);
+                return true
+
+            }
+        };
+
+        return new Proxy<T>({} as T, proxyHandler);
+    }
+
+    /**
+     * 获取被格式化的值
+     * @param key
+     * @param fieldValue
+     * @returns {any}
+     */
+    private getFormatterValue = (key, fieldValue) => {
+        const formatter = this.options.get(key).formatter;
+
+        if (isNullOrUndefined(formatter)) {
+            return fieldValue;
+        }
+        return formatter(fieldValue);
+    }
+
+
 }
+
+// if (propertyKey === "buildSubmitReq") {
+//
+//     /**
+//      * 构建要提交的对象
+//      */
+//     return <R extends ApiReq>(formData: object): R => {
+//         const req = {};
+//         for (const name in formData) {
+//             const fieldValue = getFieldValue(name);
+//             req[name] = this.getFormatterValue(name, fieldValue);
+//         }
+//         return req as R;
+//     }
+// }
 
 /**
- *代理处理 setter getter
+ * 代理表单配置
+ * @param S 表单元素的原始值类型
+ * @param E 转化后的值类型
  */
-function handlerProxy<T extends any>(formBuilder: ProxyFormBuilder, form: WrappedFormUtils) {
-
-    const {setFieldsValue, getFieldValue} = form;
-    const proxyHandler: ProxyHandler<T> = {
-        get: function (target: T, prop: PropertyKey, receiver: any): any {
-            //getter
-            const propertyKey = prop as string;
-            const fieldValue = getFieldValue(propertyKey);
-            return getFormatterValue(propertyKey, fieldValue, formBuilder);
-        },
-        set: function (target: T, prop: PropertyKey, value: any, receiver): boolean {
-            //setter
-            const key = prop as string;
-            let obj = {};
-            obj[key] = value;
-            setFieldsValue(obj);
-            return true
-
-        }
-    };
-
-    return new Proxy<T>({} as T, proxyHandler);
-}
-
-
 interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
 
     /**
      * 值转换
-     * @param value
-     * @returns {any}
+     * @param {S}value
+     * @returns {E}
      */
     formatter: (value: S) => E;
 
 }
 
-type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>;
+/**
+ * 代理表单配置
+ */
+type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>
 
+/**
+ * 代理表单建造者类型
+ * @param T 表单提交对象
+ */
 type ProxyFormBuilderType<T> = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => T
 
-
+/**
+ * 表单建造者
+ */
 interface Builder<T> {
 
+    /**
+     * 构建表单列表
+     * @returns {React.ReactNode[]}  表单元素列表
+     */
+    build: () => React.ReactNode[];
 
-    build: () => T
+    /**
+     * 构建 req对象
+     * @returns {T}
+     */
+    buildFormReq: () => T
 }
-
-interface Tx extends ApiReq {
-
-    name: string;
-
-    age: number;
-}
-
-interface Test extends Builder<Tx> {
-
-    name: ProxyFormBuilderType<Test>;
-
-    age: ProxyFormBuilderType<Test>;
-
-    // setName: (value: string) => Test
-    //
-    // getName: () => string;
-
-}
-
-let testBuilder = FormItemBuilder.builder<Test>(null);
-
-testBuilder.name(<div></div>, {
-
-    formatter(name: string) {
-
-        return name;
-    }
-})
-
-// let tx = testBuilder.build({});
-
