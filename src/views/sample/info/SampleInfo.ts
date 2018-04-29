@@ -1,7 +1,9 @@
+
+
 /**
  * sampleInfo
  */
-export interface SampleInfo {
+export interface SampleInfo  {
 
 
     /**

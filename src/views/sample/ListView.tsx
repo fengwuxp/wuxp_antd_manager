@@ -21,12 +21,62 @@ import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentForm
 import * as moment from "moment";
 import {isNullOrUndefined} from "util";
 import {Link} from "react-router-dom";
+import TableColumnsBuilder from "../../builder/table/TableColumnsBuilder";
+import {SampleBuilder} from "./info/SampleBuilder";
 
 const {RangePicker} = DatePicker;
 
 const Option = Select.Option;
 
 const history = BrowserNavigatorFactory.get();
+
+
+let builder = TableColumnsBuilder.builder<SampleBuilder, SampleInfo>();
+
+const columns2 = builder.operation({
+    title: '操作',
+    fixed: true,
+    width: 240,
+    render: (cellval, rowData) => {
+
+
+        const menu = (
+            <Menu onClick={({item, key, keyPath}) => {
+                console.log(`key =${key}`, rowData);
+                //TODO
+
+            }} selectedKeys={[]}>
+                <Menu.Item key="remove">删除</Menu.Item>
+                <Menu.Item key="confirm">确认</Menu.Item>
+                <Menu.Item key="see_detail">查看详情</Menu.Item>
+            </Menu>
+        );
+
+        return (
+            <div>
+
+
+                {/*<Link style={{marginRight: 10}}*/}
+                {/*to={`/sample/load?id=${rowData.id}`}>*/}
+                {/*<Button type="primary"*/}
+                {/*icon="edit"*/}
+                {/*size={"small"}>编辑</Button>*/}
+                {/*</Link>*/}
+                <a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>
+                <Dropdown overlay={menu}>
+                    <Button>更多操作 <Icon type="down"/></Button>
+                </Dropdown>
+
+            </div>
+        )
+    }
+}).sn({
+    title: 'sn',
+    dataIndex: 'sn',
+    sorter: true,
+    width: 120,
+}).description({})
+    .build();
 
 const columns: Array<ColumnProps<SampleInfo>> = [
     {
@@ -54,10 +104,10 @@ const columns: Array<ColumnProps<SampleInfo>> = [
 
 
                     {/*<Link style={{marginRight: 10}}*/}
-                          {/*to={`/sample/load?id=${rowData.id}`}>*/}
-                        {/*<Button type="primary"*/}
-                                {/*icon="edit"*/}
-                                {/*size={"small"}>编辑</Button>*/}
+                    {/*to={`/sample/load?id=${rowData.id}`}>*/}
+                    {/*<Button type="primary"*/}
+                    {/*icon="edit"*/}
+                    {/*size={"small"}>编辑</Button>*/}
                     {/*</Link>*/}
                     <a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>
                     <Dropdown overlay={menu}>

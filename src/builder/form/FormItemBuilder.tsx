@@ -39,23 +39,7 @@ function builder<T extends any>(formBuilder: ProxyFormBuilder, form: WrappedForm
 
             const propertyKey = prop as string;
 
-            if (propertyKey.startsWith("set")) {
-                //setter
-                const key = propertyKey.replace("set", "");
-                return function (value: any) {
-                    let obj = {};
-                    obj[key] = value;
-                    setFieldsValue(obj);
-                    return target;
-                }
-            } else if (propertyKey.startsWith("get")) {
-                //getter
-                const key = propertyKey.replace("get", "");
-                return function () {
-                    const fieldValue = getFieldValue(key);
-                    return getFormatterValue(key, fieldValue, formBuilder);
-                }
-            } else if (propertyKey === "build") {
+            if (propertyKey === "build") {
                 return formBuilder.formItems;
             } else if (propertyKey === "buildSubmitReq") {
 
@@ -91,6 +75,13 @@ function builder<T extends any>(formBuilder: ProxyFormBuilder, form: WrappedForm
     return new Proxy<T>({} as T, ProxyFormBuilder);
 }
 
+/**
+ * 获取被格式化的值
+ * @param key
+ * @param fieldValue
+ * @param formBuilder
+ * @returns {any}
+ */
 function getFormatterValue(key, fieldValue, formBuilder) {
     const formatter = formBuilder.options.get(key).formatter;
 
@@ -100,6 +91,34 @@ function getFormatterValue(key, fieldValue, formBuilder) {
     return formatter(fieldValue);
 }
 
+/**
+ *代理处理 setter getter
+ */
+function handlerProxy<T extends any>(formBuilder: ProxyFormBuilder, form: WrappedFormUtils) {
+
+    const {setFieldsValue, getFieldValue} = form;
+    const proxyHandler: ProxyHandler<T> = {
+        get: function (target: T, prop: PropertyKey, receiver: any): any {
+            //getter
+            const propertyKey = prop as string;
+            const fieldValue = getFieldValue(propertyKey);
+            return getFormatterValue(propertyKey, fieldValue, formBuilder);
+        },
+        set: function (target: T, prop: PropertyKey, value: any, receiver): boolean {
+            //setter
+            const key = prop as string;
+            let obj = {};
+            obj[key] = value;
+            setFieldsValue(obj);
+            return true
+
+        }
+    };
+
+    return new Proxy<T>({} as T, proxyHandler);
+}
+
+
 interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
 
     /**
@@ -108,6 +127,7 @@ interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
      * @returns {any}
      */
     formatter: (value: S) => E;
+
 }
 
 type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>;
@@ -115,30 +135,40 @@ type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>;
 type ProxyFormBuilderType<T> = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => T
 
 
-// interface Tx extends ApiReq {
-//     name: string;
-// }
-//
-// interface Test<T> {
-//
-//     name: ProxyFormBuilderType<Test<any>>
-//
-//     setName: (value: string) => Test<any>
-//
-//     getName: () => string;
-//
-//     buildSubmitReq: (value: any) => T
-// }
-//
-// let testBuilder = FormItemBuilder.builder<Test<Tx>>(null);
-// testBuilder.name(<div></div>, {
-//
-//     formatter(name: string) {
-//
-//         return name;
-//     }
-// }).setName("value")
-//     .getName();
-//
-// let tx = testBuilder.buildSubmitReq({});
-// tx.name
+interface Builder<T> {
+
+
+    build: () => T
+}
+
+interface Tx extends ApiReq {
+
+    name: string;
+
+    age: number;
+}
+
+interface Test extends Builder<Tx> {
+
+    name: ProxyFormBuilderType<Test>;
+
+    age: ProxyFormBuilderType<Test>;
+
+    // setName: (value: string) => Test
+    //
+    // getName: () => string;
+
+}
+
+let testBuilder = FormItemBuilder.builder<Test>(null);
+
+testBuilder.name(<div></div>, {
+
+    formatter(name: string) {
+
+        return name;
+    }
+})
+
+// let tx = testBuilder.build({});
+
