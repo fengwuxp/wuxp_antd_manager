@@ -1,18 +1,19 @@
-import {Table, Column, Cell, ColumnCellProps} from "fixed-data-table-2";
 import * as React from "react";
-import FakeObjectDataListStore from "../hleper/FakeObjectDataListStore"
 import {ColumnProps} from "antd/es/table";
-import Button from "antd/lib/button/button";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import BaseListView from "../../base/BaseListView";
 import {SampleListProps, SampleState} from "../ListView";
-import {QuerySampleReq} from "../req/QuerySampleReq";
-import {SampleInfo} from "../info/SampleInfo";
-import {SampleBuilder} from "../info/SampleBuilder";
+import {QuerySampleReq, QuerySampleReqBuilder} from "../req/QuerySampleReq";
+import {SampleBuilder, SampleInfo} from "../info/SampleInfo";
 
 const history = BrowserNavigatorFactory.get();
 
-export default class FixedDataTableListextends extends BaseListView<SampleListProps, SampleState, QuerySampleReq,SampleInfo,SampleBuilder> {
+export default class FixedDataTableListextends extends BaseListView<SampleListProps,
+    SampleState,
+    QuerySampleReq,
+    QuerySampleReqBuilder,
+    SampleInfo,
+    SampleBuilder> {
 
 
     protected getTableTile: (currentPageData: Object[]) => React.ReactNode;
@@ -28,7 +29,6 @@ export default class FixedDataTableListextends extends BaseListView<SampleListPr
     }
 
     protected buildColumns: () => ColumnProps<SampleInfo>[];
-
 
 
     protected beforeSerialize: (req: any) => boolean;

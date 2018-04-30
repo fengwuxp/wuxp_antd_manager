@@ -7,6 +7,7 @@ import ListQueryHelper, {ExportExcelDesc} from "../../helper/ExportExcelFileHelp
 import BaseAbstractTableView, {BaseAbstractTableViewProps, BaseAbstractTableViewState} from "./BaseAbstractTableView";
 import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 import {FormComponentProps} from "antd/lib/form";
+import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
 
 const Option = Select.Option;
 
@@ -29,14 +30,23 @@ export interface BaseListProps<E> extends BaseAbstractTableViewProps<E>, FormCom
  * base list view
  * 泛型说明 P props  S state E 查询查询对象
  */
-export default abstract class BaseListView<
-    P extends BaseListProps<E>,
+export default abstract class BaseListView<P extends BaseListProps<E>,
     S extends BaseListState<T>,
     E extends ApiQueryReq,
+    Q extends FormBuilder<E>/*查询对象的表单builder*/,
     T,
     B extends HasActionTable<B, T>>
     extends BaseAbstractTableView<P, S, E, T, B> {
 
+
+    protected formBuilder: Q;
+
+    constructor(props: P, context: any, defaultPrams: E) {
+        super(props, context, defaultPrams);
+
+        this.formBuilder = FormItemBuilder.builder<Q>(this.props.form);
+
+    }
 
     state = {
         page: {
@@ -62,6 +72,14 @@ export default abstract class BaseListView<
         toggleAdvancedForm: false
     } as S;
 
+
+    componentDidMount() {
+        //将查询参数映射到查询表单上
+        this.reqParams = this.formBuilder.build();
+        this.reqParams.querySize=10;
+        super.componentDidMount();
+
+    }
 
     /**
      * 提交查询

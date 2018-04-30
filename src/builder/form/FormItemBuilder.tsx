@@ -1,7 +1,6 @@
 import {GetFieldDecoratorOptions, WrappedFormUtils} from "antd/lib/form/Form";
 import * as React from "react";
 import {isNullOrUndefined} from "util";
-import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 
 /**
  * 用于构建表单
@@ -13,7 +12,7 @@ export default class FormItemBuilder {
      * @param {WrappedFormUtils} form
      * @returns {T}
      */
-    public static builder<T extends Builder<any>>(form: WrappedFormUtils): T {
+    public static builder<T extends FormBuilder<any>>(form: WrappedFormUtils): T {
 
         return new ProxyFormBuilder<T>(form).builder();
     }
@@ -22,9 +21,8 @@ export default class FormItemBuilder {
 /**
  * 表单代理建造者
  */
-class ProxyFormBuilder<T extends Builder<any>> {
+class ProxyFormBuilder<T extends FormBuilder<any>> {
 
-    private formItems: React.ReactNode[] = [];
 
     private options: Map<string, ProxyFormItemOptionsAny> = new Map<string, ProxyFormItemOptionsAny>();
 
@@ -45,12 +43,10 @@ class ProxyFormBuilder<T extends Builder<any>> {
 
                 const propertyKey = prop as string;
 
+
                 if (propertyKey === "build") {
-                    //返回表单元素列表
-                    return this.formItems;
-                } else if (propertyKey === "buildFormReq") {
                     //返回一个代理的操作对象
-                    return this.getAndSetProxy();
+                    return () => this.getAndSetProxy();
                 }
                 /**
                  * 初始化
@@ -62,9 +58,8 @@ class ProxyFormBuilder<T extends Builder<any>> {
 
                     const reactNode = getFieldDecorator(propertyKey, options)(node);
                     this.options.set(propertyKey, options);
-                    this.formItems.push(reactNode);
 
-                    return target;
+                    return reactNode;
                 }
             },
             set: (target: T, p: PropertyKey, value: any, receiver: any): boolean => {
@@ -89,7 +84,12 @@ class ProxyFormBuilder<T extends Builder<any>> {
             },
             set: (target: T, prop: PropertyKey, value: any, receiver): boolean => {
                 //setter
+                console.log("---代理设置值-->", prop, value);
+
                 const key = prop as string;
+                if (isNullOrUndefined(this.options.get(key))) {
+                    return true;
+                }
                 let obj = {};
                 obj[key] = value;
                 setFieldsValue(obj);
@@ -146,7 +146,7 @@ interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
      * @param {S}value
      * @returns {E}
      */
-    formatter: (value: S) => E;
+    formatter?: (value: S) => E;
 
 }
 
@@ -159,22 +159,16 @@ type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>
  * 代理表单建造者类型
  * @param T 表单提交对象
  */
-type ProxyFormBuilderType<T> = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => T
+export type ProxyFormBuilderType<T> = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => T
 
 /**
  * 表单建造者
  */
-interface Builder<T> {
-
-    /**
-     * 构建表单列表
-     * @returns {React.ReactNode[]}  表单元素列表
-     */
-    build: () => React.ReactNode[];
+export interface FormBuilder<T> {
 
     /**
      * 构建 req对象
      * @returns {T}
      */
-    buildFormReq: () => T
+    build: () => T;
 }

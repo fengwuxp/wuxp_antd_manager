@@ -1,7 +1,6 @@
 import * as React from "react";
 import Table from "antd/es/table/Table";
 import BaseListView, {BaseListState} from "../base/BaseListView";
-import {SampleInfo} from "./info/SampleInfo";
 import locale from "antd/lib/date-picker/locale/zh_CN"
 import Button from "antd/es/button/button";
 import Dropdown from "antd/lib/dropdown/dropdown";
@@ -11,7 +10,7 @@ import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
-import {QuerySampleReq} from "./req/QuerySampleReq";
+import {QuerySampleReq, QuerySampleReqBuilder} from "./req/QuerySampleReq";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import FormItem from "antd/lib/form/FormItem";
 import * as styles from "../TableList.scss";
@@ -20,9 +19,8 @@ import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentForm
 import * as moment from "moment";
 import {isNullOrUndefined} from "util";
 import {Link} from "react-router-dom";
-import {SampleBuilder} from "./info/SampleBuilder";
 import {ColumnProps} from "antd/es/table/interface";
-import {connect, MapStateToPropsParam} from "react-redux";
+import {SampleInfo, SampleBuilder} from "./info/SampleInfo";
 
 const {RangePicker} = DatePicker;
 
@@ -46,15 +44,18 @@ export interface SampleListProps extends AntdFromBaseProps {
 // });
 // @(connect as any)(mapStateToPropsParam)
 @(Form.create as any)()
-export default class ListView extends BaseListView<SampleListProps, SampleState, QuerySampleReq, SampleInfo, SampleBuilder> {
+export default class ListView extends BaseListView<SampleListProps,
+    SampleState,
+    QuerySampleReq,
+    QuerySampleReqBuilder,
+    SampleInfo,
+    SampleBuilder> {
 
     constructor(props: any, context: any) {
         super(props, context, {});
 
         this.fetchUrl = "/sample/page";
         this.tableName = "示例表格";
-
-
     }
 
     handleMenuClick = () => {
@@ -269,24 +270,25 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
 
     protected getSimpleQueryForm = (): React.ReactNode => {
 
-        const {getFieldDecorator} = this.props.form;
 
         return (
             <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                 <Col md={8} sm={24}>
                     <FormItem label="名称模糊查询">
-                        {getFieldDecorator('nameLike')(<Input placeholder="请输入名称"/>)}
+                        {this.formBuilder.nameLike(<Input placeholder="请输入名称"/>)}
                     </FormItem>
                 </Col>
                 <Col md={8} sm={24}>
                     <FormItem label="发布类型">
-                        {getFieldDecorator('sendMode')(
-                            <Select placeholder="请选择发布类型"
-                                    style={{width: '100%'}}>
-                                <Option value="SYNC">同步</Option>
-                                <Option value="ASYNC">异步</Option>
-                            </Select>
-                        )}
+                        {
+                            this.formBuilder.sendMode(
+                                <Select placeholder="请选择发布类型"
+                                        style={{width: '100%'}}>
+                                    <Option value="SYNC">同步</Option>
+                                    <Option value="ASYNC">异步</Option>
+                                </Select>
+                            )
+                        }
                     </FormItem>
                 </Col>
                 <Col md={8} sm={24}>
@@ -297,48 +299,59 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
     };
 
     protected getExtendedQueryForm = (): React.ReactNode => {
-        const {getFieldDecorator} = this.props.form;
         return (
             <div>
 
                 <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                     <Col md={8} sm={24}>
                         <FormItem label="名称模糊查询">
-                            {getFieldDecorator('nameLike')(<Input placeholder="请输入名称"/>)}
+                            {this.formBuilder.nameLike(<Input placeholder="请输入名称"/>)}
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
                         <FormItem label="发布类型">
-                            {getFieldDecorator('sendMode')(
-                                <Select placeholder="请选择发布类型"
-                                        style={{width: '100%'}}>
-                                    <Option value="SYNC">同步</Option>
-                                    <Option value="ASYNC">异步</Option>
-                                </Select>
-                            )}
+                            {
+                                this.formBuilder.sendMode(
+                                    <Select placeholder="请选择发布类型"
+                                            style={{width: '100%'}}>
+                                        <Option value="SYNC">同步</Option>
+                                        <Option value="ASYNC">异步</Option>
+                                    </Select>
+                                )
+                            }
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
                         <FormItem label="是否启用">
-                            {getFieldDecorator('enabled', {
-                                initialValue: true
-                            })(
-                                <Switch checkedChildren="启用"
-                                        unCheckedChildren="禁用"
-                                        defaultChecked/>
-                            )}
+                            {
+                                this.formBuilder.enabled(
+                                    <Switch checkedChildren="启用"
+                                            unCheckedChildren="禁用"
+                                            defaultChecked/>,
+                                    {
+                                        initialValue: true
+                                    }
+                                )
+                            }
                         </FormItem>
                     </Col>
                 </Row>
                 <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                     <Col md={8} sm={24}>
                         <FormItem label="发布时间">
-                            {getFieldDecorator('publicDate')(
-                                <RangePicker locale={locale}
-                                             placeholder={['请选择最小发布时间', '请选择最大发布时间']}
-                                             showTime={{format: MomentFormatString.HH_mm}}
-                                             format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                            )}
+                            {
+                                this.formBuilder.publicDate(
+                                    <RangePicker locale={locale}
+                                                 placeholder={['请选择最小发布时间', '请选择最大发布时间']}
+                                                 showTime={{format: MomentFormatString.HH_mm}}
+                                                 format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
+                                    {
+                                        formatter: (value) => {
+                                            console.log("---publicDate---", value);
+                                        }
+                                    }
+                                )
+                            }
                         </FormItem>
                     </Col>
 
@@ -346,36 +359,50 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                 <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                     <Col md={8} sm={24}>
                         <FormItem label="请选择最小发布时间">
-                            {getFieldDecorator('minPublicDate')(
-                                <DatePicker locale={locale}
-                                            placeholder="请选择最小发布时间"
-                                            disabledDate={(current: moment.Moment) => {
-                                                let maxPublicDate = this.props.form.getFieldValue("maxPublicDate") as  moment.Moment;
-                                                if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
-                                                    return false;
-                                                }
-                                                return current.toDate().getTime() > maxPublicDate.toDate().getTime()
-                                            }}
-                                            showTime={{format: MomentFormatString.HH_mm}}
-                                            format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                            )}
+                            {
+                                this.formBuilder.minPublicDate(
+                                    <DatePicker locale={locale}
+                                                placeholder="请选择最小发布时间"
+                                                disabledDate={(current: moment.Moment) => {
+                                                    let maxPublicDate = this.props.form.getFieldValue("maxPublicDate") as  moment.Moment;
+                                                    if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
+                                                        return false;
+                                                    }
+                                                    return current.toDate().getTime() > maxPublicDate.toDate().getTime()
+                                                }}
+                                                showTime={{format: MomentFormatString.HH_mm}}
+                                                format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
+                                    {
+                                        formatter: (value) => {
+                                            console.log("---minPublicDate---", value);
+                                        }
+                                    }
+                                )
+                            }
                         </FormItem>
                         <FormItem label="请选择最大发布时间">
-                            {getFieldDecorator('maxPublicDate')(
-                                <DatePicker locale={locale}
-                                            placeholder="请选择最大发布时间"
-                                            disabledDate={(current: moment.Moment) => {
+                            {
+                                this.formBuilder.maxPublicDate(
+                                    <DatePicker locale={locale}
+                                                placeholder="请选择最大发布时间"
+                                                disabledDate={(current: moment.Moment) => {
 
-                                                let minPublicDate = this.props.form.getFieldValue("minPublicDate") as  moment.Moment;
-                                                if (isNullOrUndefined(minPublicDate) || isNullOrUndefined(current)) {
-                                                    return false;
-                                                }
+                                                    let minPublicDate = this.props.form.getFieldValue("minPublicDate") as  moment.Moment;
+                                                    if (isNullOrUndefined(minPublicDate) || isNullOrUndefined(current)) {
+                                                        return false;
+                                                    }
 
-                                                return current.toDate().getTime() < minPublicDate.toDate().getTime()
-                                            }}
-                                            showTime={{format: MomentFormatString.HH_mm}}
-                                            format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                            )}
+                                                    return current.toDate().getTime() < minPublicDate.toDate().getTime()
+                                                }}
+                                                showTime={{format: MomentFormatString.HH_mm}}
+                                                format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
+                                    {
+                                        formatter: (value) => {
+                                            console.log("---maxPublicDate---", value);
+                                        }
+                                    }
+                                )
+                            }
                         </FormItem>
                     </Col>
 

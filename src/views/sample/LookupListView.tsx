@@ -1,11 +1,10 @@
 import * as React from "react";
 import {QuerySampleReq} from "./req/QuerySampleReq";
 import {Table} from "antd";
-import {SampleInfo} from "./info/SampleInfo";
+import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import {ColumnProps} from "antd/es/table/interface";
 import BaseLookupView, {BaseLookupViewProps, BaseLookupViewState} from "../base/BaseLookupView";
 import Modal from "antd/lib/modal/Modal";
-import {SampleBuilder} from "./info/SampleBuilder";
 
 
 interface LookupListViewProps extends BaseLookupViewProps {

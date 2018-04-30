@@ -92,8 +92,14 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
     //默认的查询大小
     protected DEFAULT_QUERY_PAGE: number = 3;//DEFAULT_QUERY_SIZE;
 
+    /**
+     * 列表名称
+     */
     protected tableName: string;
 
+    /**
+     * 表格列建造者
+     */
     protected tableBuilder: B;
 
     constructor(props: P, context: any, defaultPrams: E = {} as E) {
@@ -144,7 +150,8 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
         //发起请求
         this.fetchListData();
 
-        //TODO 将查询参数映射到查询表单上
+
+
     }
 
     /**
