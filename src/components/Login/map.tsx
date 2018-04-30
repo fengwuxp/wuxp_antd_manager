@@ -70,7 +70,7 @@ const map = {
         props: {
             size: 'large',
             maxLength:4,
-            prefix: <Icon type="mail" className={styles.prefixIcon}/>,
+            prefix: <Icon type="code" className={styles.prefixIcon}/>,
             placeholder: '图片验证码',
         },
         rules: [

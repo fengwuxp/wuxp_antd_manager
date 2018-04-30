@@ -94,7 +94,7 @@ function generator({defaultProps, defaultRules, type}) {
 
                 const options: any = {};
                 let otherProps = {};
-                const {onChange, defaultValue, rules, name, ...restProps} = this.props;
+                const {onChange, defaultValue, rules,pictureCodeSrc, name, ...restProps} = this.props;
                 const {count} = this.state;
                 options.rules = rules || defaultRules;
                 if (onChange) {
@@ -123,7 +123,7 @@ function generator({defaultProps, defaultRules, type}) {
                                             size="large"
                                             onClick={this.onGetCaptcha}>
                                             {count ? `${count} s` : '获取验证码'}
-                                        </Button> : <img src={this.props.pictureCodeSrc}
+                                        </Button> : <img src={pictureCodeSrc}
                                                          ref="PictureCode"
                                                          style={{width: 100, height: 38, paddingBottom: 4}}
                                                          onClick={this.onChangePictureCode}/>

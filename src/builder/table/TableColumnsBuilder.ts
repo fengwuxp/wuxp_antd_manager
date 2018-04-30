@@ -12,7 +12,7 @@ export default class TableColumnsBuilder {
      */
     public static builder<T extends HasActionTable<T, E>, E>(): T {
 
-        return builder<T, E>(new ProxyTableBuilder<T>());
+        return new ProxyTableBuilder<T, E>().builder();
     }
 }
 
@@ -28,38 +28,56 @@ export interface HasActionTable<T, E> extends Builder<E> {
     // [key: string]: (column: ColumnProps<T>) => T;
 }
 
-class ProxyTableBuilder<T> {
+class ProxyTableBuilder<T extends HasActionTable<T, E>, E> {
 
-    public columns: Array<ColumnProps<T>> = [];
+    private columns: Array<ColumnProps<T>> = [];
 
+    /**
+     * 代理对象
+     */
+    private proxy: T;
 
     constructor() {
     }
+
+    builder(): T {
+
+
+        const proxyBuilder: ProxyHandler<T> = {
+            get: (target: T, p: PropertyKey, receiver: any): any => {
+
+                const propertyKey = p as string;
+
+
+                if (propertyKey === "build") {
+
+                    return () => this.columns;
+                }
+                return (column: ColumnProps<T>) => {
+
+
+                    const isExist = this.columns.some(({dataIndex}) => {
+
+                        return propertyKey === dataIndex;
+                    });
+                    if (isExist) {
+                        return this.proxy;
+                    }
+
+                    this.columns.push({
+                        ...column,
+                        key: propertyKey,
+                        dataIndex: propertyKey
+                    });
+
+                    return this.proxy;
+                }
+            },
+        };
+
+        this.proxy = new Proxy({} as T, proxyBuilder);
+        return this.proxy;
+    }
+
 }
 
-function builder<T extends HasActionTable<T, E>, E>(tableBuilder: ProxyTableBuilder<T>): T {
-
-
-    const ProxyBuilder: ProxyHandler<T> = {
-        get(target: T, p: PropertyKey, receiver: any): any {
-
-            const propertyKey = p as string;
-
-            if (propertyKey === "build") {
-
-                return tableBuilder.columns;
-            }
-            return function (column: ColumnProps<T>) {
-
-                tableBuilder.columns.push({
-                    ...column,
-                    dataIndex: propertyKey
-                });
-
-                return target;
-            }
-        },
-    };
-
-    return new Proxy({} as T, ProxyBuilder);
-}

@@ -4,38 +4,24 @@ import {Table} from "antd";
 import {SampleInfo} from "./info/SampleInfo";
 import {ColumnProps} from "antd/es/table/interface";
 import BaseLookupView, {BaseLookupViewProps, BaseLookupViewState} from "../base/BaseLookupView";
-import {ButtonType} from "antd/lib/button";
 import Modal from "antd/lib/modal/Modal";
+import {SampleBuilder} from "./info/SampleBuilder";
 
-
-const columns: Array<ColumnProps<SampleInfo>> = [
-    {
-        title: 'sn',
-        dataIndex: 'sn',
-        sorter: true,
-        width: 120,
-    },
-    {
-        title: '姓名',
-        dataIndex: 'name',
-        sorter: true,
-        width: 100,
-    }
-];
 
 interface LookupListViewProps extends BaseLookupViewProps {
-
 }
 
 interface LookupListViewState extends BaseLookupViewState<SampleInfo> {
-
-
 }
 
 /**
  * 带回查找
  */
-export default class LookupListView extends BaseLookupView<LookupListViewProps, LookupListViewState, QuerySampleReq> {
+export default class LookupListView extends BaseLookupView<LookupListViewProps,
+    LookupListViewState,
+    QuerySampleReq,
+    SampleInfo,
+    SampleBuilder> {
 
 
     constructor(props: LookupListViewProps, context: any,) {
@@ -43,8 +29,6 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps, 
 
         this.fetchUrl = "/sample/page";
         this.tableName = "示例列表";
-
-
     }
 
 
@@ -55,10 +39,22 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps, 
                 {display: "编号", name: "sn"},
                 {display: "姓名", name: "name"},
             ],
-            selectedRows: this.props.selectedRows,
-
+            selectedRows: this.props.selectedRows
         });
     }
+
+    protected buildColumns = (): ColumnProps<SampleInfo>[] => {
+
+        return this.tableBuilder.sn({
+            title: 'sn',
+            sorter: true,
+            width: 120
+        }).name({
+            title: '姓名',
+            sorter: true,
+            width: 100
+        }).build();
+    };
 
 
     render() {
@@ -87,7 +83,7 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps, 
                 <div style={{textAlign: "right"}}>{this.getRightSimpleSearch()}</div>
                 <Table style={{marginTop: 20}}
                        bordered={true}
-                       columns={columns}
+                       columns={this.buildColumns()}
                        rowKey="id"
                        dataSource={page.records}
                        pagination={pagination}

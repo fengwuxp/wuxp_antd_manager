@@ -5,11 +5,10 @@ import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxR
 import {SelectValue} from "antd/lib/select";
 import Input from "antd/lib/input/Input";
 import Button from "antd/lib/button/button";
-import {Modal, Select} from "antd";
+import {Select} from "antd";
 import BaseAbstractTableView, {BaseAbstractTableViewState} from "./BaseAbstractTableView";
 import {SampleInfo} from "../sample/info/SampleInfo";
-import {ModalLocale} from "antd/lib/modal/Modal";
-import {ModalProps} from "antd/lib/modal";
+import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 
 const Option = Select.Option;
 
@@ -42,29 +41,18 @@ export interface BaseLookupViewProps extends ReduxRouterProps {
 
 }
 
-/**
- * 简单的查询选项
- */
-export interface SimpleSearchFilterItem {
 
-    display: string,
-
-    name: string,
-
-
-}
-
-export type LookViewRef = {
-    destroy: () => void;
-}
-
-export default abstract class BaseLookupView<P extends BaseLookupViewProps, S extends BaseLookupViewState<any>, E extends ApiQueryReq>
-    extends BaseAbstractTableView<P, S, E> {
+export default abstract class BaseLookupViewBaseListView<
+    P extends BaseLookupViewProps,
+    S extends BaseLookupViewState<T>,
+    E extends ApiQueryReq,
+    T,
+    B extends HasActionTable<B, T>>
+    extends BaseAbstractTableView<P, S, E, T, B> {
 
 
     constructor(props: P, context: any, defaultPrams: E) {
         super(props, context, defaultPrams);
-
     }
 
     state = {

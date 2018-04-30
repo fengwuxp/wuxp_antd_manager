@@ -13,7 +13,7 @@ class MenuChooseAction implements MenuChooseReducer {
 
 }
 
-export interface MenuChooseSaga {
+interface MenuChooseSaga {
 
     changeTopMenuNav: (...p) => void;
 }

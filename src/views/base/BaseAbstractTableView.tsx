@@ -1,15 +1,16 @@
 import * as React from "react";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
-import {TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
+import {ColumnProps, TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
 import {parse} from "querystring";
-import zh_CN from 'rc-pagination/lib/locale/zh_CN';
 import {isBoolean, isNullOrUndefined} from "util";
 import apiClient from "../../fetch/BuildFetchClient";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {SelectValue} from "antd/lib/select";
 import {QueryParamsCache} from "../../model/AntdAdminStore";
-import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
+import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColumnsBuilder";
+import {QueryParamsCacheAction} from "../../manager/query/QueryParamsCacheManager";
+import {antdAdminStore} from "../../manager/store/StoreManager";
 
 /**
  * 列表视图的 base state
@@ -61,7 +62,19 @@ export interface SimpleSearchFilterItem {
     name: string
 }
 
-export default abstract class BaseAbstractTableView<P extends BaseAbstractTableViewProps<E>, S extends BaseAbstractTableViewState<any>, E extends ApiQueryReq>
+
+/**
+ * @param P react props
+ * @param S react state
+ * @param T 表格要展示的对象
+ * @param E 表格查询对象
+ * @param B 表格builder
+ */
+export default abstract class BaseAbstractTableView<P extends BaseAbstractTableViewProps<E>,
+    S extends BaseAbstractTableViewState<T>,
+    E extends ApiQueryReq,
+    T,
+    B extends HasActionTable<B, T>>
     extends React.Component<P, S> {
 
 
@@ -81,13 +94,18 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
 
     protected tableName: string;
 
+    protected tableBuilder: B;
+
     constructor(props: P, context: any, defaultPrams: E = {} as E) {
         super(props, context);
 
         const {search} = this.props.history.location;
         //获取查询参数
         const params = parse(search);
+
         this.defaultPrams = Object.assign({}, params);
+
+        this.tableBuilder = TableColumnsBuilder.builder<B, T>();
 
     }
 
@@ -95,21 +113,23 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
     componentDidMount() {
 
         const defaultOrder = this.getDefaultOrder();
-        const {prevFetchUrl, params} = this.props.queryParamsCache;
+        const {prevFetchUrl, params} = antdAdminStore.getState().queryParamsCache;
 
         let queryParamsCache;
 
         if (isNullOrUndefined(prevFetchUrl)) {
             queryParamsCache = {};
-            //TODO 更新查询参数缓存
         } else {
             if (prevFetchUrl === this.fetchUrl) {
                 //上一次查询的url和当前查询的url相同，使用缓存中的参数
                 queryParamsCache = {...params as any};
             } else {
-                //TODO 清空查询参数缓存
+                // 清空查询参数缓存
+                QueryParamsCacheAction.updateCache({
+                    params: null,
+                    prevFetchUrl: null
+                });
             }
-
         }
 
         //参数初始化
@@ -134,43 +154,24 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
         this.setState({
             loading: true
         });
+
         apiClient.post({
             url: this.fetchUrl,
             data: this.reqParams,
             useFilter: false
         }).then((data: PageInfo<any>) => {
+            //更新查询参数缓存
+            QueryParamsCacheAction.updateCache({
+                params: this.reqParams,
+                prevFetchUrl: this.fetchUrl
+            });
+
             this.updatePagination(data)
         }).catch(this.fetchListDataFailure)['finally'](() => {
             this.setState({
                 loading: false
             });
         });
-
-        // let list = [];
-        //
-        // let max = 50;
-        // for (let i = 0; i < max; i++) {
-        //     list.push({
-        //         id: parseInt(i + ""),
-        //         sn: i + "",
-        //         addTime: 1524562998000,
-        //         icon: "",
-        //         sendModeDesc: "异步",
-        //         description: "ds",
-        //         enabled: true
-        //     })
-        // }
-        //
-        // const data: PageInfo<any> = {
-        //     total: max,
-        //     queryPage: 1,
-        //     querySize: max,
-        //     records: list,
-        //
-        // } as PageInfo<any>;
-        //
-        //
-        // this.updatePagination(data)
     };
 
 
@@ -280,14 +281,14 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
 
         const rowSelection: TableRowSelection<any> = {
 
-            selectedRowKeys: this.state.selectedRows.map(item => item.id),
+            selectedRowKeys: this.state.selectedRows.map(item => (item as any).id),
 
             /**
              * 发生选择/取消事件
              * @param {string[] | number[]} selectedRowKeys
              * @param {Object[]} selectedRows
              */
-            onChange: (selectedRowKeys: string[] | number[], selectedRows: Object[]) => {
+            onChange: (selectedRowKeys: string[] | number[], selectedRows: T[]) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                 console.log(selectedRowKeys);
                 this.setState({
@@ -335,4 +336,5 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
     };
 
 
+    protected abstract buildColumns: () => ColumnProps<T>[];
 }

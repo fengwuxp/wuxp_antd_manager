@@ -1,46 +1,19 @@
 import * as React from "react";
-import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo"
-import {TablePaginationConfig} from "antd/es/table/interface";
 import {Button, Form, Icon, Input, Select} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import zh_CN from 'rc-pagination/lib/locale/zh_CN';
-import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
 import ListQueryHelper, {ExportExcelDesc} from "../../helper/ExportExcelFileHelper";
-import {SimpleSearchFilterItem} from "./BaseLookupView";
-import BaseAbstractTableView from "./BaseAbstractTableView";
+import BaseAbstractTableView, {BaseAbstractTableViewProps, BaseAbstractTableViewState} from "./BaseAbstractTableView";
+import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
+import {FormComponentProps} from "antd/lib/form";
 
 const Option = Select.Option;
 
 /**
  * 列表视图的 base state
  */
-export interface BaseListState<T> {
-
-    //数据对象
-    page: PageInfo<T>;
-
-    //是否处于加载中
-    loading: boolean;
-
-    //分页信息
-    pagination: TablePaginationConfig | false,
-
-    /**
-     * 选中的行
-     */
-    selectedRows: Array<T>;
-
-    /**
-     * simple默认查询的index
-     */
-    simpleFilterIndex?: number;
-
-
-    /**
-     * 简单的查询过滤配置
-     */
-    simpleFilterItems?: Array<SimpleSearchFilterItem>;
+export interface BaseListState<T> extends BaseAbstractTableViewState<T> {
 
     /**
      * 高级搜索面板控制
@@ -48,14 +21,21 @@ export interface BaseListState<T> {
     toggleAdvancedForm: boolean;
 }
 
+export interface BaseListProps<E> extends BaseAbstractTableViewProps<E>, FormComponentProps {
 
+}
 
 /**
  * base list view
  * 泛型说明 P props  S state E 查询查询对象
  */
-export default abstract class BaseListView<P extends AntdFromBaseProps, S extends BaseListState<any>, E extends ApiQueryReq>
-    extends BaseAbstractTableView<P, S, E>  {
+export default abstract class BaseListView<
+    P extends BaseListProps<E>,
+    S extends BaseListState<T>,
+    E extends ApiQueryReq,
+    T,
+    B extends HasActionTable<B, T>>
+    extends BaseAbstractTableView<P, S, E, T, B> {
 
 
     state = {
@@ -81,7 +61,6 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
         simpleFilterItems: [],
         toggleAdvancedForm: false
     } as S;
-
 
 
     /**
@@ -238,7 +217,6 @@ export default abstract class BaseListView<P extends AntdFromBaseProps, S extend
     protected importExcelFile = () => {
 
     };
-
 
 
     /**

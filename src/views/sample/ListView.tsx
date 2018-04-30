@@ -1,7 +1,6 @@
 import * as React from "react";
 import Table from "antd/es/table/Table";
 import BaseListView, {BaseListState} from "../base/BaseListView";
-import {ColumnProps} from "antd/es/table/interface";
 import {SampleInfo} from "./info/SampleInfo";
 import locale from "antd/lib/date-picker/locale/zh_CN"
 import Button from "antd/es/button/button";
@@ -21,202 +20,15 @@ import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentForm
 import * as moment from "moment";
 import {isNullOrUndefined} from "util";
 import {Link} from "react-router-dom";
-import TableColumnsBuilder from "../../builder/table/TableColumnsBuilder";
 import {SampleBuilder} from "./info/SampleBuilder";
+import {ColumnProps} from "antd/es/table/interface";
+import {connect, MapStateToPropsParam} from "react-redux";
 
 const {RangePicker} = DatePicker;
 
 const Option = Select.Option;
 
 const history = BrowserNavigatorFactory.get();
-
-
-let builder = TableColumnsBuilder.builder<SampleBuilder, SampleInfo>();
-
-const columns2 = builder.operation({
-    title: '操作',
-    fixed: true,
-    width: 240,
-    render: (cellval, rowData) => {
-
-
-        const menu = (
-            <Menu onClick={({item, key, keyPath}) => {
-                console.log(`key =${key}`, rowData);
-                //TODO
-
-            }} selectedKeys={[]}>
-                <Menu.Item key="remove">删除</Menu.Item>
-                <Menu.Item key="confirm">确认</Menu.Item>
-                <Menu.Item key="see_detail">查看详情</Menu.Item>
-            </Menu>
-        );
-
-        return (
-            <div>
-
-
-                {/*<Link style={{marginRight: 10}}*/}
-                {/*to={`/sample/load?id=${rowData.id}`}>*/}
-                {/*<Button type="primary"*/}
-                {/*icon="edit"*/}
-                {/*size={"small"}>编辑</Button>*/}
-                {/*</Link>*/}
-                <a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>
-                <Dropdown overlay={menu}>
-                    <Button>更多操作 <Icon type="down"/></Button>
-                </Dropdown>
-
-            </div>
-        )
-    }
-}).sn({
-    title: 'sn',
-    dataIndex: 'sn',
-    sorter: true,
-    width: 120,
-}).description({})
-    .build();
-
-const columns: Array<ColumnProps<SampleInfo>> = [
-    {
-        title: '操作',
-        fixed: true,
-        dataIndex: "operation",
-        width: 240,
-        render: (cellval, rowData) => {
-
-
-            const menu = (
-                <Menu onClick={({item, key, keyPath}) => {
-                    console.log(`key =${key}`, rowData);
-                    //TODO
-
-                }} selectedKeys={[]}>
-                    <Menu.Item key="remove">删除</Menu.Item>
-                    <Menu.Item key="confirm">确认</Menu.Item>
-                    <Menu.Item key="see_detail">查看详情</Menu.Item>
-                </Menu>
-            );
-
-            return (
-                <div>
-
-
-                    {/*<Link style={{marginRight: 10}}*/}
-                    {/*to={`/sample/load?id=${rowData.id}`}>*/}
-                    {/*<Button type="primary"*/}
-                    {/*icon="edit"*/}
-                    {/*size={"small"}>编辑</Button>*/}
-                    {/*</Link>*/}
-                    <a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>
-                    <Dropdown overlay={menu}>
-                        <Button>更多操作 <Icon type="down"/></Button>
-                    </Dropdown>
-
-                </div>
-            )
-        }
-    },
-    {
-        title: 'sn',
-        dataIndex: 'sn',
-        sorter: true,
-        width: 120,
-    },
-    {
-        title: '姓名',
-        dataIndex: 'name',
-        sorter: true,
-        width: 100,
-    },
-    {
-        title: '图标',
-        dataIndex: 'icon',
-        sorter: true,
-        width: 100,
-        render: (cellValue) => {
-            if (!StringUtils.hasText(cellValue)) {
-                return null;
-            }
-            return <Popover content={<img src={cellValue} style={{maxWidth: 140}}/>}>
-                <img src={cellValue} style={{maxWidth: 40}}/>;
-            </Popover>
-        },
-    },
-    {
-        title: '简介',
-        dataIndex: 'description',
-        sorter: false,
-        width: 100,
-    },
-    {
-        title: '发布日期',
-        dataIndex: 'publicDate',
-        sorter: true,
-        width: 120,
-    },
-    {
-        title: '发布类型',
-        dataIndex: 'sendMode',
-        sorter: true,
-        width: 110,
-    },
-    {
-        title: '附件',
-        dataIndex: 'downFile',
-        sorter: false,
-        width: 80,
-        render: (cellValue) => {
-            if (!StringUtils.hasText(cellValue)) {
-                return null;
-            }
-            return <Popover content={<Button icon="download"
-                                             type="primary"
-                                             size="small"
-                                             onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}>下载</Button>}>
-                <Icon type="file"/>
-            </Popover>
-        }
-    },
-    {
-        title: '活动URL',
-        dataIndex: 'hdUrl',
-        sorter: false,
-        width: 120,
-    },
-    {
-        title: '数量',
-        dataIndex: 'number',
-        sorter: true,
-        width: 80
-    },
-    {
-        title: '费率（百分比）',
-        dataIndex: 'feePct',
-        sorter: true,
-        width: 120
-    },
-    {
-        title: '费率（千分比）',
-        dataIndex: 'feePpt',
-        sorter: true,
-        width: 120
-    },
-    {
-        title: '销售额（万元）',
-        dataIndex: 'sale',
-        sorter: true,
-        width: 120
-    },
-    {
-        title: '启用禁用',
-        dataIndex: 'enabled',
-        sorter: true,
-        width: 120
-    },
-
-];
 
 export interface SampleState extends BaseListState<SampleInfo> {
 
@@ -226,18 +38,23 @@ export interface SampleListProps extends AntdFromBaseProps {
 
 }
 
-
 /**
  * 示例列表页面
  */
+// const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({queryParamsCache}) => ({
+//     queryParamsCache
+// });
+// @(connect as any)(mapStateToPropsParam)
 @(Form.create as any)()
-export default class ListView extends BaseListView<SampleListProps, SampleState, QuerySampleReq> {
+export default class ListView extends BaseListView<SampleListProps, SampleState, QuerySampleReq, SampleInfo, SampleBuilder> {
 
     constructor(props: any, context: any) {
         super(props, context, {});
 
         this.fetchUrl = "/sample/page";
         this.tableName = "示例表格";
+
+
     }
 
     handleMenuClick = () => {
@@ -254,6 +71,114 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
             ]
         })
     }
+
+    protected buildColumns = (): ColumnProps<SampleInfo>[] => {
+
+        return this.tableBuilder.operation({
+            title: '操作',
+            fixed: true,
+            width: 240,
+            render: (cellval, rowData) => {
+                const menu = (
+                    <Menu onClick={({item, key, keyPath}) => {
+                        console.log(`key =${key}`, rowData);
+                        //TODO
+
+                    }} selectedKeys={[]}>
+                        <Menu.Item key="remove">删除</Menu.Item>
+                        <Menu.Item key="confirm">确认</Menu.Item>
+                        <Menu.Item key="see_detail">查看详情</Menu.Item>
+                    </Menu>
+                );
+
+                return (
+                    <div>
+
+
+                        <Link style={{marginRight: 10}}
+                              to={`/sample/load?id=${rowData.id}`}>
+                            <Button type="primary"
+                                    icon="edit"
+                                    size={"small"}>编辑</Button>
+                        </Link>
+                        {/*<a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>*/}
+                        <Dropdown overlay={menu}>
+                            <Button>更多操作 <Icon type="down"/></Button>
+                        </Dropdown>
+
+                    </div>
+                )
+            }
+        }).sn({
+            title: 'sn',
+            dataIndex: 'sn',
+            sorter: true,
+            width: 120,
+        }).icon({
+            title: '图标',
+            sorter: true,
+            width: 100,
+            render: (cellValue) => {
+                if (!StringUtils.hasText(cellValue)) {
+                    return null;
+                }
+                return <Popover content={<img src={cellValue} style={{maxWidth: 140}}/>}>
+                    <img src={cellValue} style={{maxWidth: 40}}/>;
+                </Popover>
+            },
+        }).description({
+            title: '简介',
+            sorter: false,
+            width: 100,
+        }).publicDate({
+            title: '发布日期',
+            sorter: true,
+            width: 120,
+        }).sendMode({
+            title: '发布类型',
+            sorter: true,
+            width: 110,
+        }).downFile({
+            title: '附件',
+            sorter: false,
+            width: 80,
+            render: (cellValue) => {
+                if (!StringUtils.hasText(cellValue)) {
+                    return null;
+                }
+                return <Popover content={<Button icon="download"
+                                                 type="primary"
+                                                 size="small"
+                                                 onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}>下载</Button>}>
+                    <Icon type="file"/>
+                </Popover>
+            }
+        }).hdUrl({
+            title: '活动URL',
+            sorter: false,
+            width: 120,
+        }).number({
+            title: '数量',
+            sorter: true,
+            width: 80
+        }).feePct({
+            title: '费率（百分比）',
+            sorter: true,
+            width: 120
+        }).feePpt({
+            title: '费率（千分比）',
+            sorter: true,
+            width: 120
+        }).sale({
+            title: '销售额（万元）',
+            sorter: true,
+            width: 120
+        }).enabled({
+            title: '启用禁用',
+            sorter: true,
+            width: 120
+        }).build();
+    };
 
     render() {
         const {page, loading, pagination, selectedRows} = this.state;
@@ -313,7 +238,7 @@ export default class ListView extends BaseListView<SampleListProps, SampleState,
                     </Row>
                     <Table style={{marginTop: 20}}
                            bordered={false}
-                           columns={columns}
+                           columns={this.buildColumns()}
                            rowKey="id"
                            dataSource={page.records}
                            pagination={pagination}
