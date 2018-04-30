@@ -50,7 +50,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
     }
 
 
-    componentDidMount(): void {
+    componentWillMount(): void {
 
         if (!this.isCreated) {
             //在编辑是先加载表单数据

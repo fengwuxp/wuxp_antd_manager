@@ -73,12 +73,21 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     } as S;
 
 
-    componentDidMount() {
-        //将查询参数映射到查询表单上
-        this.reqParams = this.formBuilder.build();
-        this.reqParams.querySize=10;
-        super.componentDidMount();
+    componentWillMount() {
+        super.componentWillMount();
+    }
 
+    componentDidMount() {
+        console.log("componentDidMount");
+
+        //将参数初始化到查询表单上
+        let target = this.formBuilder.build();
+
+        console.log(this.reqParams);
+
+        for (const key in this.reqParams) {
+            target[key] = this.reqParams[key];
+        }
     }
 
     /**

@@ -21,6 +21,7 @@ import {isNullOrUndefined} from "util";
 import {Link} from "react-router-dom";
 import {ColumnProps} from "antd/es/table/interface";
 import {SampleInfo, SampleBuilder} from "./info/SampleInfo";
+import SendMode from "./enums/SendMode";
 
 const {RangePicker} = DatePicker;
 
@@ -39,10 +40,6 @@ export interface SampleListProps extends AntdFromBaseProps {
 /**
  * 示例列表页面
  */
-// const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({queryParamsCache}) => ({
-//     queryParamsCache
-// });
-// @(connect as any)(mapStateToPropsParam)
 @(Form.create as any)()
 export default class ListView extends BaseListView<SampleListProps,
     SampleState,
@@ -52,7 +49,9 @@ export default class ListView extends BaseListView<SampleListProps,
     SampleBuilder> {
 
     constructor(props: any, context: any) {
-        super(props, context, {});
+        super(props, context, {
+            sendMode: SendMode.ASYNC.name
+        });
 
         this.fetchUrl = "/sample/page";
         this.tableName = "示例表格";
@@ -70,8 +69,9 @@ export default class ListView extends BaseListView<SampleListProps,
                 {display: "编号", name: "sn"},
                 {display: "姓名", name: "name"},
             ]
-        })
+        });
     }
+
 
     protected buildColumns = (): ColumnProps<SampleInfo>[] => {
 
@@ -182,6 +182,7 @@ export default class ListView extends BaseListView<SampleListProps,
     };
 
     render() {
+        console.log("render");
         const {page, loading, pagination, selectedRows} = this.state;
 
         const moreAction = (

@@ -55,7 +55,6 @@ class ProxyFormBuilder<T extends FormBuilder<any>> {
                  */
                 return (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => {
 
-
                     const reactNode = getFieldDecorator(propertyKey, options)(node);
                     this.options.set(propertyKey, options);
 
@@ -85,11 +84,11 @@ class ProxyFormBuilder<T extends FormBuilder<any>> {
             set: (target: T, prop: PropertyKey, value: any, receiver): boolean => {
                 //setter
                 console.log("---代理设置值-->", prop, value);
-
                 const key = prop as string;
-                if (isNullOrUndefined(this.options.get(key))) {
+                if (!this.options.has(key)) {
                     return true;
                 }
+                console.log("---代理设置值 form-->", prop, value);
                 let obj = {};
                 obj[key] = value;
                 setFieldsValue(obj);

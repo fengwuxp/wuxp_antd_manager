@@ -11,6 +11,7 @@ import {QueryParamsCache} from "../../model/AntdAdminStore";
 import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 import {QueryParamsCacheAction} from "../../manager/query/QueryParamsCacheManager";
 import {antdAdminStore} from "../../manager/store/StoreManager";
+import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
 
 /**
  * 列表视图的 base state
@@ -90,7 +91,7 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
     protected defaultPrams: any;
 
     //默认的查询大小
-    protected DEFAULT_QUERY_PAGE: number = 3;//DEFAULT_QUERY_SIZE;
+    protected DEFAULT_QUERY_PAGE: number = DEFAULT_QUERY_SIZE;
 
     /**
      * 列表名称
@@ -109,15 +110,16 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
         //获取查询参数
         const params = parse(search);
 
-        this.defaultPrams = Object.assign({}, params);
+        this.defaultPrams = Object.assign({}, params, defaultPrams);
 
         this.tableBuilder = TableColumnsBuilder.builder<B, T>();
 
     }
 
-
-    componentDidMount() {
-
+    /**
+     * 该方法在首次渲染之前调用，也是再 render 方法调用之前修改 state 的最后一次机会。
+     */
+    componentWillMount() {
         const defaultOrder = this.getDefaultOrder();
         const {prevFetchUrl, params} = antdAdminStore.getState().queryParamsCache;
 
@@ -147,11 +149,11 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
             querySize: this.DEFAULT_QUERY_PAGE,
         };
 
+        //移除查询总数
+        delete this.reqParams.total;
+
         //发起请求
         this.fetchListData();
-
-
-
     }
 
     /**

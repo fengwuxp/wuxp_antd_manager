@@ -47,8 +47,8 @@ export default class EditFormView extends BaseFormView<SampleFormProps, SampleFo
         initFormData: null
     };
 
-    componentDidMount() {
-        super.componentDidMount();
+    componentWillMount() {
+        super.componentWillMount();
 
         this.getAreaInfo({
             level: 1

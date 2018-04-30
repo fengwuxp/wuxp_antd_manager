@@ -73,8 +73,8 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         showSampleLookup: false
     };
 
-    componentDidMount() {
-        super.componentDidMount();
+    componentWillMount() {
+        super.componentWillMount();
 
         this.getAreaInfo({
             level: 1
@@ -131,7 +131,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
         const {getFieldDecorator} = this.props.form;
 
         console.log("----showSampleLookup----", this.state.showSampleLookup);
-
 
 
         return (
