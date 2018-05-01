@@ -218,7 +218,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                     />,
                                     {
                                         rules: [],
-                                        formatter: (value) => {
+                                        getFormatter: (value) => {
                                             return MomentHelper.handlerMoment(value, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
                                         }
                                     }
@@ -416,7 +416,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ],
                                         initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
-                                        formatter: (parent: SampleInfo) => {
+                                        getFormatter: (parent: SampleInfo) => {
                                             console.log("--formatter parent--", parent);
                                             return this.state.selectedSampleRows[0].id;
                                         }
@@ -441,7 +441,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 required: true, message: '请选择地区信息'
                                             }
                                         ],
-                                        formatter: (values: string[]) => {
+                                        getFormatter: (values: string[]) => {
                                             console.log("-----获取地址 -----", values);
                                             return values[values.length - 1];
                                         }

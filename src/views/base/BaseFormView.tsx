@@ -8,6 +8,7 @@ import {UpLoadHelper} from "../../helper/UpLoadHelper";
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
 import {isNullOrUndefined} from "util";
+import {message} from "antd";
 
 
 export interface BaseFormSate<E, Q extends ApiReq> {
@@ -81,30 +82,41 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
             const path = this.props.match.path;
             const params = parse(search.split("?")[1]);
 
+            message.loading("数据加载中", 0)
             //加载表单数据
             apiClient.post({
                 url: path,
                 data: params,
                 useFilter: false
             }).then((data) => {
-                console.log("初始化表单的数据", data);
+
                 this.setState({
                     initFormData: data
                 });
-                setTimeout(() => {
-                    const proxyReq = this.formBuilder.build();
-                    for (const key in data) {
-                        // proxyReq[key] = data[key];
-                    }
-                }, 300);
-                this.fetchDataSuccess(data);
-            }).catch(this.fetchFormDataFailure)
+                const proxyReq: Q = this.formBuilder.build();
+
+                this.fetchDataSuccess(data, proxyReq);
+
+                //执行表单项的初始化函数
+                this.formBuilder.executeInitFunction();
+            }).catch(this.fetchFormDataFailure)['finally'](() => {
+                message.destroy();
+            })
         }
     }
 
+    componentDidMount() {
 
-    protected fetchDataSuccess = (data) => {
 
+    }
+
+
+    protected fetchDataSuccess  (data: E, proxyReq: Q) {
+        //初始化表单的值
+        console.log("----------super fetchDataSuccess------", data)
+        for (const key in data) {
+            (proxyReq as any)[key] = data[key];
+        }
     };
 
     /**

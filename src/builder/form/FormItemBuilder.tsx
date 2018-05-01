@@ -1,6 +1,6 @@
 import {GetFieldDecoratorOptions, WrappedFormUtils} from "antd/lib/form/Form";
 import * as React from "react";
-import {isNullOrUndefined} from "util";
+import {isFunction, isNullOrUndefined} from "util";
 
 /**
  * 用于构建表单
@@ -28,6 +28,11 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
 
     private form: WrappedFormUtils;
 
+    /**
+     *是否执行
+     */
+    private isExecute: boolean;
+
     constructor(form: WrappedFormUtils) {
         this.form = form;
     }
@@ -48,6 +53,10 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                     //返回一个代理的操作对象
                     return () => this.getAndSetProxy();
                 }
+
+                if (propertyKey === "executeInitFunction") {
+                    return () => this.executeInitFunction();
+                }
                 /**
                  * 初始化
                  * @param { React.ReactNode}表单node
@@ -56,7 +65,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                 return (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => {
 
                     const reactNode = getFieldDecorator(propertyKey, options)(node);
-                    this.options.set(propertyKey, options);
+                    this.options.set(propertyKey, {...options});
 
                     return reactNode;
                 }
@@ -67,6 +76,24 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
         };
         return new Proxy<T>({} as T, ProxyFormBuilder);
     }
+
+    public executeInitFunction = () => {
+
+        if (this.isExecute) {
+            return;
+        }
+        this.isExecute = true;
+        const {getFieldValue} = this.form;
+        this.options.forEach((option, key) => {
+            if (isFunction(option.initialFunction)) {
+                const fieldValue = getFieldValue(key);
+                // let value = this.getFormatterValue(key, fieldValue);
+                console.log("value--------->", fieldValue);
+                option.initialFunction(fieldValue);
+            }
+        });
+
+    };
 
     /**
      *代理处理 setter getter
@@ -89,12 +116,18 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                 if (!this.options.has(key)) {
                     return true;
                 }
-                console.log("---代理设置值-->", prop, value);
+                let option = this.options.get(key);
+                let val;
+                if (isFunction(option.setFormatter)) {
+                    val = option.setFormatter(value)
+                } else {
+                    val = value;
+                }
+                console.log("---代理设置值-->", prop, val);
                 let obj = {};
-                obj[key] = value;
+                obj[key] = val;
                 setFieldsValue(obj);
                 return true
-
             }
         };
 
@@ -114,7 +147,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
             return fieldValue;
         }
         // console.log("---代理获取 getFormatterValue-->");
-        const formatter = option.formatter;
+        const formatter = option.getFormatter;
         if (isNullOrUndefined(formatter)) {
             return fieldValue;
         }
@@ -125,21 +158,6 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
 
 }
 
-// if (propertyKey === "buildSubmitReq") {
-//
-//     /**
-//      * 构建要提交的对象
-//      */
-//     return <R extends ApiReq>(formData: object): R => {
-//         const req = {};
-//         for (const name in formData) {
-//             const fieldValue = getFieldValue(name);
-//             req[name] = this.getFormatterValue(name, fieldValue);
-//         }
-//         return req as R;
-//     }
-// }
-
 /**
  * 代理表单配置
  * @param S 表单元素的原始值类型
@@ -148,11 +166,25 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
 interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
 
     /**
-     * 值转换
+     * get值时候formatter
      * @param {S}value
      * @returns {E}
      */
-    formatter?: (value: S) => E;
+    getFormatter?: (value: S) => E;
+
+    /**
+     * 设置值的的时候formatter
+     * @param {E} val
+     * @returns {S}
+     */
+    setFormatter?: (val: E) => S;
+
+    /**
+     * 初始化函数
+     * @param value 表单项的值
+     * @returns {any}
+     */
+    initialFunction?: (value: any) => any
 
 }
 
@@ -177,4 +209,9 @@ export interface FormBuilder<T> {
      * @returns {T}
      */
     build: () => T;
+
+    /**
+     * 执行表单项的初始化函数
+     */
+    executeInitFunction: () => void;
 }

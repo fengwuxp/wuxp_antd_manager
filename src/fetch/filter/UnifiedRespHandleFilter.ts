@@ -5,6 +5,8 @@ import {message as AntdMessage} from "antd";
 import {analysisAction} from "../action/ActionStrategy";
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 
+let count = 0;
+
 /**
  * 统一响应处理过滤器
  */
@@ -35,10 +37,15 @@ export class UnifiedRespHandleFilter extends ApiAbstractFilter {
                 }
                 analysisAction(actions[0]);
             });
-
         } else {
-            //请求失败
-            AntdMessage.warn(message ? message : "操作失败");
+            if (count === 0) {
+                //请求失败
+                count++;
+                AntdMessage.warn(message ? message : "操作失败", 2, () => {
+                    count--;
+                });
+            }
+
         }
 
         return true;

@@ -346,7 +346,7 @@ export default class ListView extends BaseListView<SampleListProps,
                                                  showTime={{format: MomentFormatString.HH_mm}}
                                                  format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
                                     {
-                                        formatter: (value) => {
+                                        getFormatter: (value) => {
                                             console.log("---publicDate---", value);
                                         }
                                     }
@@ -373,7 +373,7 @@ export default class ListView extends BaseListView<SampleListProps,
                                                 showTime={{format: MomentFormatString.HH_mm}}
                                                 format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
                                     {
-                                        formatter: (value) => {
+                                        getFormatter: (value) => {
                                             console.log("---minPublicDate---", value);
                                         }
                                     }
@@ -397,7 +397,7 @@ export default class ListView extends BaseListView<SampleListProps,
                                                 showTime={{format: MomentFormatString.HH_mm}}
                                                 format={MomentFormatString.YYYY_MM_DD_HH_mm}/>,
                                     {
-                                        formatter: (value) => {
+                                        getFormatter: (value) => {
                                             console.log("---maxPublicDate---", value);
                                         }
                                     }

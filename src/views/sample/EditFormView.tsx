@@ -68,18 +68,9 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
     }
 
 
-    fetchDataSuccess = (data) => {
-        this.getAreaInfo({
-            level: 1
-        }).then((areaOptions) => {
-            this.setState({
-                areaOptions
-            });
-            //获取级联地区数据的初始化数据
-            this.getCascadeAreaSelectInitValue(data.areaId);
-        }).catch((e) => {
-            console.log("加载地区数据失败", e);
-        });
+    fetchDataSuccess(data: SampleInfo, proxyReq: EditSampleReq) {
+        super.fetchDataSuccess(data, proxyReq);
+
     };
 
     /**
@@ -103,16 +94,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 };
             });
         });
-    };
-
-
-    selectDateTimes = (value, dateString) => {
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
-    };
-
-    selectDateTimeOnOk = (value) => {
-        console.log('onOk: ', value);
     };
 
 
@@ -232,7 +213,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                         />,
                         {
                             rules: [],
-                            formatter: (value) => {
+                            getFormatter: (value) => {
                                 return MomentHelper.handlerMoment(value, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
                             }
                         }
@@ -429,12 +410,16 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: false, message: '请选择上级'
                                 }
                             ],
-                            initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
-                            formatter: (parent: SampleInfo) => {
+                            // initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
+                            initialFunction: (parentId: number) => {
+                                console.log("----parentId----", parentId);
+                            },
+                            getFormatter: (parent: SampleInfo) => {
                                 console.log("--formatter parent--", parent);
                                 return this.state.selectedSampleRows[0].id;
                             }
-                        })
+                        }
+                    )
                 }
             </FormItem>
             <FormItem
@@ -455,8 +440,30 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: true, message: '请选择地区信息'
                                 }
                             ],
-                            initialValue: getCascadeAreaValues(initFormData.areaId),
-                            formatter: (values: string[]) => {
+                            // initialValue: getCascadeAreaValues(initFormData.areaId),
+
+                            /**
+                             *
+                             * @param {Array<string>} values
+                             */
+                            initialFunction: (values: Array<string>) => {
+                                this.getAreaInfo({
+                                    level: 1
+                                }).then((areaOptions) => {
+                                    this.setState({
+                                        areaOptions
+                                    });
+                                    //获取级联地区数据的初始化数据
+                                    this.getCascadeAreaSelectInitValue(values);
+
+                                }).catch((e) => {
+                                    console.log("加载地区数据失败", e);
+                                });
+                            },
+                            setFormatter(val) {
+                                return getCascadeAreaValues(val);
+                            },
+                            getFormatter: (values: string[]) => {
                                 console.log("-----获取地址 -----", values);
                                 return values[values.length - 1];
                             }
@@ -487,10 +494,9 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
     };
 
 
-    async getCascadeAreaSelectInitValue(areaId: string) {
-        let selectedValues = getCascadeAreaValues(areaId);
-
-        console.log("-------------1------------", selectedValues);
+    async getCascadeAreaSelectInitValue(selectedValues: string[]) {
+        // let selectedValues = getCascadeAreaValues(areaId);
+        console.log("----------selectedValues--------", selectedValues);
         let i = 0;
         let prentOptions = null;
         while (i < selectedValues.length) {
@@ -502,8 +508,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
             prentOptions = selectedOptions.children;
             i++;
         }
-
-
     };
 
     /**
