@@ -73,63 +73,63 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     /**
      * ID
      */
-    id?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    id?: ProxyFormBuilderType;
     /**
      * 编号
      */
-    sn?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    sn?: ProxyFormBuilderType;
     /**
      * 名称
      */
-    name?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    name?: ProxyFormBuilderType;
     /**
      * 名称模糊查询
      */
-    nameLike?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    nameLike?: ProxyFormBuilderType;
     /**
      * 最小发布日期
      */
-    minPublicDate?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    minPublicDate?: ProxyFormBuilderType;
     /**
      * 最大发布日期
      */
-    maxPublicDate?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    maxPublicDate?: ProxyFormBuilderType;
     /**
      * 发布类型
      */
-    sendMode?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    sendMode?: ProxyFormBuilderType;
     /**
      * 启用
      */
-    enabled?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    enabled?: ProxyFormBuilderType;
     /**
      * 上级ID
      */
-    parentId?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    parentId?: ProxyFormBuilderType;
     /**
      * 加载上级信息
      */
-    loadParent?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    loadParent?: ProxyFormBuilderType;
     /**
      * 地区ID
      */
-    areaId?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    areaId?: ProxyFormBuilderType;
     /**
      * 最小创建日期
      */
-    minAddTime?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    minAddTime?: ProxyFormBuilderType;
     /**
      * 最大创建日期
      */
-    maxAddTime?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    maxAddTime?: ProxyFormBuilderType;
     /**
      * 最小更新日期
      */
-    minUpdateTime?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    minUpdateTime?: ProxyFormBuilderType;
     /**
      * 最大更新日期
      */
-    maxUpdateTime?: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    maxUpdateTime?: ProxyFormBuilderType;
 
-    publicDate: ProxyFormBuilderType<QuerySampleReqBuilder>;
+    publicDate: ProxyFormBuilderType;
 }

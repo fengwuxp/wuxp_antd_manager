@@ -44,7 +44,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     constructor(props: P, context: any, defaultPrams: E) {
         super(props, context, defaultPrams);
 
-        this.formBuilder = FormItemBuilder.builder<Q>(this.props.form);
+        this.formBuilder = FormItemBuilder.builder<Q,E>(this.props.form);
 
     }
 
@@ -115,7 +115,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                 return;
             }
             console.log("默认查询参数", this.defaultPrams);
-            console.log("简单", this.defaultPrams);
+            console.log("简单查询参数",simpleParam);
             console.log("高级查询参数", req);
 
             //组合查询参数

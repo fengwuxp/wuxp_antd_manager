@@ -31,8 +31,8 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
     }
 
 
-    componentDidMount() {
-        super.componentDidMount();
+    componentWillMount() {
+        super.componentWillMount();
         this.setState({
             simpleFilterItems: [
                 {display: "编号", name: "sn"},

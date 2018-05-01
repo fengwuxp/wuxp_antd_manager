@@ -12,16 +12,16 @@ export default class FormItemBuilder {
      * @param {WrappedFormUtils} form
      * @returns {T}
      */
-    public static builder<T extends FormBuilder<any>>(form: WrappedFormUtils): T {
+    public static builder<T extends FormBuilder<Q>, Q extends object>(form: WrappedFormUtils): T {
 
-        return new ProxyFormBuilder<T>(form).builder();
+        return new ProxyFormBuilder<T, Q>(form).builder();
     }
 }
 
 /**
  * 表单代理建造者
  */
-class ProxyFormBuilder<T extends FormBuilder<any>> {
+class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
 
 
     private options: Map<string, ProxyFormItemOptionsAny> = new Map<string, ProxyFormItemOptionsAny>();
@@ -71,24 +71,25 @@ class ProxyFormBuilder<T extends FormBuilder<any>> {
     /**
      *代理处理 setter getter
      */
-    private getAndSetProxy() {
+    private getAndSetProxy = (): Q => {
 
         const {setFieldsValue, getFieldValue} = this.form;
-        const proxyHandler: ProxyHandler<T> = {
-            get: (target: T, prop: PropertyKey, receiver: any): any => {
+        const proxyHandler: ProxyHandler<Q> = {
+            get: (target: Q, prop: PropertyKey, receiver: any): any => {
                 //getter
+                // console.log("---代理获取值-->", prop);
                 const propertyKey = prop as string;
                 const fieldValue = getFieldValue(propertyKey);
                 return this.getFormatterValue(propertyKey, fieldValue);
             },
-            set: (target: T, prop: PropertyKey, value: any, receiver): boolean => {
+            set: (target: Q, prop: PropertyKey, value: any, receiver): boolean => {
                 //setter
-                console.log("---代理设置值-->", prop, value);
+                // console.log("---代理设置值-->", prop, value);
                 const key = prop as string;
                 if (!this.options.has(key)) {
                     return true;
                 }
-                console.log("---代理设置值 form-->", prop, value);
+                console.log("---代理设置值-->", prop, value);
                 let obj = {};
                 obj[key] = value;
                 setFieldsValue(obj);
@@ -97,8 +98,8 @@ class ProxyFormBuilder<T extends FormBuilder<any>> {
             }
         };
 
-        return new Proxy<T>({} as T, proxyHandler);
-    }
+        return new Proxy<Q>({} as Q, proxyHandler);
+    };
 
     /**
      * 获取被格式化的值
@@ -107,11 +108,17 @@ class ProxyFormBuilder<T extends FormBuilder<any>> {
      * @returns {any}
      */
     private getFormatterValue = (key, fieldValue) => {
-        const formatter = this.options.get(key).formatter;
+        let option = this.options.get(key);
 
+        if (isNullOrUndefined(option)) {
+            return fieldValue;
+        }
+        // console.log("---代理获取 getFormatterValue-->");
+        const formatter = option.formatter;
         if (isNullOrUndefined(formatter)) {
             return fieldValue;
         }
+        // console.log("---代理获取 formatter value-->");
         return formatter(fieldValue);
     }
 
@@ -158,7 +165,7 @@ type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>
  * 代理表单建造者类型
  * @param T 表单提交对象
  */
-export type ProxyFormBuilderType<T> = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => T
+export type ProxyFormBuilderType = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => React.ReactNode;
 
 /**
  * 表单建造者

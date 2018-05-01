@@ -8,7 +8,7 @@ import {CascaderOptionType} from "antd/lib/cascader";
 import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
 import InfoProvideService from "../../services/infoprovide/InfoProvideService";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
-import {CreateSampleReq} from "./req/CreateSampleReq";
+import {CreateSampleReq, CreateSampleReqBuilder} from "./req/CreateSampleReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
@@ -56,8 +56,11 @@ interface SampleFormState extends BaseFormSate<SampleInfo, CreateSampleReq> {
  * 新增表单的例子
  */
 @(Form.create as any)()
-export default class InputFormView extends BaseFormView<SampleFormProps, SampleFormState> {
-
+export default class InputFormView extends BaseFormView<SampleFormProps,
+    SampleFormState,
+    SampleInfo,
+    CreateSampleReq,
+    CreateSampleReqBuilder> {
 
     constructor(props: SampleFormProps, context: any) {
         super(props, context);
@@ -119,19 +122,18 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
 
         //TODO
 
+        // console.log("-------req.publicDate------", req.publicDate)
 
         //时间处理
-        req.publicDate = MomentHelper.handlerMoment(req.publicDate, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
+        // req.publicDate = MomentHelper.handlerMoment(req.publicDate, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
 
         return true;
     };
 
 
     render() {
-        const {getFieldDecorator} = this.props.form;
 
         console.log("----showSampleLookup----", this.state.showSampleLookup);
-
 
         return (
             <PageHeaderLayout
@@ -140,56 +142,46 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                 <Card bordered={false}>
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem
-                            label="编号"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
-                            {getFieldDecorator('sn', {
-                                rules: [{
-                                    required: true,
-                                    message: '编码未填写'
-                                }],
-                                initialValue: null
-                            })(
-                                <Input placeholder="请填写编号"/>
-                            )}
-                            <div>编号是5-10位的数字、字母等组合</div>
-                        </FormItem>
-                        <FormItem
                             label="名称"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('name', {
-                                rules: [
+                            {
+                                this.formBuilder.name(
+                                    <Input placeholder="请填写编号"/>,
                                     {
-                                        max: 5,
-                                        message: '名称长度最大为5'
-                                    },
-                                    {
-                                        min: 2,
-                                        message: '名称长度最小为2'
+                                        rules: [
+                                            {
+                                                max: 5,
+                                                message: '名称长度最大为5'
+                                            },
+                                            {
+                                                min: 2,
+                                                message: '名称长度最小为2'
+                                            }
+                                        ],
+                                        initialValue: null
                                     }
-                                ],
-                                initialValue: null
-                            })(
-                                <Input placeholder="请填写编号"/>
-                            )}
+                                )
+                            }
                             <div>名称长度为2-5</div>
                         </FormItem>
                         <FormItem
                             label="图标"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('icon', {
-                                rules: [
+                            {
+                                this.formBuilder.icon(
+                                    <Input type="hidden"/>,
                                     {
-                                        required: false,
-                                        message: '请上传图标'
-                                    },
-                                ],
-                                initialValue: null
-                            })(
-                                <Input type="hidden"/>
-                            )}
+                                        rules: [
+                                            {
+                                                required: false,
+                                                message: '请上传图标'
+                                            }
+                                        ]
+                                    }
+                                )
+                            }
                             <Upload {...this.getUploadUploadProps('icon')}>
                                 <Button>
                                     <Icon type="upload"/> 请选择要上传的图标
@@ -201,60 +193,79 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                             label="简介"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('description', {
-                                rules: [],
-                                initialValue: null
-                            })(
-                                <Input placeholder="请填写简介"/>
-                            )}
-                            <div>名称长度为2-5</div>
+                            {
+                                this.formBuilder.description(
+                                    <Input placeholder="请填写简介"/>,
+                                    {
+                                        rules: [],
+                                    }
+                                )
+                            }
+                            <div>请填写简介</div>
                         </FormItem>
                         <FormItem
                             label="发布时间"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-
-                            {getFieldDecorator('publicDate', {
-                                rules: [],
-                                initialValue: null
-                            })(
-                                <DatePicker
-                                    showTime
-                                    locale={locale}
-                                    format={MomentFormatString.YYYY_MM_DD_HH_mm}
-                                    placeholder="请选择发布时间"
-                                    style={{width: 200}}
-                                />
-                            )}
+                            {
+                                this.formBuilder.publicDate(
+                                    <DatePicker
+                                        showTime
+                                        locale={locale}
+                                        format={MomentFormatString.YYYY_MM_DD_HH_mm}
+                                        placeholder="请选择发布时间"
+                                        style={{width: 200}}
+                                    />,
+                                    {
+                                        rules: [],
+                                        formatter: (value) => {
+                                            return MomentHelper.handlerMoment(value, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
+                                        }
+                                    }
+                                )
+                            }
                             <div>请选择时间</div>
                         </FormItem>
                         <FormItem
                             label="活动介绍"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('mediumBody', {
-                                rules: [
-                                    {required: true, message: '请填写活动介绍'}
-                                ],
-                            })(
-                                <TextArea autosize={{minRows: 4}} cols={15}/>
-                            )}
+                            {
+                                this.formBuilder.mediumBody(
+                                    <TextArea autosize={{minRows: 4}} cols={15}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message: '请填写活动介绍'
+                                            }
+                                        ]
+                                    }
+                                )
+                            }
                         </FormItem>
                         <FormItem
                             label="发布类型"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('sendMode', {
-                                rules: [{required: true, message: '请选择发布类型'}],
-                            })(
-                                <Select placeholder="请选择发布类型" allowClear={true}>
+                            {
+                                this.formBuilder.sendMode(
+                                    <Select placeholder="请选择发布类型" allowClear={true}>
+                                        {
+                                            Object.keys(SendMode).map((key: string) => {
+                                                return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                            })
+                                        }
+                                    </Select>,
                                     {
-                                        Object.keys(SendMode).map((key: string) => {
-                                            return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
-                                        })
+                                        rules: [
+                                            {
+                                                required: true, message: '请选择发布类型'
+                                            }
+                                        ]
                                     }
-                                </Select>
-                            )}
+                                )
+                            }
                         </FormItem>
                         <FormItem
                             label="附件"
@@ -265,133 +276,177 @@ export default class InputFormView extends BaseFormView<SampleFormProps, SampleF
                                     <Icon type="file"/> 请选择要上传的文件
                                 </Button>
                             </Upload>
-                            {getFieldDecorator('downFile', {
-                                rules: [
+                            {
+                                this.formBuilder.downFile(
+                                    <Input type="hidden"/>,
                                     {
-                                        required: false,
-                                        message: '请上传附件'
-                                    },
-                                ],
-                                initialValue: null
-                            })(
-                                <Input type="hidden"/>
-                            )}
+                                        rules: [
+                                            {
+                                                required: false,
+                                                message: '请上传附件'
+                                            }
+                                        ],
+                                        initialValue: null
+                                    }
+                                )
+                            }
                         </FormItem>
                         <FormItem
                             label="活动url"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('hdUrl', {
-                                rules: [
-                                    {required: true, message: '请填写活动url'}
-                                ],
-                            })(
-                                <Input addonBefore={selectBefore} addonAfter={selectAfter}/>
-                            )}
+                            {
+                                this.formBuilder.hdUrl(
+                                    <Input addonBefore={selectBefore} addonAfter={selectAfter}/>,
+                                    {
+                                        rules: [
+                                            {required: true, message: '请填写活动url'}
+                                        ],
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="数量"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('number', {
-                                rules: [
-                                    {required: true, message: '请填写数量'}
-                                ],
-                            })(
-                                <InputNumber style={{width: 200}}/>
-                            )}
+                            {
+                                this.formBuilder.number(
+                                    <InputNumber style={{width: 200}}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: true, message: '请填写数量'
+                                            }
+                                        ]
+                                    }
+                                )
+                            }
                         </FormItem>
                         <FormItem
                             label="费率（百分比）"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('feePct', {
-                                rules: [
-                                    {required: false, message: '请填写费率（百分比）'}
-                                ],
-                            })(
-                                <InputNumber style={{width: 200}}/>
-                            )}
+                            {
+                                this.formBuilder.feePct(
+                                    <InputNumber style={{width: 200}}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: false, message: '请填写费率（百分比）'
+                                            }
+                                        ]
+                                    }
+                                )
+                            }
                         </FormItem>
                         <FormItem
                             label="手续费（分）"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('feeFen', {
-                                rules: [
-                                    {required: false, message: '请填写手续费（分）'}
-                                ],
-                            })(
-                                <InputNumber style={{width: 200}}/>
-                            )}
+                            {
+                                this.formBuilder.feeFen(
+                                    <InputNumber style={{width: 200}}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: false, message: '请填写手续费（分）'
+                                            }
+                                        ],
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="手续费（元）"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('feeYuan', {
-                                rules: [
-                                    {required: false, message: '请填写手续费（元）'}
-                                ],
-                            })(
-                                <InputNumber style={{width: 200}}/>
-                            )}
+                            {
+                                this.formBuilder.feeYuan(
+                                    <InputNumber style={{width: 200}}/>,
+                                    {
+                                        rules: [
+                                            {required: false, message: '请填写手续费（元）'}
+                                        ]
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="销售额（万元）"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('sale', {
-                                rules: [
-                                    {required: false, message: '请选择上级'}
-                                ],
-                            })(
-                                <InputNumber style={{width: 200}}/>
-                            )}
+                            {
+                                this.formBuilder.sale(
+                                    <InputNumber style={{width: 200}}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: false, message: '请选择上级'
+                                            }
+                                        ]
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="启用"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('enabled', {
-                                rules: [
-                                    {required: true, message: '请选择启用状态'}
-                                ],
-                                initialValue: true
-                            })(
-                                <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>
-                            )}
+                            {
+                                this.formBuilder.enabled(
+                                    <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>,
+                                    {
+                                        rules: [
+                                            {required: true, message: '请选择启用状态'}
+                                        ],
+                                        initialValue: true
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="上级"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
-                            {getFieldDecorator('parentId', {
-                                rules: [
-                                    {required: false, message: '请选择上级'}
-                                ],
-                            })(
-                                <Input readOnly={true} onClick={() => {
-                                    this.onShowParentTable();
-                                }}/>
-                            )}
+                            {
+                                this.formBuilder.parentId(
+                                    <Input readOnly={true} onClick={() => {
+                                        this.onShowParentTable();
+                                    }}/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: false, message: '请选择上级'
+                                            }
+                                        ],
+                                        initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
+                                        formatter: (parent: SampleInfo) => {
+                                            console.log("--formatter parent--", parent);
+                                            return this.state.selectedSampleRows[0].id;
+                                        }
+                                    })
+                            }
                         </FormItem>
                         <FormItem
                             label="地区信息"
                             labelCol={{span: 5}}
                             wrapperCol={{span: 12}}>
 
-                            {getFieldDecorator('areaId', {
-                                rules: [
-                                    {required: true, message: '请选择地区信息'}
-                                ],
-                            })(
-                                <Cascader options={this.state.areaOptions}
-                                          loadData={this.loadAreaInfo}
-                                          placeholder="请选择地区信息"
-                                          onChange={this.onCascadeAreaChange}
-                                          changeOnSelect/>
-                            )}
+                            {
+                                this.formBuilder.areaId(
+                                    <Cascader options={this.state.areaOptions}
+                                              loadData={this.loadAreaInfo}
+                                              placeholder="请选择地区信息"
+                                              onChange={this.onCascadeAreaChange}
+                                              changeOnSelect/>,
+                                    {
+                                        rules: [
+                                            {
+                                                required: true, message: '请选择地区信息'
+                                            }
+                                        ],
+                                        formatter: (values: string[]) => {
+                                            console.log("-----获取地址 -----", values);
+                                            return values[values.length - 1];
+                                        }
+                                    })
+                            }
                         </FormItem>
                         <FormItem wrapperCol={{span: 12, offset: 5}}>
                             <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>

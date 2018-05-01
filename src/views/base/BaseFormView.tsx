@@ -6,6 +6,8 @@ import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFr
 import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 import {UpLoadHelper} from "../../helper/UpLoadHelper";
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
+import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
+import {isNullOrUndefined} from "util";
 
 
 export interface BaseFormSate<E, Q extends ApiReq> {
@@ -27,10 +29,21 @@ export interface BaseFormSate<E, Q extends ApiReq> {
     submitting: boolean
 }
 
+
 /**
  * 基础表单
+ * @param P
+ * @param S
+ * @param E  表单数据对象
+ * @param Q  表单提交对象
+ * @param B  表单建造者
  */
-export default abstract class BaseFormView<P extends AntdFromBaseProps, S extends BaseFormSate<any, any>> extends React.Component<P, S> {
+export default abstract class BaseFormView<P extends AntdFromBaseProps,
+    S extends BaseFormSate<E, Q>,
+    E,
+    Q extends ApiReq,
+    B extends FormBuilder<Q>>
+    extends React.Component<P, S> {
 
 
     /**
@@ -44,9 +57,16 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
      */
     protected isCreated: boolean = true;
 
+    /**
+     * 表单建造者
+     */
+    protected formBuilder: B;
+
 
     constructor(props: P, context: any) {
         super(props, context);
+
+        this.formBuilder = FormItemBuilder.builder<B, Q>(this.props.form);
     }
 
 
@@ -54,7 +74,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
 
         if (!this.isCreated) {
             //在编辑是先加载表单数据
-            const {search, state} = this.props.history.location;
+            const {search} = this.props.history.location;
 
             //TODO  判断查询参数是否有值
 
@@ -71,16 +91,27 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
                 this.setState({
                     initFormData: data
                 });
+                setTimeout(() => {
+                    const proxyReq = this.formBuilder.build();
+                    for (const key in data) {
+                        // proxyReq[key] = data[key];
+                    }
+                }, 300);
+                this.fetchDataSuccess(data);
             }).catch(this.fetchFormDataFailure)
         }
     }
 
 
+    protected fetchDataSuccess = (data) => {
+
+    };
+
     /**
      * 失败处理
      * @param e
      */
-    public fetchFormDataFailure = (e: any) => {
+    protected fetchFormDataFailure = (e: any) => {
 
     };
 
@@ -106,14 +137,23 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
             }
 
             //复制一份数据
-            const formData = {...values};
+            // const formData = {...values};
+
+            //默认数据处理
+            const proxyReq: Q = this.formBuilder.build();
+
+            //提交的数据
+            const submit = {};
+            for (const key in values) {
+                submit[key] = proxyReq[key];
+                // if (!isNullOrUndefined(submit[key]) &&
+                //     submit[key]["__proto__"].constructor.name === "Moment") {
+                //     //处理时间
+                // }
+            }
 
 
-            //TODO 默认数据处理
-
-
-
-            const b = this.beforeSerialize(formData);
+            const b = this.beforeSerialize(submit);
 
             if (!b) {
                 //不提交
@@ -122,11 +162,11 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps, S extend
                 });
                 return;
             }
-            console.log(formData);
+            console.log("---提交数据---", submit);
             //提交数据
             apiClient.post({
                 url: this.submitUrl,
-                data: formData
+                data: submit
             }).then((data: ApiResp<any>) => {
                 this.submitSuccess(data)
             }).catch((e) => {

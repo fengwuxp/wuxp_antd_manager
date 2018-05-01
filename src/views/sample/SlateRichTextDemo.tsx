@@ -30,7 +30,7 @@ import State from 'slate'
 //     }
 // });
 
-export default class RichTextDemo extends React.Component<any, any> {
+export default class SlateRichTextDemo extends React.Component<any, any> {
 
 // 设置应用创建时的初始状态。
     state = {

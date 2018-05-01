@@ -22,7 +22,7 @@ const routes: Array<RouteConfig> = [
     {
         path: '/sample/rich_text',
         exact: true,
-        component: asyncComponent(() => import(/* webpackChunkName: "sample/rich_text" */ './RichTextDemo'))
+        component: asyncComponent(() => import(/* webpackChunkName: "sample/rich_text" */ './SlateRichTextDemo'))
     }
 ];
 

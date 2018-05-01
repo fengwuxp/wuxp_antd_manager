@@ -1,5 +1,6 @@
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import SendMode from "../enums/SendMode";
+import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
 
 /**
 *创建样例
@@ -69,4 +70,77 @@ export interface CreateSampleReq extends ApiReq{
      * 地区ID
      */
     areaId?:string;
+}
+
+
+export interface CreateSampleReqBuilder extends FormBuilder<CreateSampleReq>{
+    /**
+     * 名称
+     */
+    name:ProxyFormBuilderType;
+    /**
+     * 图标
+     */
+    icon?:ProxyFormBuilderType;
+    /**
+     * 简介
+     */
+    description?:ProxyFormBuilderType;
+    /**
+     * 发布日期
+     */
+    publicDate?:ProxyFormBuilderType;
+    /**
+     * 发布类型
+     */
+    sendMode:ProxyFormBuilderType;
+    /**
+     * 活动介绍
+     */
+    mediumBody?:ProxyFormBuilderType;
+    /**
+     * 附件
+     */
+    downFile?:ProxyFormBuilderType;
+    /**
+     * 活动URL
+     */
+    hdUrl?:ProxyFormBuilderType;
+    /**
+     * 数量
+     */
+    number:ProxyFormBuilderType;
+    /**
+     * 费率（百分比）
+     */
+    feePct?:ProxyFormBuilderType;
+    /**
+     * 费率（千分比）
+     */
+    feePpt?:ProxyFormBuilderType;
+    /**
+     * 手续费（分）
+     */
+    feeFen?:ProxyFormBuilderType;
+    /**
+     * 手续费（元）
+     */
+    feeYuan?:ProxyFormBuilderType;
+    /**
+     * 销售额（万元）
+     */
+    sale?:ProxyFormBuilderType;
+
+    /**
+     * 启用
+     */
+    enabled?:ProxyFormBuilderType;
+    /**
+     * 上级ID
+     */
+    parentId?:ProxyFormBuilderType;
+    /**
+     * 地区ID
+     */
+    areaId?:ProxyFormBuilderType;
 }

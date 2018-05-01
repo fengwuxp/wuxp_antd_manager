@@ -95,7 +95,6 @@ export default class ListView extends BaseListView<SampleListProps,
                 return (
                     <div>
 
-
                         <Link style={{marginRight: 10}}
                               to={`/sample/load?id=${rowData.id}`}>
                             <Button type="primary"
