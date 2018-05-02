@@ -21,6 +21,8 @@ export class UpLoadHelper {
     //上传检查的错误提示消息
     public errorMessage: string;
 
+    private props: UploadProps;
+
     constructor(form: WrappedFormUtils, formItemName: string, maxFileSize: number = 1, errorMessage?: string) {
         this.form = form;
         this.formItemName = formItemName;
@@ -105,12 +107,21 @@ export class UpLoadHelper {
             }, 300);
         }
 
-        return {
+        this.props = {
             ...uploadProps,
             ...props,
             //默认已经上传的文件列表
             defaultFileList: this.getDefaultFileList(defaultFileList),
         };
+        return this.props;
+    };
+
+    /**
+     * 设置默认的上传列表
+     * @param {Array<string>} defaultFileList
+     */
+    public setDefaultFileList = (defaultFileList: Array<string> = []) => {
+        this.props.defaultFileList = this.getDefaultFileList(defaultFileList);
     };
 
 

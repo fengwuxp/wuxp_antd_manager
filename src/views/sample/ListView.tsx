@@ -21,6 +21,7 @@ import {ColumnProps} from "antd/es/table/interface";
 import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import SendMode from "./enums/SendMode";
 import * as styles from "../TableList.scss";
+import {FormItemType} from "../../builder/form/FormItemType";
 
 const {RangePicker} = DatePicker;
 
@@ -275,7 +276,7 @@ export default class ListView extends BaseListView<SampleListProps,
                 <Col md={8} sm={24}>
                     <FormItem label="名称模糊查询">
                         {this.formBuilder.nameLike()(
-                            <Input placeholder="请输入名称"/>
+                            <Input key={"query_form_nameLike"} placeholder="请输入名称"/>
                         )}
                     </FormItem>
                 </Col>
@@ -283,7 +284,8 @@ export default class ListView extends BaseListView<SampleListProps,
                     <FormItem label="发布类型">
                         {
                             this.formBuilder.sendMode()(
-                                <Select placeholder="请选择发布类型"
+                                <Select key={"query_form_sendMode"}
+                                        placeholder="请选择发布类型"
                                         style={{width: '100%'}}>
                                     <Option value="SYNC">同步</Option>
                                     <Option value="ASYNC">异步</Option>
@@ -305,15 +307,18 @@ export default class ListView extends BaseListView<SampleListProps,
 
                 <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                     <Col md={8} sm={24}>
-                        <FormItem label="名称模糊查询">
-                            {this.formBuilder.nameLike({})(<Input placeholder="请输入名称"/>)}
+                        <FormItem key={"ext_query_form_nameLike"}
+                                  label="名称模糊查询">
+                            {this.formBuilder.nameLike({})(<Input key={"ext_query_form_nameLike"}
+                                                                  placeholder="请输入名称"/>)}
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
                         <FormItem label="发布类型">
                             {
                                 this.formBuilder.sendMode()(
-                                    <Select placeholder="请选择发布类型"
+                                    <Select key={"ext_query_form_sendMode"}
+                                            placeholder="请选择发布类型"
                                             style={{width: '100%'}}>
                                         <Option value="SYNC">同步</Option>
                                         <Option value="ASYNC">异步</Option>
@@ -328,7 +333,8 @@ export default class ListView extends BaseListView<SampleListProps,
                                 this.formBuilder.enabled({
                                     initialValue: true
                                 })(
-                                    <Switch checkedChildren="启用"
+                                    <Switch key={"ext_query_form_enabled"}
+                                            checkedChildren="启用"
                                             unCheckedChildren="禁用"
                                             defaultChecked/>,
                                 )
@@ -344,70 +350,66 @@ export default class ListView extends BaseListView<SampleListProps,
                                     {
                                         getFormatter: (value) => {
                                             console.log("---publicDate---", value);
+                                        },
+                                        formItemType: FormItemType.RANG_PICKER,
+                                        formItemProps: {
+                                            placeholder: ['请选择最小发布时间', '请选择最大发布时间'],
+                                            showTime: {format: MomentFormatString.HH_mm},
+                                            format: MomentFormatString.YYYY_MM_DD_HH_mm
                                         }
                                     }
-                                )(
-                                    <RangePicker locale={locale}
-                                                 placeholder={['请选择最小发布时间', '请选择最大发布时间']}
-                                                 showTime={{format: MomentFormatString.HH_mm}}
-                                                 format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                                )
+                                )()
                             }
                         </FormItem>
                     </Col>
 
                 </Row>
-                <Row gutter={{md: "8", lg: "24", xl: "48"}}>
-                    <Col md={8} sm={24}>
-                        <FormItem label="请选择最小发布时间">
-                            {
-                                this.formBuilder.minPublicDate(
-                                    {
-                                        getFormatter: (value) => {
-                                            console.log("---minPublicDate---", value);
+                <Row type="flex" gutter={{md: "5", lg: "24", xl: "48"}}>
+
+                    <FormItem label="发布时间">
+                        {
+                            this.formBuilder.minPublicDate(
+                                {
+                                    formItemType: FormItemType.DATE_PICKER,
+                                    formItemProps: {
+                                        placeholder: "请选择最小发布时间",
+                                        showTime: {format: MomentFormatString.HH_mm},
+                                        format: MomentFormatString.YYYY_MM_DD_HH_mm,
+                                        disabledDate: (current: moment.Moment) => {
+                                            let maxPublicDate = this.props.form.getFieldValue("maxPublicDate") as  moment.Moment;
+                                            if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
+                                                return false;
+                                            }
+                                            return current.toDate().getTime() > maxPublicDate.toDate().getTime()
                                         }
                                     }
-                                )(
-                                    <DatePicker locale={locale}
-                                                placeholder="请选择最小发布时间"
-                                                disabledDate={(current: moment.Moment) => {
-                                                    let maxPublicDate = this.props.form.getFieldValue("maxPublicDate") as  moment.Moment;
-                                                    if (isNullOrUndefined(maxPublicDate) || isNullOrUndefined(current)) {
-                                                        return false;
-                                                    }
-                                                    return current.toDate().getTime() > maxPublicDate.toDate().getTime()
-                                                }}
-                                                showTime={{format: MomentFormatString.HH_mm}}
-                                                format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                                )
-                            }
-                        </FormItem>
-                        <FormItem label="请选择最大发布时间">
-                            {
-                                this.formBuilder.maxPublicDate(
-                                    {
-                                        getFormatter: (value) => {
-                                            console.log("---maxPublicDate---", value);
+                                }
+                            )()
+                        }
+                    </FormItem>
+
+                    <FormItem>
+                        {
+                            this.formBuilder.maxPublicDate(
+                                {
+                                    formItemType: FormItemType.DATE_PICKER,
+                                    formItemProps: {
+                                        placeholder: "请选择最大发布时间",
+                                        showTime: {format: MomentFormatString.HH_mm},
+                                        format: MomentFormatString.YYYY_MM_DD_HH_mm,
+                                        disabledDate: (current: moment.Moment) => {
+                                            let minPublicDate = this.props.form.getFieldValue("minPublicDate") as  moment.Moment;
+                                            if (isNullOrUndefined(minPublicDate) || isNullOrUndefined(current)) {
+                                                return false;
+                                            }
+
+                                            return current.toDate().getTime() < minPublicDate.toDate().getTime()
                                         }
                                     }
-                                )(
-                                    <DatePicker locale={locale}
-                                                placeholder="请选择最大发布时间"
-                                                disabledDate={(current: moment.Moment) => {
-
-                                                    let minPublicDate = this.props.form.getFieldValue("minPublicDate") as  moment.Moment;
-                                                    if (isNullOrUndefined(minPublicDate) || isNullOrUndefined(current)) {
-                                                        return false;
-                                                    }
-
-                                                    return current.toDate().getTime() < minPublicDate.toDate().getTime()
-                                                }}
-                                                showTime={{format: MomentFormatString.HH_mm}}
-                                                format={MomentFormatString.YYYY_MM_DD_HH_mm}/>
-                                )
-                            }
-                        </FormItem>
-                    </Col>
+                                }
+                            )()
+                        }
+                    </FormItem>
 
                 </Row>
                 <div style={{textAlign: 'right', marginBottom: 20}}>

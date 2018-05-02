@@ -1,7 +1,7 @@
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
-import {DatePickerProps} from "antd/lib/date-picker/interface";
+import {DatePickerProps, RangePickerProps} from "antd/lib/date-picker/interface";
 
 
 /**
@@ -133,5 +133,5 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     maxUpdateTime?: ProxyFormBuilderType<DatePickerProps>;
 
 
-    publicDate: ProxyFormBuilderType<DatePickerProps>;
+    publicDate: ProxyFormBuilderType<RangePickerProps>;
 }

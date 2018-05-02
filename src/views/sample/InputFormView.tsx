@@ -160,25 +160,26 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                         ],
                                         initialValue: null
                                     }
-                                )(<Input placeholder="请填写编号"/>)
+                                )(<Input key={"input_name"} placeholder="请填写编号"/>)
                             }
                             <div>名称长度为2-5</div>
                         </FormItem>
-                        <FormItem
-                            label="图标"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_icon"}
+                                  label="图标"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.icon(
                                     {
                                         rules: [],
                                         formItemType: FormItemType.UPLOAD_IMAGE
                                     }
-                                )(<Input type="hidden"/>)
+                                )(<Input key={"input_icon"} type="hidden"/>)
                             }
                             <div>图标建议使用200*200的正方形的png图片</div>
                         </FormItem>
-                        <FormItem label="简介"
+                        <FormItem key={"form_item_description"}
+                                  label="简介"
                                   labelCol={{span: 5}}
                                   wrapperCol={{span: 12}}>
                             {
@@ -186,14 +187,14 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                     {
                                         rules: [],
                                     }
-                                )(<Input placeholder="请填写简介"/>)
+                                )(<Input key={"input_desc"} placeholder="请填写简介"/>)
                             }
                             <div>请填写简介</div>
                         </FormItem>
-                        <FormItem
-                            label="发布时间"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_publicDate"}
+                                  label="发布时间"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.publicDate(
                                     {
@@ -210,10 +211,10 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                             }
                             <div>请选择时间</div>
                         </FormItem>
-                        <FormItem
-                            label="活动介绍"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_mediumBody"}
+                                  label="活动介绍"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.mediumBody(
                                     {
@@ -224,13 +225,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ]
                                     },
-                                )(<TextArea autosize={{minRows: 4}} cols={15}/>)
+                                )(<TextArea key={"text_area_mediumBody"} autosize={{minRows: 4}} cols={15}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="发布类型"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_sendMod"}
+                                  label="发布类型"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.sendMode(
                                     {
@@ -240,24 +241,22 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ]
                                     }
-                                )(<Select placeholder="请选择发布类型" allowClear={true}>
-                                    {
-                                        Object.keys(SendMode).map((key: string) => {
-                                            return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
-                                        })
-                                    }
-                                </Select>)
+                                )(
+                                    <Select key={"text_area_sendMod"}
+                                            placeholder="请选择发布类型"
+                                            allowClear={true}>
+                                        {
+                                            Object.keys(SendMode).map((key: string) => {
+                                                return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                            })
+                                        }
+                                    </Select>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="附件"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
-                            <Upload {...this.getUploadUploadProps("downFile", [], {accept: "*"})}>
-                                <Button>
-                                    <Icon type="file"/> 请选择要上传的文件
-                                </Button>
-                            </Upload>
+                        <FormItem key={"form_item_downFile"}
+                                  label="附件"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.downFile(
                                     {
@@ -267,15 +266,16 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 message: '请上传附件'
                                             }
                                         ],
-                                        initialValue: null
+                                        // formItemProps: {},
+                                        formItemType: FormItemType.UPLOAD_FILE
                                     }
-                                )(<Input type="hidden"/>)
+                                )()
                             }
                         </FormItem>
-                        <FormItem
-                            label="活动url"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_hdUrl"}
+                                  label="活动url"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.hdUrl(
                                     {
@@ -283,13 +283,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             {required: true, message: '请填写活动url'}
                                         ],
                                     }
-                                )(<Input addonBefore={selectBefore} addonAfter={selectAfter}/>)
+                                )(<Input key={"input_hdUrl"} addonBefore={selectBefore} addonAfter={selectAfter}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="数量"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_number"}
+                                  label="数量"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.number(
                                     {
@@ -299,13 +299,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ]
                                     }
-                                )(<InputNumber style={{width: 200}}/>)
+                                )(<InputNumber key={"input_number"} style={{width: 200}}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="费率（百分比）"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_feePct"}
+                                  label="费率（百分比）"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.feePct(
                                     {
@@ -315,13 +315,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ]
                                     }
-                                )(<InputNumber style={{width: 200}}/>)
+                                )(<InputNumber key={"input_feePct"} style={{width: 200}}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="手续费（分）"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_feeFen"}
+                                  label="手续费（分）"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.feeFen(
                                     {
@@ -331,13 +331,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             }
                                         ],
                                     }
-                                )(<InputNumber style={{width: 200}}/>)
+                                )(<InputNumber key={"input_feeFen"} style={{width: 200}}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="手续费（元）"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_feeYuan"}
+                                  label="手续费（元）"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.feeYuan(
                                     {
@@ -345,13 +345,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             {required: false, message: '请填写手续费（元）'}
                                         ]
                                     }
-                                )(<InputNumber style={{width: 200}}/>)
+                                )(<InputNumber key={"input_feeYuan"} style={{width: 200}}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="销售额（万元）"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_sale"}
+                                  label="销售额（万元）"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.sale(
                                     {
@@ -360,13 +360,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 required: false, message: '请选择上级'
                                             }
                                         ]
-                                    })(<InputNumber style={{width: 200}}/>)
+                                    })(<InputNumber key={"input_sale"} style={{width: 200}}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="启用"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_enabled"}
+                                  label="启用"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.enabled(
                                     {
@@ -375,13 +375,16 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                         ],
                                         initialValue: true
                                     }
-                                )(<Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>)
+                                )(<Switch key={"switch_sendMod"}
+                                          checkedChildren="启用"
+                                          unCheckedChildren="禁用"
+                                          defaultChecked/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="上级"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_parentId"}
+                                  label="上级"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
                             {
                                 this.formBuilder.parentId(
                                     {
@@ -395,15 +398,15 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                             console.log("--formatter parent--", parent);
                                             return this.state.selectedSampleRows[0].id;
                                         }
-                                    })(<Input readOnly={true} onClick={() => {
+                                    })(<Input key={"input_parentId"} readOnly={true} onClick={() => {
                                     this.onShowParentTable();
                                 }}/>)
                             }
                         </FormItem>
-                        <FormItem
-                            label="地区信息"
-                            labelCol={{span: 5}}
-                            wrapperCol={{span: 12}}>
+                        <FormItem key={"form_item_areaId"}
+                                  label="地区信息"
+                                  labelCol={{span: 5}}
+                                  wrapperCol={{span: 12}}>
 
                             {
                                 this.formBuilder.areaId(
@@ -419,7 +422,8 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                         }
                                     }
                                 )(
-                                    <Cascader options={this.state.areaOptions}
+                                    <Cascader key={"cascader_areaId"}
+                                              options={this.state.areaOptions}
                                               loadData={this.loadAreaInfo}
                                               placeholder="请选择地区信息"
                                               onChange={this.onCascadeAreaChange}

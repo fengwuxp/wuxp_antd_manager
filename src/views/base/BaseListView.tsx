@@ -160,9 +160,9 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                 <Button type="primary" onClick={this.submitQueryForm}>查询</Button>
                 <Button style={{marginLeft: 8}} onClick={this.resetQueryParams}>重置</Button>
                 {
-                    useAdvancedForm ? toggleAdvancedForm ?
-                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a> :
-                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a> : null
+                    useAdvancedForm ? (toggleAdvancedForm ?
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a> :
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>) : null
                 }
 
             </span>

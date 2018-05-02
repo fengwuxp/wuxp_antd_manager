@@ -101,6 +101,8 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
             }).catch(this.fetchFormDataFailure)['finally'](() => {
                 message.destroy();
             })
+        }else {
+            this.formBuilder.executeInitFunction();
         }
     }
 
@@ -112,7 +114,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
 
     protected fetchDataSuccess  (data: E, proxyReq: Q) {
         //初始化表单的值
-        console.log("----------super fetchDataSuccess------", data)
+        console.log("----------super fetchDataSuccess------", data);
         for (const key in data) {
             (proxyReq as any)[key] = data[key];
         }

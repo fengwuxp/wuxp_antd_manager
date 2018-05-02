@@ -2,6 +2,12 @@ import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
 import {DatePickerProps} from "antd/lib/date-picker/interface";
+import {InputProps, TextAreaProps} from "antd/lib/input";
+import {UploadProps} from "antd/lib/upload";
+import {SelectProps} from "antd/lib/select";
+import {InputNumberProps} from "antd/lib/input-number";
+import {SwitchProps} from "antd/lib/switch";
+import {TextareaHTMLAttributes} from "react";
 
 /**
  *编辑样例
@@ -81,23 +87,26 @@ export interface EditSampleReq extends ApiReq {
     areaId?: string;
 }
 
+
+
 export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
     /**
      * ID
      */
-    id: ProxyFormBuilderType<any>;
+    id: ProxyFormBuilderType<InputProps>;
     /**
      * 名称
      */
-    name?: ProxyFormBuilderType<any>;
+    name?: ProxyFormBuilderType<InputProps>;
     /**
      * 图标
      */
-    icon?: ProxyFormBuilderType<any>;
+    icon?: ProxyFormBuilderType<UploadProps>;
+
     /**
      * 简介
      */
-    description?: ProxyFormBuilderType<any>;
+    description?: ProxyFormBuilderType<InputProps>;
     /**
      * 发布日期
      */
@@ -105,47 +114,48 @@ export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
     /**
      * 发布类型
      */
-    sendMode?: ProxyFormBuilderType<any>;
+    sendMode?: ProxyFormBuilderType<SelectProps>;
     /**
      * 活动介绍
      */
-    mediumBody?: ProxyFormBuilderType<any>;
+    mediumBody?: ProxyFormBuilderType<TextAreaProps & TextareaHTMLAttributes<any>>;
     /**
      * 附件
      */
-    downFile?: ProxyFormBuilderType<any>;
+    downFile?: ProxyFormBuilderType<UploadProps>;
     /**
      * 活动URL
      */
-    hdUrl?: ProxyFormBuilderType<any>;
+    hdUrl?: ProxyFormBuilderType<InputProps>;
     /**
      * 数量
      */
-    number?: ProxyFormBuilderType<any>;
+    number?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 费率（百分比）
      */
-    feePct?: ProxyFormBuilderType<any>;
+    feePct?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 费率（千分比）
      */
-    feePpt?: ProxyFormBuilderType<any>;
+    feePpt?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 手续费（分）
      */
-    feeFen?: ProxyFormBuilderType<any>;
+    feeFen?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 手续费（元）
      */
-    feeYuan?: ProxyFormBuilderType<any>;
+    feeYuan?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 销售额（万元）
      */
-    sale?: ProxyFormBuilderType<any>;
+    sale?: ProxyFormBuilderType<InputNumberProps>;
     /**
      * 启用
      */
-    enabled?: ProxyFormBuilderType<any>;
+    enabled?: ProxyFormBuilderType<SwitchProps>;
+
     /**
      * 上级ID
      */

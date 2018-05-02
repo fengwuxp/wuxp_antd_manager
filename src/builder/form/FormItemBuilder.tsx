@@ -3,7 +3,9 @@ import * as React from "react";
 import {isFunction, isNullOrUndefined} from "util";
 import {FormItemType} from "./FormItemType";
 import {handleUploadImage} from "./item/UploadComponentHandler";
-import {defaultSetFormatter, handleSimpleDatePicker} from "./item/DatePickerComponentHandler";
+import {simpleHandleDatePicker} from "./item/DatePickerComponentHandler";
+import CommonSimpleComponentHandler from "./item/CommonSimpleComponentHandler";
+
 
 /**
  * 用于构建表单
@@ -36,6 +38,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
      */
     private isExecute: boolean;
 
+
     constructor(form: WrappedFormUtils) {
         this.form = form;
     }
@@ -44,7 +47,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
      * @returns {T} 返回一个表单构建造者
      */
     builder() {
-        const {getFieldDecorator} = this.form;
+        const {getFieldDecorator, getFieldValue} = this.form;
         const ProxyFormBuilder: ProxyHandler<T> = {
 
             get: (target: T, prop: PropertyKey, receiver: any): any => {
@@ -70,9 +73,9 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                         options.formItemType = FormItemType.DEFAULT
                     }
 
-                    if (isFunction(options.setFormatter)) {
-                        options.initialValue = options.setFormatter(options.initialValue);
-                    }
+                    let newOption = {...options};
+
+                    const {formItemType, formItemProps, initialValue} = newOption;
 
                     /**
                      * @param { React.ReactNode} 表单node
@@ -80,26 +83,29 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                     return (node?: React.ReactNode) => {
 
                         const reactNodes = [];
-                        if (!isNullOrUndefined(node)) {
-                            reactNodes.push(node);
-                        }
-
-                        let newOption = {...options};
 
                         //处理默认组件
-                        switch (options.formItemType) {
+                        switch (formItemType) {
                             case FormItemType.UPLOAD_FILE:
-
-                                break;
                             case FormItemType.UPLOAD_IMAGE:
-                                reactNodes.push(handleUploadImage(this.form, propertyKey, options.initialValue, options.formItemProps));
+                                let value = this.getFormatterValue(propertyKey, getFieldValue(propertyKey));
+                                const result = handleUploadImage(formItemType,
+                                    propertyKey,
+                                    this.isExecute,
+                                    value,
+                                    formItemProps);
+                                node = result.node;
+                                newOption.setFormatter = result.setFormatter;
+                                newOption.getFormatter = result.getFormatter;
                                 break;
-
+                            case FormItemType.RANG_PICKER:
+                            case FormItemType.WEEK_PICKER:
+                            case FormItemType.MONTH_PICKER:
                             case FormItemType.DATE_PICKER:
                                 const {
                                     component, setFormatter, getFormatter
-                                } = handleSimpleDatePicker(options.formItemProps);
-                                reactNodes.push(component);
+                                } = simpleHandleDatePicker(formItemType, formItemProps, propertyKey);
+                                node = component;
                                 //获取formatter
                                 if (isNullOrUndefined(newOption.setFormatter)) {
                                     newOption.setFormatter = setFormatter;
@@ -108,15 +114,26 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                                     newOption.getFormatter = getFormatter;
                                 }
                                 break;
-
-                            case FormItemType.CASCADE_TIME_SELECTOR:
+                            case FormItemType.DEFAULT:
+                                // if(isNullOrUndefined(node)){
+                                //     //TODO
+                                // }
+                                // console.log("默认，不处理");
                                 break;
                             default:
-                            // console.log("默认，不处理")
+                                node = CommonSimpleComponentHandler[formItemType.toLowerCase()](formItemProps, propertyKey);
+
                         }
+
+                        if (isFunction(newOption.setFormatter)) {
+                            //值转化
+                            newOption.initialValue = newOption.setFormatter(initialValue);
+                        }
+
                         this.options.set(propertyKey, newOption);
                         //创建表单关联
-                        getFieldDecorator(propertyKey, options)(reactNodes[0]);
+                        // console.log("---创建表单item---", propertyKey, node);
+                        reactNodes.push(getFieldDecorator(propertyKey, newOption)(node));
                         return reactNodes;
                     }
                 }

@@ -4,6 +4,8 @@ import {message} from "antd";
 const history = BrowserNavigatorFactory.get();
 
 
+let count301 = 0;
+
 /**
  * 处理 http 301
  * @param {Response} resp
@@ -11,7 +13,12 @@ const history = BrowserNavigatorFactory.get();
  * @returns {boolean | void}
  */
 export function httpCode301Handler<Response, FetchOption>(resp: Response, option: FetchOption): boolean | void {
+    // if (count301 > 0) {
+    //     return true;
+    // }
+    count301++;
     message.warn("会话已失效，请重新登录", 2, () => {
+        count301--;
         history.push("/login");
     });
     return true;
