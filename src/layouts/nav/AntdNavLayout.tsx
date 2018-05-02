@@ -1,12 +1,11 @@
 import * as React from "react";
 import PropTypes from 'prop-types';
-import {Layout, Icon} from 'antd';
+import {Icon, Layout} from 'antd';
 import SiderMenu from "../../components/SiderMenu/index";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {enquireScreen, unenquireScreen} from 'enquire-js';
-import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
 import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
 import {push} from "react-router-redux";
 import {sessionManager} from "../../manager/session/SessionManager";
@@ -14,17 +13,15 @@ import {connect, MapStateToPropsParam} from "react-redux";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
-import {match, Redirect, Route, Switch} from "react-router";
+import {Redirect, Route, Switch} from "react-router";
 import {getRoutes} from "../../utils/utils";
 import {routeConfigs} from "../../routes/router";
 
 import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
 import {isNullOrUndefined, isUndefined} from "util";
-import {getMenuData} from "../../routes/menu";
 import {RouteConfig} from "react-router-config";
 import {DefaultMenuMatchStrategy} from "../../components/SiderMenu/strategy/MatchMenuKeyStrategy";
-import {currentSelectedMenu} from "../../reducers/MenuChooseReducer";
 
 const {Content, Header, Footer} = Layout;
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { Button, Form } from 'antd';
+import {Button, Form} from 'antd';
 import * as styles from './style.scss';
 
 const FormItem = Form.Item;

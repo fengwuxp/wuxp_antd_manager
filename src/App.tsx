@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import "fixed-data-table-2/dist/fixed-data-table.css";
 import 'ant-design-pro/dist/ant-design-pro.css';
-import {Switch, Route} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 import UserLayout from "./layouts/login/UserLayout";
 import BasicLayout from "./layouts/nav/BasicLayout";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory"

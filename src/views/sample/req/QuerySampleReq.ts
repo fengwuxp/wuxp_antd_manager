@@ -1,6 +1,7 @@
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
+import {DatePickerProps} from "antd/lib/date-picker/interface";
 
 
 /**
@@ -73,63 +74,64 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     /**
      * ID
      */
-    id?: ProxyFormBuilderType;
+    id?: ProxyFormBuilderType<any>;
     /**
      * 编号
      */
-    sn?: ProxyFormBuilderType;
+    sn?: ProxyFormBuilderType<any>;
     /**
      * 名称
      */
-    name?: ProxyFormBuilderType;
+    name?: ProxyFormBuilderType<any>;
     /**
      * 名称模糊查询
      */
-    nameLike?: ProxyFormBuilderType;
+    nameLike?: ProxyFormBuilderType<any>;
     /**
      * 最小发布日期
      */
-    minPublicDate?: ProxyFormBuilderType;
+    minPublicDate?: ProxyFormBuilderType<DatePickerProps>;
     /**
      * 最大发布日期
      */
-    maxPublicDate?: ProxyFormBuilderType;
+    maxPublicDate?: ProxyFormBuilderType<DatePickerProps>;
     /**
      * 发布类型
      */
-    sendMode?: ProxyFormBuilderType;
+    sendMode?: ProxyFormBuilderType<any>;
     /**
      * 启用
      */
-    enabled?: ProxyFormBuilderType;
+    enabled?: ProxyFormBuilderType<any>;
     /**
      * 上级ID
      */
-    parentId?: ProxyFormBuilderType;
+    parentId?: ProxyFormBuilderType<any>;
     /**
      * 加载上级信息
      */
-    loadParent?: ProxyFormBuilderType;
+    loadParent?: ProxyFormBuilderType<any>;
     /**
      * 地区ID
      */
-    areaId?: ProxyFormBuilderType;
+    areaId?: ProxyFormBuilderType<any>;
     /**
      * 最小创建日期
      */
-    minAddTime?: ProxyFormBuilderType;
+    minAddTime?: ProxyFormBuilderType<DatePickerProps>;
     /**
      * 最大创建日期
      */
-    maxAddTime?: ProxyFormBuilderType;
+    maxAddTime?: ProxyFormBuilderType<DatePickerProps>;
     /**
      * 最小更新日期
      */
-    minUpdateTime?: ProxyFormBuilderType;
+    minUpdateTime?: ProxyFormBuilderType<DatePickerProps>;
     /**
      * 最大更新日期
      */
-    maxUpdateTime?: ProxyFormBuilderType;
+    maxUpdateTime?: ProxyFormBuilderType<DatePickerProps>;
 
-    publicDate: ProxyFormBuilderType;
+
+    publicDate: ProxyFormBuilderType<DatePickerProps>;
 }

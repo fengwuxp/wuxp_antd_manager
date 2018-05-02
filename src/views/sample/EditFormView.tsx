@@ -1,9 +1,8 @@
-import {Form, Input, DatePicker, Button, Select, Upload, Cascader, InputNumber, Card, Icon, Switch} from 'antd';
+import {Button, Card, Cascader, DatePicker, Form, Icon, Input, InputNumber, Select, Switch, Upload} from 'antd';
 import locale from "antd/lib/date-picker/locale/zh_CN"
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
-import {fenToYuan} from "wuxp_react_dynamic_router/src/utils/common/NumberFormatterUtil";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
 import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
@@ -142,7 +141,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.name(
-                        <Input placeholder="请填写编号"/>,
                         {
                             rules: [
                                 {
@@ -156,7 +154,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                             ],
                             initialValue: null
                         }
-                    )
+                    )(<Input placeholder="请填写编号"/>)
                 }
                 <div>名称长度为2-5</div>
             </FormItem>
@@ -166,7 +164,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.icon(
-                        <Input type="hidden"/>,
                         {
                             rules: [
                                 {
@@ -175,7 +172,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 }
                             ]
                         }
-                    )
+                    )(<Input type="hidden"/>)
                 }
                 <Upload {...this.getUploadUploadProps('icon')}>
                     <Button>
@@ -190,11 +187,10 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.description(
-                        <Input placeholder="请填写简介"/>,
                         {
                             rules: [],
                         }
-                    )
+                    )(<Input placeholder="请填写简介"/>)
                 }
                 <div>请填写简介</div>
             </FormItem>
@@ -204,20 +200,19 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.publicDate(
-                        <DatePicker
-                            showTime
-                            locale={locale}
-                            format={MomentFormatString.YYYY_MM_DD_HH_mm}
-                            placeholder="请选择发布时间"
-                            style={{width: 200}}
-                        />,
                         {
                             rules: [],
                             getFormatter: (value) => {
                                 return MomentHelper.handlerMoment(value, MomentFormatString.YYYY_MM_DD_HH_mm_ss);
                             }
                         }
-                    )
+                    )(<DatePicker
+                        showTime
+                        locale={locale}
+                        format={MomentFormatString.YYYY_MM_DD_HH_mm}
+                        placeholder="请选择发布时间"
+                        style={{width: 200}}
+                    />)
                 }
                 <div>请选择时间</div>
             </FormItem>
@@ -227,7 +222,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.mediumBody(
-                        <TextArea autosize={{minRows: 4}} cols={15}/>,
                         {
                             rules: [
                                 {
@@ -236,6 +230,8 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 }
                             ]
                         }
+                    )(
+                        <TextArea autosize={{minRows: 4}} cols={15}/>
                     )
                 }
             </FormItem>
@@ -245,13 +241,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.sendMode(
-                        <Select placeholder="请选择发布类型" allowClear={true}>
-                            {
-                                Object.keys(SendMode).map((key: string) => {
-                                    return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
-                                })
-                            }
-                        </Select>,
                         {
                             rules: [
                                 {
@@ -259,6 +248,14 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 }
                             ]
                         }
+                    )(
+                        <Select placeholder="请选择发布类型" allowClear={true}>
+                            {
+                                Object.keys(SendMode).map((key: string) => {
+                                    return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                })
+                            }
+                        </Select>
                     )
                 }
             </FormItem>
@@ -273,7 +270,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 </Upload>
                 {
                     this.formBuilder.downFile(
-                        <Input type="hidden"/>,
                         {
                             rules: [
                                 {
@@ -283,6 +279,8 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                             ],
                             initialValue: null
                         }
+                    )(
+                        <Input type="hidden"/>
                     )
                 }
             </FormItem>
@@ -292,12 +290,11 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.hdUrl(
-                        <Input/>,
                         {
                             rules: [
                                 {required: true, message: '请填写活动url'}
                             ],
-                        })
+                        })(<Input/>)
                 }
             </FormItem>
             <FormItem
@@ -306,7 +303,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.number(
-                        <InputNumber style={{width: 200}}/>,
                         {
                             rules: [
                                 {
@@ -314,7 +310,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 }
                             ]
                         }
-                    )
+                    )(<InputNumber style={{width: 200}}/>)
                 }
             </FormItem>
             <FormItem
@@ -323,7 +319,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.feePct(
-                        <InputNumber style={{width: 200}}/>,
                         {
                             rules: [
                                 {
@@ -331,7 +326,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 }
                             ]
                         }
-                    )
+                    )(<InputNumber style={{width: 200}}/>)
                 }
             </FormItem>
             <FormItem
@@ -340,14 +335,13 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.feeFen(
-                        <InputNumber style={{width: 200}}/>,
                         {
                             rules: [
                                 {
                                     required: false, message: '请填写手续费（分）'
                                 }
                             ],
-                        })
+                        })(<InputNumber style={{width: 200}}/>)
                 }
             </FormItem>
             <FormItem
@@ -356,12 +350,11 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.feeYuan(
-                        <InputNumber style={{width: 200}}/>,
                         {
                             rules: [
                                 {required: false, message: '请填写手续费（元）'}
                             ]
-                        })
+                        })(<InputNumber style={{width: 200}}/>)
                 }
             </FormItem>
             <FormItem
@@ -370,14 +363,13 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.sale(
-                        <InputNumber style={{width: 200}}/>,
                         {
                             rules: [
                                 {
                                     required: false, message: '请选择上级'
                                 }
                             ]
-                        })
+                        })(<InputNumber style={{width: 200}}/>)
                 }
             </FormItem>
             <FormItem
@@ -386,13 +378,12 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.enabled(
-                        <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>,
                         {
                             rules: [
                                 {required: true, message: '请选择启用状态'}
                             ],
                             initialValue: true
-                        })
+                        })(<Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked/>)
                 }
             </FormItem>
             <FormItem
@@ -401,9 +392,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.parentId(
-                        <Input readOnly={true} onClick={() => {
-                            this.onShowParentTable();
-                        }}/>,
                         {
                             rules: [
                                 {
@@ -419,6 +407,10 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 return this.state.selectedSampleRows[0].id;
                             }
                         }
+                    )(
+                        <Input readOnly={true} onClick={() => {
+                            this.onShowParentTable();
+                        }}/>
                     )
                 }
             </FormItem>
@@ -428,12 +420,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 wrapperCol={{span: 12}}>
                 {
                     this.formBuilder.areaId(
-                        <Cascader options={this.state.areaOptions}
-                                  loadData={this.loadAreaInfo}
-                                  expandTrigger="hover"
-                                  placeholder="请选择地区信息"
-                                  onChange={this.onCascadeAreaChange}
-                                  changeOnSelect/>,
                         {
                             rules: [
                                 {
@@ -467,7 +453,14 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                 console.log("-----获取地址 -----", values);
                                 return values[values.length - 1];
                             }
-                        })
+                        })(
+                        <Cascader options={this.state.areaOptions}
+                                  loadData={this.loadAreaInfo}
+                                  expandTrigger="hover"
+                                  placeholder="请选择地区信息"
+                                  onChange={this.onCascadeAreaChange}
+                                  changeOnSelect/>
+                    )
                 }
             </FormItem>
             <FormItem wrapperCol={{span: 12, offset: 5}}>

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {Checkbox, Alert, message} from 'antd';
+import {Alert, Checkbox, message} from 'antd';
 import Login from "../../components/Login/";
 import * as styles from './Login.scss';
 import {sessionManager} from "../../manager/session/SessionManager";
 import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
 import {LoginType} from "../../enums/AdminLoginType";
 import {MapStateToPropsParam} from 'react-redux';
-import {AntdAdmin, AntdSession, SessionStatus} from "../../model/session/AntdAdmin";
+import {AntdSession, SessionStatus} from "../../model/session/AntdAdmin";
 import GlobalAipConfig from "typescript_api_sdk/src/config/GlobalAipConfig"
 
 const {Tab, UserName, Password, Mobile, Captcha, Submit, PictureCode} = Login as any;

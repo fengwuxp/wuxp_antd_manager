@@ -1,4 +1,4 @@
-import { checkPermissions } from './CheckPermissions';
+import {checkPermissions} from './CheckPermissions';
 
 const target = 'ok';
 const error = 'error';

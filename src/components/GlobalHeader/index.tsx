@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip, Row, Col} from 'antd';
+import {Avatar, Col, Divider, Dropdown, Icon, Menu, Row, Spin, Tag, Tooltip} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';

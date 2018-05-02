@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Layout, Menu, Icon} from 'antd';
+import {Icon, Layout, Menu} from 'antd';
 
 import * as styles from './style.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';

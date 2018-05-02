@@ -1,5 +1,4 @@
 import AbstractNoticeManager from "wuxp_react_dynamic_router/src/manager/notice/AbstractNoticeManager";
-import apiClient from "../../fetch/BuildFetchClient";
 
 
 /**

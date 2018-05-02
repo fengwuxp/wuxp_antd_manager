@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input, Icon} from 'antd';
+import {Icon, Input} from 'antd';
 import * as styles from './style.scss';
 
 const map = {

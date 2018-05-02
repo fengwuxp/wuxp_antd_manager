@@ -7,7 +7,7 @@ import BaseLookupView, {BaseLookupViewProps, BaseLookupViewState} from "../base/
 import Modal from "antd/lib/modal/Modal";
 
 
-interface LookupListViewProps extends BaseLookupViewProps {
+interface LookupListViewProps extends BaseLookupViewProps<SampleInfo> {
 }
 
 interface LookupListViewState extends BaseLookupViewState<SampleInfo> {

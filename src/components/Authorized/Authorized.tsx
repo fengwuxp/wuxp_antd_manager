@@ -1,8 +1,8 @@
 import React from 'react';
 import CheckPermissions from './CheckPermissions';
+import check from './CheckPermissions';
 import AuthorizedRoute from './AuthorizedRoute';
 import Secured from './Secured';
-import check from './CheckPermissions';
 
 
 export default class Authorized extends React.Component<any, any> {

@@ -75,7 +75,7 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
     S extends BaseAbstractTableViewState<T>,
     E extends ApiQueryReq,
     T,
-    B extends HasActionTable<B, T>>
+    B extends HasActionTable<T>>
     extends React.Component<P, S> {
 
 

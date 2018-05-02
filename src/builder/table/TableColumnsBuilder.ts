@@ -10,7 +10,7 @@ export default class TableColumnsBuilder {
     /**
      * @returns {T}
      */
-    public static builder<T extends HasActionTable<T, E>, E>(): T {
+    public static builder<T extends HasActionTable<E>, E>(): T {
 
         return new ProxyTableBuilder<T, E>().builder();
     }
@@ -24,14 +24,14 @@ interface Builder<E> {
 /**
  * 有带操作的表格
  */
-export interface HasActionTable<T, E> extends Builder<E> {
+export interface HasActionTable<E> extends Builder<E> {
 
-    operation?: (column: ColumnProps<E>) => T;
+    operation?: (column: ColumnProps<E>) => this;
 
     // [key: string]: (column: ColumnProps<T>) => T;
 }
 
-class ProxyTableBuilder<T extends HasActionTable<T, E>, E> {
+class ProxyTableBuilder<T extends HasActionTable<E>, E> {
 
     private columns: Array<ColumnProps<T>> = [];
 

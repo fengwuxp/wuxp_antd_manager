@@ -1,5 +1,4 @@
 import moment from 'moment';
-import {RouteProps} from "react-router";
 import {RouteConfig} from "react-router-config";
 
 export function fixedZero(val) {

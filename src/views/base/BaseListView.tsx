@@ -35,7 +35,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     E extends ApiQueryReq,
     Q extends FormBuilder<E>/*查询对象的表单builder*/,
     T,
-    B extends HasActionTable<B, T>>
+    B extends HasActionTable<T>>
     extends BaseAbstractTableView<P, S, E, T, B> {
 
 
@@ -44,7 +44,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     constructor(props: P, context: any, defaultPrams: E) {
         super(props, context, defaultPrams);
 
-        this.formBuilder = FormItemBuilder.builder<Q,E>(this.props.form);
+        this.formBuilder = FormItemBuilder.builder<Q, E>(this.props.form);
 
     }
 
@@ -115,7 +115,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                 return;
             }
             console.log("默认查询参数", this.defaultPrams);
-            console.log("简单查询参数",simpleParam);
+            console.log("简单查询参数", simpleParam);
             console.log("高级查询参数", req);
 
             //组合查询参数
@@ -148,18 +148,21 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
         );
     }
 
-    renderQueryFromButtons = () => {
+    /**
+     *
+     * @param {boolean} useAdvancedForm 是否使用高级搜索
+     * @returns {any}
+     */
+    renderQueryFromButtons = (useAdvancedForm: boolean = true) => {
         const {toggleAdvancedForm} = this.state;
         return (
             <span>
-              <Button type="primary" onClick={() => {
-                  this.submitQueryForm();
-              }}>查询</Button>
-              <Button style={{marginLeft: 8}} onClick={this.resetQueryParams}>重置</Button>
+                <Button type="primary" onClick={this.submitQueryForm}>查询</Button>
+                <Button style={{marginLeft: 8}} onClick={this.resetQueryParams}>重置</Button>
                 {
-                    toggleAdvancedForm ?
-                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>
-                        : <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a>
+                    useAdvancedForm ? toggleAdvancedForm ?
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a> :
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a> : null
                 }
 
             </span>

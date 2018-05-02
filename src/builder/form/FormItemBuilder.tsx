@@ -1,6 +1,9 @@
 import {GetFieldDecoratorOptions, WrappedFormUtils} from "antd/lib/form/Form";
 import * as React from "react";
 import {isFunction, isNullOrUndefined} from "util";
+import {FormItemType} from "./FormItemType";
+import {handleUploadImage} from "./item/UploadComponentHandler";
+import {defaultSetFormatter, handleSimpleDatePicker} from "./item/DatePickerComponentHandler";
 
 /**
  * 用于构建表单
@@ -24,7 +27,7 @@ export default class FormItemBuilder {
 class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
 
 
-    private options: Map<string, ProxyFormItemOptionsAny> = new Map<string, ProxyFormItemOptionsAny>();
+    private options: Map<string, ProxyFormItemOptionsAny<any>> = new Map<string, ProxyFormItemOptionsAny<any>>();
 
     private form: WrappedFormUtils;
 
@@ -59,15 +62,63 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                 }
                 /**
                  * 初始化
-                 * @param { React.ReactNode}表单node
                  * @param {ProxyFormItemOptionsAny}配置
                  */
-                return (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => {
+                return (options: ProxyFormItemOptionsAny<any> = {}) => {
 
-                    const reactNode = getFieldDecorator(propertyKey, options)(node);
-                    this.options.set(propertyKey, {...options});
+                    if (isNullOrUndefined(options.formItemType)) {
+                        options.formItemType = FormItemType.DEFAULT
+                    }
 
-                    return reactNode;
+                    if (isFunction(options.setFormatter)) {
+                        options.initialValue = options.setFormatter(options.initialValue);
+                    }
+
+                    /**
+                     * @param { React.ReactNode} 表单node
+                     */
+                    return (node?: React.ReactNode) => {
+
+                        const reactNodes = [];
+                        if (!isNullOrUndefined(node)) {
+                            reactNodes.push(node);
+                        }
+
+                        let newOption = {...options};
+
+                        //处理默认组件
+                        switch (options.formItemType) {
+                            case FormItemType.UPLOAD_FILE:
+
+                                break;
+                            case FormItemType.UPLOAD_IMAGE:
+                                reactNodes.push(handleUploadImage(this.form, propertyKey, options.initialValue, options.formItemProps));
+                                break;
+
+                            case FormItemType.DATE_PICKER:
+                                const {
+                                    component, setFormatter, getFormatter
+                                } = handleSimpleDatePicker(options.formItemProps);
+                                reactNodes.push(component);
+                                //获取formatter
+                                if (isNullOrUndefined(newOption.setFormatter)) {
+                                    newOption.setFormatter = setFormatter;
+                                }
+                                if (isNullOrUndefined(newOption.getFormatter)) {
+                                    newOption.getFormatter = getFormatter;
+                                }
+                                break;
+
+                            case FormItemType.CASCADE_TIME_SELECTOR:
+                                break;
+                            default:
+                            // console.log("默认，不处理")
+                        }
+                        this.options.set(propertyKey, newOption);
+                        //创建表单关联
+                        getFieldDecorator(propertyKey, options)(reactNodes[0]);
+                        return reactNodes;
+                    }
                 }
             },
             set: (target: T, p: PropertyKey, value: any, receiver: any): boolean => {
@@ -163,7 +214,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
  * @param S 表单元素的原始值类型
  * @param E 转化后的值类型
  */
-interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
+interface ProxyFormItemOptions<P, S, E> extends GetFieldDecoratorOptions {
 
     /**
      * get值时候formatter
@@ -184,20 +235,31 @@ interface ProxyFormItemOptions<S, E> extends GetFieldDecoratorOptions {
      * @param value 表单项的值
      * @returns {any}
      */
-    initialFunction?: (value: any) => any
+    initialFunction?: (value: any) => any;
+
+
+    /**
+     * 根据表单项类型，构造对应于的组件
+     */
+    formItemType?: FormItemType;
+
+    /**
+     * 对应表单项类型组件的props
+     */
+    formItemProps?: P
 
 }
 
 /**
  * 代理表单配置
  */
-type ProxyFormItemOptionsAny = ProxyFormItemOptions<any, any>
+type ProxyFormItemOptionsAny<P> = ProxyFormItemOptions<P, any, any>
 
 /**
  * 代理表单建造者类型
- * @param T 表单提交对象
+ * @param T 表单提交对象 node: React.ReactNode
  */
-export type ProxyFormBuilderType = (node: React.ReactNode, options?: ProxyFormItemOptionsAny) => React.ReactNode;
+export type ProxyFormBuilderType<P> = (options?: ProxyFormItemOptionsAny<P>) => (node?: React.ReactNode) => React.ReactNode | React.ReactNode[];
 
 /**
  * 表单建造者

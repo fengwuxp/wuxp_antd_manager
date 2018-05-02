@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Button, Row, Col} from 'antd';
+import {Button, Col, Form, Row} from 'antd';
 import omit from 'omit.js';
 import * as styles from './style.scss';
 import map from './map';

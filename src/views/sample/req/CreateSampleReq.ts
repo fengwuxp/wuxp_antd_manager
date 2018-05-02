@@ -1,6 +1,7 @@
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
+import {DatePickerProps} from "antd/lib/date-picker/interface";
 
 /**
 *创建样例
@@ -77,70 +78,70 @@ export interface CreateSampleReqBuilder extends FormBuilder<CreateSampleReq>{
     /**
      * 名称
      */
-    name:ProxyFormBuilderType;
+    name:ProxyFormBuilderType<any>;
     /**
      * 图标
      */
-    icon?:ProxyFormBuilderType;
+    icon?:ProxyFormBuilderType<any>;
     /**
      * 简介
      */
-    description?:ProxyFormBuilderType;
+    description?:ProxyFormBuilderType<any>;
     /**
      * 发布日期
      */
-    publicDate?:ProxyFormBuilderType;
+    publicDate?:ProxyFormBuilderType<DatePickerProps>;
     /**
      * 发布类型
      */
-    sendMode:ProxyFormBuilderType;
+    sendMode:ProxyFormBuilderType<any>;
     /**
      * 活动介绍
      */
-    mediumBody?:ProxyFormBuilderType;
+    mediumBody?:ProxyFormBuilderType<any>;
     /**
      * 附件
      */
-    downFile?:ProxyFormBuilderType;
+    downFile?:ProxyFormBuilderType<any>;
     /**
      * 活动URL
      */
-    hdUrl?:ProxyFormBuilderType;
+    hdUrl?:ProxyFormBuilderType<any>;
     /**
      * 数量
      */
-    number:ProxyFormBuilderType;
+    number:ProxyFormBuilderType<any>;
     /**
      * 费率（百分比）
      */
-    feePct?:ProxyFormBuilderType;
+    feePct?:ProxyFormBuilderType<any>;
     /**
      * 费率（千分比）
      */
-    feePpt?:ProxyFormBuilderType;
+    feePpt?:ProxyFormBuilderType<any>;
     /**
      * 手续费（分）
      */
-    feeFen?:ProxyFormBuilderType;
+    feeFen?:ProxyFormBuilderType<any>;
     /**
      * 手续费（元）
      */
-    feeYuan?:ProxyFormBuilderType;
+    feeYuan?:ProxyFormBuilderType<any>;
     /**
      * 销售额（万元）
      */
-    sale?:ProxyFormBuilderType;
+    sale?:ProxyFormBuilderType<any>;
 
     /**
      * 启用
      */
-    enabled?:ProxyFormBuilderType;
+    enabled?:ProxyFormBuilderType<any>;
     /**
      * 上级ID
      */
-    parentId?:ProxyFormBuilderType;
+    parentId?:ProxyFormBuilderType<any>;
     /**
      * 地区ID
      */
-    areaId?:ProxyFormBuilderType;
+    areaId?:ProxyFormBuilderType<any>;
 }

@@ -3,7 +3,6 @@ import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 import {isNullOrUndefined} from "util";
 import {message as AntdMessage} from "antd";
 import {analysisAction} from "../action/ActionStrategy";
-import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 
 let count = 0;
 

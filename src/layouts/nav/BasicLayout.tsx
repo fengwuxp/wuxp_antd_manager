@@ -4,7 +4,7 @@ import {ContainerQuery} from "react-container-query";
 import classNames from 'classnames';
 import MediaQuery from "./MediaQuery";
 import AntdNavLayout, {AntdNavLayoutProps} from "./AntdNavLayout";
-import {MapStateToPropsParam, connect} from "react-redux";
+import {connect, MapStateToPropsParam} from "react-redux";
 import {isNullOrUndefined} from "util";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import _ from "lodash";

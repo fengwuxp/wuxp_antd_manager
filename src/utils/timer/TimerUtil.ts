@@ -1,5 +1,4 @@
 import {isFunction} from "util";
-import {is} from "redux-saga/utils";
 
 /**
  * 定时器

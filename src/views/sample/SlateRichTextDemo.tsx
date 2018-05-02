@@ -1,6 +1,5 @@
 import React from 'react'
 import {Editor} from 'slate-react'
-import State from 'slate'
 
 /**
  * 富文本示例

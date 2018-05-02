@@ -1,5 +1,4 @@
-
-import {isNullOrUndefined, isString, isNumber, isBoolean} from "util";
+import {isBoolean, isNullOrUndefined, isNumber, isString} from "util";
 
 const moneyRegExp = /^[0-9]+[\.]?[0-9]{0,2}$/;
 

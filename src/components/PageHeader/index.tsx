@@ -1,4 +1,4 @@
-import React, {PureComponent, createElement} from 'react';
+import React, {createElement, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import pathToRegexp from 'path-to-regexp';
 import {Breadcrumb, Col, Icon, Row, Tabs} from 'antd';

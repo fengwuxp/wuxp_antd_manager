@@ -1,5 +1,6 @@
 import {HasActionTable} from "../../../builder/table/TableColumnsBuilder";
 import {ColumnProps} from "antd/es/table/interface";
+
 /**
  * sampleInfo
  */
@@ -127,130 +128,130 @@ export interface SampleInfo  {
 /**
  * SampleBuilder
  */
-export interface SampleBuilder extends HasActionTable<SampleBuilder, SampleInfo> {
+export interface SampleBuilder extends HasActionTable<SampleInfo> {
 
     /**
      * id
      */
-    id: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    id: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * sn
      */
-    sn: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    sn: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 姓名
      */
-    name: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    name: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 图标
      */
-    icon: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    icon: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 简介
      */
-    description: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    description: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 发布日期
      */
-    publicDate: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    publicDate: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 发布类型
      */
-    sendMode: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    sendMode: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 活动介绍
      */
-    mediumBody: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    mediumBody: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 附件
      */
-    downFile: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    downFile: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 活动URL
      */
-    hdUrl: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    hdUrl: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 数量
      */
-    number: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    number: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 费率（百分比）
      */
-    feePct: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    feePct: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 费率（千分比）
      */
-    feePpt: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    feePpt: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 手续费（分）
      */
-    feeFen: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    feeFen: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 手续费（元）
      */
-    feeYuan: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    feeYuan: (column: ColumnProps<SampleInfo>) => this;
 
     /**
      * 销售额（万元）
      */
-    sale: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    sale: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 启用
      */
-    enabled: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    enabled: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 上级ID
      */
-    parentId: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    parentId: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 上级信息
      */
-    parentInfo: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    parentInfo: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 地区信息ID
      */
-    areaId: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    areaId: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 地区信息
      */
-    areaInfo: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    areaInfo: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 创建日期
      */
-    addTime: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    addTime: (column: ColumnProps<SampleInfo>) => this;
 
 
     /**
      * 更新日期
      */
-    updateTime: (column: ColumnProps<SampleInfo>) => SampleBuilder;
+    updateTime: (column: ColumnProps<SampleInfo>) => this;
 
 }

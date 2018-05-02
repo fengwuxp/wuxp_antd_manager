@@ -1,7 +1,5 @@
 import {call, put} from "redux-saga/effects";
 import {getMenuData, menuData} from "../../routes/menu";
-import apiClient from "../../fetch/BuildFetchClient";
-import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 
 

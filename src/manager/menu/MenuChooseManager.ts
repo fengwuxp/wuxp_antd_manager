@@ -6,7 +6,6 @@ import {put} from "redux-saga/effects";
 import {addSagaHandler} from "wuxp_react_dynamic_router/src/manager/saga/SagaManager";
 
 
-
 class MenuChooseAction implements MenuChooseReducer {
 
     changeMenuNav: Reducer<number>;

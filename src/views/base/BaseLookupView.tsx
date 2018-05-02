@@ -7,7 +7,6 @@ import Input from "antd/lib/input/Input";
 import Button from "antd/lib/button/button";
 import {Select} from "antd";
 import BaseAbstractTableView, {BaseAbstractTableViewState} from "./BaseAbstractTableView";
-import {SampleInfo} from "../sample/info/SampleInfo";
 import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 
 const Option = Select.Option;
@@ -25,9 +24,9 @@ export interface BaseLookupViewState<T> extends BaseAbstractTableViewState<T> {
 }
 
 
-export interface BaseLookupViewProps extends ReduxRouterProps {
+export interface BaseLookupViewProps<T> extends ReduxRouterProps {
 
-    onSelectedRow: (rows: Array<SampleInfo>) => void;
+    onSelectedRow: (rows: Array<T>) => void;
 
     selectedRows: Array<any>;
 
@@ -43,11 +42,11 @@ export interface BaseLookupViewProps extends ReduxRouterProps {
 
 
 export default abstract class BaseLookupViewBaseListView<
-    P extends BaseLookupViewProps,
+    P extends BaseLookupViewProps<T>,
     S extends BaseLookupViewState<T>,
     E extends ApiQueryReq,
     T,
-    B extends HasActionTable<B, T>>
+    B extends HasActionTable<T>>
     extends BaseAbstractTableView<P, S, E, T, B> {
 
 
