@@ -1,10 +1,9 @@
 import * as React from "react";
 import Table from "antd/es/table/Table";
 import BaseListView, {BaseListState} from "../base/BaseListView";
-import locale from "antd/lib/date-picker/locale/zh_CN"
 import Button from "antd/es/button/button";
 import Dropdown from "antd/lib/dropdown/dropdown";
-import {Card, Col, DatePicker, Form, Icon, Input, Menu, Popover, Row, Select, Switch} from "antd";
+import {Card, Col, DatePicker, Form, Icon, Menu, Popover, Row, Select} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";

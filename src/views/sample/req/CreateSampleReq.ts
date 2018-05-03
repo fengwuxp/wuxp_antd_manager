@@ -2,7 +2,6 @@ import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
 import {DatePickerProps} from "antd/lib/date-picker/interface";
-import {SelectProps} from "antd/lib/select";
 import {AntdSelectProps} from "../../../builder/form/item/CommonSimpleComponentHandler";
 import {InputProps, TextAreaProps} from "antd/lib/input";
 import {InputNumberProps} from "antd/lib/input-number";

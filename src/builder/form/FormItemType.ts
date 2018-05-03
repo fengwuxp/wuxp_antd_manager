@@ -126,6 +126,12 @@ export enum FormItemType {
     TRANSFER = "TRANSFER",
 
     /**
+     * 富文本编辑器
+     * @type {string}
+     */
+    RICH_TEXT = "RICH_TEXT",
+
+    /**
      * 级联时间选择
      * @type {string}
      */

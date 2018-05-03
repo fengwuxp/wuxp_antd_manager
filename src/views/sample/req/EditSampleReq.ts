@@ -4,7 +4,6 @@ import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemB
 import {DatePickerProps} from "antd/lib/date-picker/interface";
 import {InputProps, TextAreaProps} from "antd/lib/input";
 import {UploadProps} from "antd/lib/upload";
-import {SelectProps} from "antd/lib/select";
 import {InputNumberProps} from "antd/lib/input-number";
 import {SwitchProps} from "antd/lib/switch";
 import {TextareaHTMLAttributes} from "react";
@@ -98,10 +97,12 @@ export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
      * ID
      */
     id: ProxyFormBuilderType<InputProps>;
+
     /**
      * 名称
      */
     name?: ProxyFormBuilderType<InputProps>;
+
     /**
      * 图标
      */

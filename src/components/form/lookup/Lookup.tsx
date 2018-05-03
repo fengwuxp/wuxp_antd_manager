@@ -1,7 +1,6 @@
 import * as React from "react";
 import Modal from "antd/lib/modal";
-import {BaseLookupViewProps} from "../../../views/base/BaseLookupView";
-import BaseLookupViewBaseListView from "../../../views/base/BaseLookupView";
+import BaseLookupViewBaseListView, {BaseLookupViewProps} from "../../../views/base/BaseLookupView";
 import {isArray, isNullOrUndefined} from "util";
 import Input from "antd/lib/input/Input";
 import Button from "antd/lib/button/button";

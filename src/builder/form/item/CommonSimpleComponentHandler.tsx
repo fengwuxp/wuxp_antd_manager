@@ -14,6 +14,8 @@ import {default as Mention, MentionProps} from "antd/lib/mention";
 import {RateProps} from "antd/lib/rate";
 import TextArea from "antd/lib/input/TextArea";
 import Cascader, {CascaderProps} from "antd/lib/cascader";
+import {AutoCompleteProps, default as AutoComplete} from "antd/lib/auto-complete";
+import TimePicker, {TimePickerProps} from "antd/lib/time-picker";
 
 
 export interface AntdSelectProps extends SelectProps {
@@ -25,10 +27,22 @@ export interface AntdSelectProps extends SelectProps {
  */
 export default class CommonSimpleComponentHandler {
 
+
+    /**
+     * 获取 AutoComplete
+     * @param {AutoCompleteProps} props
+     * @param {string} propName
+     * @returns {React.ReactNode }
+     */
+    static auto_complete = (props: AutoCompleteProps, propName: string):React.ReactNode  => {
+        return <AutoComplete key={getDefaultKey(propName)} {...props}/>
+    };
+
     /**
      * 处理Input
      * @param {InputProps} props
-     * @param {string}propName
+     * @param {string} propName
+     * @returns {React.ReactNode }
      */
     static input = (props: InputProps, propName: string): React.ReactNode => {
 
@@ -38,7 +52,7 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取InputNumber
      * @param {InputNumberProps} props
-     * @param {string}propName
+     * @param {string} propName
      * @returns {{component: any}}
      */
     static input_number = (props: InputNumberProps, propName: string): React.ReactNode => {
@@ -60,7 +74,8 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 Select
      * @param {AntdSelectProps} props
-     * @param {string}propName
+     * @param {string} propName
+     * @returns {React.ReactNode}
      */
     static select = (props: AntdSelectProps, propName: string): React.ReactNode => {
 
@@ -75,7 +90,7 @@ export default class CommonSimpleComponentHandler {
      * 获取 Cascader
      * @param {CascaderProps} props
      * @param {string} propName
-     * @returns {any}
+     * @returns {React.ReactNode}
      */
     static cascader = (props: CascaderProps, propName: string) => {
 
@@ -85,7 +100,8 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 CheckBox
      * @param {CheckboxProps} props
-     * @param {string}propName
+     * @param {string} propName
+     * @returns {React.ReactNode}
      */
     static checkbox = (props: CheckboxProps, propName: string): React.ReactNode => {
         return <Checkbox key={getDefaultKey(propName)} {...props}/>;
@@ -94,7 +110,7 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 CheckboxGroup
      * @param {CheckboxGroupProps} props
-     * @param {string}propName
+     * @param {string} propName
      * @returns {React.ReactNode}
      */
     static checkbox_group = (props: CheckboxGroupProps, propName: string): React.ReactNode => {
@@ -104,7 +120,8 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 Radio
      * @param {RadioProps} props
-     * @param {string}propName
+     * @param {string} propName
+     * @returns {React.ReactNode}
      */
     static radio = (props: RadioProps, propName: string): React.ReactNode => {
         return <Radio key={getDefaultKey(propName)} {...props}/>;
@@ -113,7 +130,7 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 RadioGroup
      * @param {RadioGroupProps} props
-     * @param {string}propName
+     * @param {string} propName
      * @returns {React.ReactNode}
      */
     static radio_group = (props: RadioGroupProps, propName: string): React.ReactNode => {
@@ -123,7 +140,7 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 Slider
      * @param {SliderProps} props
-     * @param {string}propName
+     * @param {string} propName
      * @returns {React.ReactNode}
      */
     static slider = (props: SliderProps, propName: string): React.ReactNode => {
@@ -134,7 +151,7 @@ export default class CommonSimpleComponentHandler {
     /**
      * 获取 Switch
      * @param {SwitchProps} props
-     * @param {string}propName
+     * @param {string} propName
      */
     static switch = (props: SwitchProps, propName: string): React.ReactNode => {
         return <Switch key={getDefaultKey(propName)} {...props}/>;
@@ -158,6 +175,16 @@ export default class CommonSimpleComponentHandler {
      */
     static rate = (props: RateProps, propName: string): React.ReactNode => {
         return <Rate key={getDefaultKey(propName)} {...props}/>
+    };
+
+    /**
+     * TimePicker
+     * @param {TimePickerProps} props
+     * @param {string} propName
+     * @returns {React.ReactNode}
+     */
+    static time_picker= (props: TimePickerProps, propName: string): React.ReactNode => {
+        return <TimePicker  key={getDefaultKey(propName)} {...props}/>
     }
 }
 

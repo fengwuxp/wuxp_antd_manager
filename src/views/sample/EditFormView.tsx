@@ -1,5 +1,4 @@
-import {Button, Card, Cascader, DatePicker, Form, Icon, Input, InputNumber, Select, Switch, Upload} from 'antd';
-import locale from "antd/lib/date-picker/locale/zh_CN"
+import {Button, Card, Form, Select} from 'antd';
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
@@ -11,12 +10,9 @@ import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
 import {EditSampleReq, EditSampleReqBuilder} from "./req/EditSampleReq";
-import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
-import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import LookupListView from "./LookupListView";
 import {getCascadeAreaValues} from "../../utils/AreaUtil";
 import {FormItemType} from "../../builder/form/FormItemType";
-import StringUtils from 'typescript_api_sdk/src/utils/StringUtils';
 
 const FormItem = Form.Item;
 const Option = Select.Option;

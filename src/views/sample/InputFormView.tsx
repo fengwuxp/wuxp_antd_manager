@@ -1,5 +1,4 @@
-import {Button, Card, Cascader, DatePicker, Form, Icon, Input, InputNumber, Select, Switch, Upload} from 'antd';
-import locale from "antd/lib/date-picker/locale/zh_CN"
+import {Button, Card, Form, Input, InputNumber, Select, Switch} from 'antd';
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
@@ -11,11 +10,9 @@ import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import {CreateSampleReq, CreateSampleReqBuilder} from "./req/CreateSampleReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
-import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 import LookupListView from "./LookupListView";
 import {FormItemType} from "../../builder/form/FormItemType";
-import moment from "moment";
 import {getCascadeAreaValues} from "../../utils/AreaUtil";
 // import Modal from "../../components/modal/";
 

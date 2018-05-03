@@ -4,13 +4,16 @@ import {Icon, message} from "antd";
 import Button from "antd/lib/button/button";
 import Upload from "antd/lib/upload/Upload";
 import {UploadChangeParam, UploadFile, UploadLocale} from "antd/lib/upload/interface";
-import {isFunction, isNullOrUndefined} from "util";
+import {isNullOrUndefined} from "util";
 
 
 export interface UploadImageProps extends UploadProps {
 
     placeholder?: string;
 
+    /**
+     * 文件上传大小限制
+     */
     maxFileSize: number;
 
     defaultFiles: Array<string>,
@@ -21,6 +24,9 @@ export interface UploadImageProps extends UploadProps {
 
     uploadError?: (e: any) => void;
 
+    /**
+     * 是否初始化
+     */
     init: boolean;
 }
 

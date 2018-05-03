@@ -1,10 +1,8 @@
 import * as React from "react";
 import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
-import {UploadProps} from "antd/lib/upload/interface";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
-import {UpLoadHelper} from "../../helper/UpLoadHelper";
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
 import {message} from "antd";
