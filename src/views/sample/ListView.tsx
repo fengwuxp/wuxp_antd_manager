@@ -275,22 +275,35 @@ export default class ListView extends BaseListView<SampleListProps,
             <Row gutter={{md: "8", lg: "24", xl: "48"}}>
                 <Col md={8} sm={24}>
                     <FormItem label="名称模糊查询">
-                        {this.formBuilder.nameLike()(
-                            <Input key={"query_form_nameLike"} placeholder="请输入名称"/>
-                        )}
+                        {
+                            this.formBuilder.nameLike({
+                                formItemType: FormItemType.INPUT,
+                                formItemProps: {
+                                    placeholder: "请输入名称"
+                                }
+                            })()
+                        }
                     </FormItem>
                 </Col>
                 <Col md={8} sm={24}>
                     <FormItem label="发布类型">
                         {
-                            this.formBuilder.sendMode()(
-                                <Select key={"query_form_sendMode"}
-                                        placeholder="请选择发布类型"
-                                        style={{width: '100%'}}>
-                                    <Option value="SYNC">同步</Option>
-                                    <Option value="ASYNC">异步</Option>
-                                </Select>
-                            )
+                            this.formBuilder.sendMode({
+                                formItemType: FormItemType.SELECT,
+                                formItemProps: {
+                                    placeholder: "请选择发布类型",
+                                    allowClear: true,
+                                    onChange: (value, option) => {
+                                        console.log("---------change----------",value);
+                                        this.submitQueryForm({sendMode: value});
+                                    },
+                                    renderOptions: () => {
+                                        return Object.keys(SendMode).map((key: string) => {
+                                            return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                        });
+                                    }
+                                }
+                            })()
                         }
                     </FormItem>
                 </Col>
@@ -309,21 +322,34 @@ export default class ListView extends BaseListView<SampleListProps,
                     <Col md={8} sm={24}>
                         <FormItem key={"ext_query_form_nameLike"}
                                   label="名称模糊查询">
-                            {this.formBuilder.nameLike({})(<Input key={"ext_query_form_nameLike"}
-                                                                  placeholder="请输入名称"/>)}
+                            {
+                                this.formBuilder.nameLike({
+                                    formItemType: FormItemType.INPUT,
+                                    formItemProps: {
+                                        placeholder: "请输入名称"
+                                    }
+                                })()
+                            }
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
                         <FormItem label="发布类型">
                             {
-                                this.formBuilder.sendMode()(
-                                    <Select key={"ext_query_form_sendMode"}
-                                            placeholder="请选择发布类型"
-                                            style={{width: '100%'}}>
-                                        <Option value="SYNC">同步</Option>
-                                        <Option value="ASYNC">异步</Option>
-                                    </Select>
-                                )
+                                this.formBuilder.sendMode({
+                                    formItemType: FormItemType.SELECT,
+                                    formItemProps: {
+                                        placeholder: "请选择发布类型",
+                                        allowClear: true,
+                                        onChange: (value) => {
+                                            this.submitQueryForm({sendMode: value});
+                                        },
+                                        renderOptions: () => {
+                                            return Object.keys(SendMode).map((key: string) => {
+                                                return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                            });
+                                        }
+                                    }
+                                })()
                             }
                         </FormItem>
                     </Col>
@@ -331,13 +357,14 @@ export default class ListView extends BaseListView<SampleListProps,
                         <FormItem label="是否启用">
                             {
                                 this.formBuilder.enabled({
-                                    initialValue: true
-                                })(
-                                    <Switch key={"ext_query_form_enabled"}
-                                            checkedChildren="启用"
-                                            unCheckedChildren="禁用"
-                                            defaultChecked/>,
-                                )
+                                    initialValue: true,
+                                    formItemType: FormItemType.SWITCH,
+                                    formItemProps: {
+                                        checkedChildren: "启用",
+                                        unCheckedChildren: "禁用",
+                                        defaultChecked: true
+                                    }
+                                })()
                             }
                         </FormItem>
                     </Col>

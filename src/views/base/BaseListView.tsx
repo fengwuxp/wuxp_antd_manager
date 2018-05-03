@@ -41,6 +41,8 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
 
     protected formBuilder: Q;
 
+    protected proxyReq: E;
+
     constructor(props: P, context: any, defaultPrams: E) {
         super(props, context, defaultPrams);
 
@@ -81,19 +83,20 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
         console.log("componentDidMount");
 
         //将参数初始化到查询表单上
-        let target = this.formBuilder.build();
+        this.proxyReq = this.formBuilder.build();
 
         console.log(this.reqParams);
 
         for (const key in this.reqParams) {
-            target[key] = this.reqParams[key];
+            this.proxyReq[key] = this.reqParams[key];
         }
     }
 
     /**
      * 提交查询
+     * @param forceParam 强制提交的参数
      */
-    protected submitQueryForm = () => {
+    protected submitQueryForm = (forceParam: object = {}) => {
 
         this.props.form.validateFields((err, values) => {
             const {simpleFilterValue} = values;
@@ -120,6 +123,7 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
 
             //组合查询参数
             this.reqParams = Object.assign(
+                {},
                 this.defaultPrams,
                 simpleParam,
                 req,
@@ -128,7 +132,8 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                     querySize: this.reqParams.querySize,
                     orderBy: this.reqParams.orderBy,
                     orderType: this.reqParams.orderType
-                }
+                },
+                forceParam
             );
             delete this.reqParams.total;
             console.log("查询参数", this.reqParams);
@@ -162,7 +167,8 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                 {
                     useAdvancedForm ? (toggleAdvancedForm ?
                         <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>收起 <Icon type="up"/></a> :
-                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon type="down"/></a>) : null
+                        <a style={{marginLeft: 8}} onClick={this.toggleAdvanceQueryForm}>展开 <Icon
+                            type="down"/></a>) : null
                 }
 
             </span>
@@ -175,10 +181,16 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
      */
     protected resetQueryParams = () => {
         const {form} = this.props;
+
         //重置查询参数
         form.resetFields();
+
+        //恢复默认参数
+        for (const key in this.defaultPrams) {
+            this.proxyReq[key] = this.defaultPrams[key];
+        }
         //查询
-        this.fetchListData();
+        this.submitQueryForm();
     };
 
     protected toggleAdvanceQueryForm = () => {

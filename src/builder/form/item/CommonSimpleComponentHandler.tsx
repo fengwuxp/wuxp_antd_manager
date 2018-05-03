@@ -16,6 +16,10 @@ import TextArea from "antd/lib/input/TextArea";
 import Cascader, {CascaderProps} from "antd/lib/cascader";
 
 
+export interface AntdSelectProps extends SelectProps {
+    renderOptions: () => React.ReactNode[];
+}
+
 /**
  * 通用的表单组件处理者，用于获取简单的表单组件
  */
@@ -55,12 +59,16 @@ export default class CommonSimpleComponentHandler {
 
     /**
      * 获取 Select
-     * @param {SelectProps} props
+     * @param {AntdSelectProps} props
      * @param {string}propName
      */
-    // static select = (props: SelectProps, propName: string): React.ReactNode => {
-    //     return <Select key={getDefaultKey(propName)} {...props}/>;
-    // };
+    static select = (props: AntdSelectProps, propName: string): React.ReactNode => {
+
+        let renderOptions = props.renderOptions;
+        delete props.renderOptions;
+
+        return <Select key={getDefaultKey(propName)} {...props} children={renderOptions()}/>;
+    };
 
 
     /**

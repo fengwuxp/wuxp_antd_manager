@@ -232,21 +232,19 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: true, message: '请选择发布类型'
                                 }
                             ],
-                            // formItemType: FormItemType.SELECT,
-                            // formItemProps: {
-                            //     placeholder: "请选择发布类型",
-                            //     allowClear:true,
-                            // }
-                        }
-                    )(
-                        <Select key={"select_send_mode"} placeholder="请选择发布类型" allowClear={true}>
-                            {
-                                Object.keys(SendMode).map((key: string) => {
-                                    return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
-                                })
+                            formItemType:FormItemType.SELECT,
+                            formItemProps: {
+                                placeholder: "请选择发布类型",
+                                allowClear: true,
+                                renderOptions: () => {
+                                    return Object.keys(SendMode).map((key: string) => {
+                                        return <Option key={key} value={key}>{SendMode[key].desc}</Option>;
+                                    });
+                                }
                             }
-                        </Select>
-                    )
+
+                        }
+                    )()
                 }
             </FormItem>
             <FormItem

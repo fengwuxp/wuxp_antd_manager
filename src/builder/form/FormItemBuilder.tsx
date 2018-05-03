@@ -116,8 +116,8 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                                     newOption.getFormatter = getFormatter;
                                 }
                                 break;
-                            case FormItemType.SELECT:
-                                break;
+                            // case FormItemType.SELECT:
+                            //     break;
                             case FormItemType.LOOKUP:
                                 const lookup = handleLookup(formItemProps, propertyKey, this.form);
                                 node = lookup.node;

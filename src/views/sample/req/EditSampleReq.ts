@@ -11,6 +11,7 @@ import {TextareaHTMLAttributes} from "react";
 import {LookupProps} from "../../../components/form/lookup/Lookup";
 import {SampleInfo} from "../info/SampleInfo";
 import {CascaderProps} from "antd/lib/cascader";
+import {AntdSelectProps} from "../../../builder/form/item/CommonSimpleComponentHandler";
 
 /**
  *编辑样例
@@ -92,6 +93,7 @@ export interface EditSampleReq extends ApiReq {
 
 
 export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
+
     /**
      * ID
      */
@@ -116,7 +118,7 @@ export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
     /**
      * 发布类型
      */
-    sendMode?: ProxyFormBuilderType<SelectProps>;
+    sendMode?: ProxyFormBuilderType<AntdSelectProps>;
     /**
      * 活动介绍
      */

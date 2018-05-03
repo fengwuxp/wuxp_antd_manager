@@ -30,7 +30,7 @@ export function handleLookup<T>(props: LookupProps<T>, propName: string, from: W
     };
 
     return {
-        node: <Lookup key={`lookup_key_${propName}`} {...props}/>,
+        node: <Lookup key={`lookup_key_${propName}`} {...props}/>
         // setFormatter:()=>{
         //
         // },

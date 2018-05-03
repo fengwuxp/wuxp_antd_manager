@@ -2,6 +2,7 @@ import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
 import {DatePickerProps, RangePickerProps} from "antd/lib/date-picker/interface";
+import {AntdSelectProps} from "../../../builder/form/item/CommonSimpleComponentHandler";
 
 
 /**
@@ -71,6 +72,7 @@ export interface QuerySampleReq extends ApiQueryReq {
 }
 
 export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
+
     /**
      * ID
      */
@@ -98,7 +100,7 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     /**
      * 发布类型
      */
-    sendMode?: ProxyFormBuilderType<any>;
+    sendMode?: ProxyFormBuilderType<AntdSelectProps>;
     /**
      * 启用
      */
