@@ -13,6 +13,7 @@ import {default as Switch, SwitchProps} from "antd/lib/switch";
 import {default as Mention, MentionProps} from "antd/lib/mention";
 import {RateProps} from "antd/lib/rate";
 import TextArea from "antd/lib/input/TextArea";
+import Cascader, {CascaderProps} from "antd/lib/cascader";
 
 
 /**
@@ -57,10 +58,21 @@ export default class CommonSimpleComponentHandler {
      * @param {SelectProps} props
      * @param {string}propName
      */
-    static select = (props: SelectProps, propName: string): React.ReactNode => {
-        return <Select key={getDefaultKey(propName)} {...props}/>;
-    };
+    // static select = (props: SelectProps, propName: string): React.ReactNode => {
+    //     return <Select key={getDefaultKey(propName)} {...props}/>;
+    // };
 
+
+    /**
+     * 获取 Cascader
+     * @param {CascaderProps} props
+     * @param {string} propName
+     * @returns {any}
+     */
+    static cascader = (props: CascaderProps, propName: string) => {
+
+        return <Cascader key={getDefaultKey(propName)} {...props}/>
+    };
 
     /**
      * 获取 CheckBox

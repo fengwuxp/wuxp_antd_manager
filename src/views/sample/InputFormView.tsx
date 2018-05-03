@@ -16,6 +16,7 @@ import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentForm
 import LookupListView from "./LookupListView";
 import {FormItemType} from "../../builder/form/FormItemType";
 import moment from "moment";
+import {getCascadeAreaValues} from "../../utils/AreaUtil";
 // import Modal from "../../components/modal/";
 
 const FormItem = Form.Item;
@@ -43,12 +44,7 @@ interface SampleFormProps extends AntdFromBaseProps {
 
 interface SampleFormState extends BaseFormSate<SampleInfo, CreateSampleReq> {
 
-    areaOptions: Array<CascaderOptionType>,
-
-
-    showSampleLookup: boolean;
-
-    selectedSampleRows: Array<SampleInfo>;
+    areaOptions: Array<CascaderOptionType>
 
 }
 
@@ -71,9 +67,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
 
     state = {
         areaOptions: [],
-        submitting: false,
-        selectedSampleRows: [],
-        showSampleLookup: false
+        submitting: false
     };
 
     componentWillMount() {
@@ -132,8 +126,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
 
 
     render() {
-
-        console.log("----showSampleLookup----", this.state.showSampleLookup);
 
         return (
             <PageHeaderLayout
@@ -393,14 +385,23 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 required: false, message: '请选择上级'
                                             }
                                         ],
-                                        initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
-                                        getFormatter: (parent: SampleInfo) => {
-                                            console.log("--formatter parent--", parent);
-                                            return this.state.selectedSampleRows[0].id;
+                                        formItemType: FormItemType.LOOKUP,
+                                        formItemProps: {
+                                            onOk: (rows: Array<SampleInfo>) => {
+                                                console.log("选中的行", rows);
+                                            },
+                                            showValue(rows: Array<SampleInfo>) {
+                                                return rows[0].name;
+                                            },
+                                            multiple: false,
+                                            lookupTable: (LookupListView as any),
+                                            placeholder: "请选择上级",
+                                        },
+                                        getFormatter: (sampleInfos: SampleInfo[]) => {
+                                            console.log("--formatter parent--", sampleInfos);
+                                            return sampleInfos[0].id;
                                         }
-                                    })(<Input key={"input_parentId"} readOnly={true} onClick={() => {
-                                    this.onShowParentTable();
-                                }}/>)
+                                    })()
                             }
                         </FormItem>
                         <FormItem key={"form_item_areaId"}
@@ -416,52 +417,34 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 required: true, message: '请选择地区信息'
                                             }
                                         ],
+                                        formItemType: FormItemType.CASCADER,
+                                        formItemProps: {
+                                            options: this.state.areaOptions,
+                                            loadData: this.loadAreaInfo,
+                                            expandTrigger: "hover",
+                                            placeholder: "请选择地区信息",
+                                            onChange: this.onCascadeAreaChange,
+                                            changeOnSelect: true
+                                        },
+                                        setFormatter(val) {
+                                            return getCascadeAreaValues(val);
+                                        },
                                         getFormatter: (values: string[]) => {
-                                            console.log("-----获取地址 -----", values);
                                             return values[values.length - 1];
                                         }
                                     }
-                                )(
-                                    <Cascader key={"cascader_areaId"}
-                                              options={this.state.areaOptions}
-                                              loadData={this.loadAreaInfo}
-                                              placeholder="请选择地区信息"
-                                              onChange={this.onCascadeAreaChange}
-                                              changeOnSelect/>
-                                )
+                                )()
                             }
                         </FormItem>
                         <FormItem wrapperCol={{span: 12, offset: 5}}>
                             <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>
                         </FormItem>
                     </Form>
-                    <LookupListView onSelectedRow={this.onTableOk}
-                                    visible={this.state.showSampleLookup}
-                                    onCancel={this.onShowParentTable}
-                                    selectedRows={this.state.selectedSampleRows}
-                                    location={this.props.location}
-                                    history={this.props.history}
-                                    match={this.props.match}/>
                 </Card>
             </PageHeaderLayout>
         );
     }
 
-
-    onShowParentTable = (showSampleLookup = true) => {
-        this.setState({
-            showSampleLookup
-        })
-
-    };
-
-    onTableOk = (rows: Array<SampleInfo>) => {
-        console.log("选中的行", rows);
-        this.setState({
-            selectedSampleRows: rows,
-            showSampleLookup: false
-        })
-    };
 
     /**
      * 级联选中地区

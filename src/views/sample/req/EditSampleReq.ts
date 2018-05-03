@@ -8,6 +8,9 @@ import {SelectProps} from "antd/lib/select";
 import {InputNumberProps} from "antd/lib/input-number";
 import {SwitchProps} from "antd/lib/switch";
 import {TextareaHTMLAttributes} from "react";
+import {LookupProps} from "../../../components/form/lookup/Lookup";
+import {SampleInfo} from "../info/SampleInfo";
+import {CascaderProps} from "antd/lib/cascader";
 
 /**
  *编辑样例
@@ -88,7 +91,6 @@ export interface EditSampleReq extends ApiReq {
 }
 
 
-
 export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
     /**
      * ID
@@ -159,10 +161,11 @@ export interface EditSampleReqBuilder extends FormBuilder<EditSampleReq> {
     /**
      * 上级ID
      */
-    parentId?: ProxyFormBuilderType<any>;
+    parentId?: ProxyFormBuilderType<LookupProps<SampleInfo>>;
+
     /**
      * 地区ID
      */
-    areaId?: ProxyFormBuilderType<any>;
+    areaId?: ProxyFormBuilderType<CascaderProps>;
 }
 

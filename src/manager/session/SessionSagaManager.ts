@@ -140,13 +140,16 @@ function adminLogin(payload): Promise<ApiResp<AntdAdmin>> {
     });
 }
 
-function adminLogout({type, payload}) {
+function adminLogout() {
+    // {type, payload}
     // return new Promise((resolve, reject) => {
     //     setTimeout(() => {
     //         resolve(payload)
     //     }, 1500);
     // });
-    apiClient.post({
-        url: "/logout"
-    });
+    // apiClient.get({
+    //     url: "/logout"
+    // });
+
+    location.href = "logout";
 }

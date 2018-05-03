@@ -8,6 +8,8 @@ import {UpLoadHelper} from "../../helper/UpLoadHelper";
 import {ApiReq} from "typescript_api_sdk/src/api/model/ApiReq";
 import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
 import {message} from "antd";
+import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
+import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
 
 
 export interface BaseFormSate<E, Q extends ApiReq> {
@@ -62,6 +64,11 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
      */
     protected formBuilder: B;
 
+    /**
+     * 客户端请求工具
+     */
+    protected apiClient: ApiClientInterface<FetchOption> = apiClient;
+
 
     constructor(props: P, context: any) {
         super(props, context);
@@ -101,7 +108,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
             }).catch(this.fetchFormDataFailure)['finally'](() => {
                 message.destroy();
             })
-        }else {
+        } else {
             this.formBuilder.executeInitFunction();
         }
     }
@@ -112,7 +119,7 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
     }
 
 
-    protected fetchDataSuccess  (data: E, proxyReq: Q) {
+    protected fetchDataSuccess(data: E, proxyReq: Q) {
         //初始化表单的值
         console.log("----------super fetchDataSuccess------", data);
         for (const key in data) {
@@ -156,13 +163,15 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
             const proxyReq: Q = this.formBuilder.build();
 
             //提交的数据
-            const submit = {};
+            const submit: any = {};
             for (const key in values) {
+                if (key === "id") {
+                    continue;
+                }
                 submit[key] = proxyReq[key];
-                // if (!isNullOrUndefined(submit[key]) &&
-                //     submit[key]["__proto__"].constructor.name === "Moment") {
-                //     //处理时间
-                // }
+            }
+            if (!this.isCreated) {
+                submit.id = this.state.initFormData['id'];
             }
 
 
@@ -194,9 +203,12 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
 
     /**
      * 表单提交之前的处理
-     * return false 则不提交
+     * @param {Q} formData
+     * @returns {boolean} 返回false 则不提交
      */
-    protected abstract beforeSerialize: (formData: any) => boolean;
+    protected beforeSerialize = (formData: Q) => {
+        return true;
+    };
 
 
     protected submitSuccess = (data: ApiResp<any>) => {
@@ -207,21 +219,4 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
         console.log("请求处理失败", e);
     };
 
-    /**
-     * 参考文档：https://ant.design/components/upload-cn/
-     * 获取一个文件上传对象的props
-     * @param {string} formItemName 表单属性的名称
-     * @param {Array<string>} defaultFileList 已经上传的文件列表
-     * @param {UploadProps} props
-     * @returns {UploadProps}
-     */
-    protected getUploadUploadProps = (formItemName: string, defaultFileList: Array<string> = [], props: UploadProps = {}): UploadProps => {
-
-        const {form} = this.props;
-
-        const helper = new UpLoadHelper(form, formItemName);
-
-
-        return helper.upload(defaultFileList.filter(item => item.trim().length > 0), props);
-    }
 }

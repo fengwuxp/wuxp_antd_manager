@@ -103,15 +103,15 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
      */
     protected tableBuilder: B;
 
-    constructor(props: P, context: any, defaultPrams: E = {} as E) {
+    constructor(props: P, context: any, defaultPrams: E = {} as E, useQueryString = true) {
         super(props, context);
 
-        const {search} = this.props.history.location;
+        let params = {};
         //获取查询参数
-        const params = parse(search);
-
+        if (useQueryString) {
+            params = parse(this.props.history.location.search.split("?")[1]);
+        }
         this.defaultPrams = Object.assign({}, params, defaultPrams);
-
         this.tableBuilder = TableColumnsBuilder.builder<B, T>();
 
     }

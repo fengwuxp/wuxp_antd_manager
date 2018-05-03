@@ -4,7 +4,6 @@ import {Table} from "antd";
 import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import {ColumnProps} from "antd/es/table/interface";
 import BaseLookupView, {BaseLookupViewProps, BaseLookupViewState} from "../base/BaseLookupView";
-import Modal from "antd/lib/modal/Modal";
 
 
 interface LookupListViewProps extends BaseLookupViewProps<SampleInfo> {
@@ -59,8 +58,6 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
     render() {
         const {page, loading, pagination} = this.state;
 
-        const {width, visible, title} = this.props;
-
         let scrollXy;
         if (page.records.length > 0) {
             scrollXy = {
@@ -68,17 +65,7 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
             }
         }
         return (
-            <Modal title={title ? title : "带回查找"}
-                   width={width ? width : 800}
-                   visible={visible}
-                   okText="确认"
-                   cancelText="取消"
-                   onOk={() => {
-                       this.props.onSelectedRow(this.state.selectedRows);
-                   }}
-                   onCancel={() => {
-                       this.props.onCancel(false);
-                   }}>
+            <React.Fragment>
                 <div style={{textAlign: "right"}}>{this.getRightSimpleSearch()}</div>
                 <Table style={{marginTop: 20}}
                        bordered={true}
@@ -90,11 +77,16 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
                        locale={this.getTableLocal()}
                        title={() => this.tableName}
                        onChange={this.onTableChange}
-                       rowSelection={this.getRowSelection()}
+                       rowSelection={this.getRowSelection(this.props.multiple)}
                        scroll={scrollXy}/>
-            </Modal>
+            </React.Fragment>
         )
     };
+
+    public getSelectedRows = () => {
+
+        return this.state.selectedRows;
+    }
 
 
 }

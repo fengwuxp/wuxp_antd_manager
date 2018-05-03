@@ -3,19 +3,22 @@ import {UploadProps} from "antd/lib/upload/interface";
 import {FormItemType} from "../FormItemType";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
 import {isArray, isNullOrUndefined} from "util";
-import WUploadFile from "../../../components/upload/WUploadFile";
+import WUploadFile from "../../../components/form/upload/WUploadFile";
+import {WrappedFormUtils} from "antd/lib/form/Form";
 
 // const helpers:Map<string,UpLoadHelper>=new Map<string, UpLoadHelper>();
 /**
  * 处理图片上传
  * @param {FormItemType} formItemType 类型
  * @param {string} propName
+ * @param {WrappedFormUtils} from
  * @param {boolean} init 是否已经初始化
  * @param {Array<string>} defaultFiles
  * @param {UploadProps} props
  */
 export function handleUploadImage(formItemType: FormItemType,
                                   propName: string,
+                                  from: WrappedFormUtils,
                                   init: boolean,
                                   defaultFiles: Array<string>,
                                   props: UploadProps = {}) {
@@ -37,7 +40,11 @@ export function handleUploadImage(formItemType: FormItemType,
     }
     const uploadSuccess = (urls: Array<string>) => {
 
-        // console.log("文件上传成功", urls);
+        console.log("------文件上传成功----------",propName, urls);
+        let obj = {};
+        //设置值
+        obj[propName] = urls;
+        from.setFieldsValue(obj)
     };
     return {
         node: <WUploadFile key={`upload_image_${propName}`}

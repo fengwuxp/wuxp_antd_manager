@@ -1,10 +1,11 @@
 import {GetFieldDecoratorOptions, WrappedFormUtils} from "antd/lib/form/Form";
 import * as React from "react";
-import {isFunction, isNullOrUndefined} from "util";
+import {isArray, isFunction, isNullOrUndefined} from "util";
 import {FormItemType} from "./FormItemType";
 import {handleUploadImage} from "./item/UploadComponentHandler";
 import {simpleHandleDatePicker} from "./item/DatePickerComponentHandler";
 import CommonSimpleComponentHandler from "./item/CommonSimpleComponentHandler";
+import {handleLookup} from "./item/LookupComponentHandler";
 
 
 /**
@@ -91,6 +92,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                                 let value = this.getFormatterValue(propertyKey, getFieldValue(propertyKey));
                                 const result = handleUploadImage(formItemType,
                                     propertyKey,
+                                    this.form,
                                     this.isExecute,
                                     value,
                                     formItemProps);
@@ -114,6 +116,14 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                                     newOption.getFormatter = getFormatter;
                                 }
                                 break;
+                            case FormItemType.SELECT:
+                                break;
+                            case FormItemType.LOOKUP:
+                                const lookup = handleLookup(formItemProps, propertyKey, this.form);
+                                node = lookup.node;
+                                break;
+                            // case FormItemType.CASCADER:
+                            //     break;
                             case FormItemType.DEFAULT:
                                 // if(isNullOrUndefined(node)){
                                 //     //TODO
@@ -151,17 +161,39 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
             return;
         }
         this.isExecute = true;
-        const {getFieldValue} = this.form;
         this.options.forEach((option, key) => {
             if (isFunction(option.initialFunction)) {
-                const fieldValue = getFieldValue(key);
-                // let value = this.getFormatterValue(key, fieldValue);
-                console.log("value--------->", fieldValue);
-                option.initialFunction(fieldValue);
+                this.setValueByAsync(key, option);
             }
         });
-
     };
+
+    private setValueByAsync(key, option) {
+        const {getFieldValue, setFieldsValue} = this.form;
+        const fieldValue = getFieldValue(key);
+        // let value = this.getFormatterValue(key, fieldValue);
+        console.log("-----------value--------->", fieldValue);
+        const result = option.initialFunction(fieldValue);
+        // console.log("-----------value--------->", result,result.constructor === Promise);
+        if (isNullOrUndefined(result)) {
+            return;
+        }
+        let p: Promise<any>;
+        if (result.constructor === Promise) {
+            p = result;
+        } else {
+            Promise.resolve(() => result);
+        }
+        p.then((val) => {
+            if (!isNullOrUndefined(val)) {
+                let obj = {};
+                obj[key] = val;
+                setFieldsValue(obj);
+            }
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
 
     /**
      *代理处理 setter getter
@@ -187,7 +219,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                 let option = this.options.get(key);
                 let val;
                 if (isFunction(option.setFormatter)) {
-                    val = option.setFormatter(value)
+                    val = option.setFormatter(value);
                 } else {
                     val = value;
                 }
@@ -209,6 +241,10 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
      * @returns {any}
      */
     private getFormatterValue = (key, fieldValue) => {
+        if (isNullOrUndefined(fieldValue) ||
+            (isArray(fieldValue) && fieldValue.length === 0)) {
+            return null;
+        }
         let option = this.options.get(key);
 
         if (isNullOrUndefined(option)) {
@@ -249,10 +285,10 @@ interface ProxyFormItemOptions<P, S, E> extends GetFieldDecoratorOptions {
 
     /**
      * 初始化函数
-     * @param value 表单项的值
+     * @param value 表单项的值(这个值是指表单的实际值，而不是提交的值)
      * @returns {any}
      */
-    initialFunction?: (value: any) => any;
+    initialFunction?: (value: any) => Promise<any> | any;
 
 
     /**
@@ -264,6 +300,11 @@ interface ProxyFormItemOptions<P, S, E> extends GetFieldDecoratorOptions {
      * 对应表单项类型组件的props
      */
     formItemProps?: P
+
+    /**
+     * 表单实际提交值
+     */
+    // submitValue?:any;
 
 }
 

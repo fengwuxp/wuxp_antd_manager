@@ -4,7 +4,7 @@ import {Icon, message} from "antd";
 import Button from "antd/lib/button/button";
 import Upload from "antd/lib/upload/Upload";
 import {UploadChangeParam, UploadFile, UploadLocale} from "antd/lib/upload/interface";
-import {isNullOrUndefined} from "util";
+import {isFunction, isNullOrUndefined} from "util";
 
 
 export interface UploadImageProps extends UploadProps {
@@ -38,11 +38,16 @@ const DEFAULT_ACTION: string = `${process.env.NODE_ENV === 'dev' ? '/api' : ''}/
 export default class WUploadFile extends React.Component<UploadImageProps, any> {
 
 
-    protected uploadList = [];
+    //已经上传的文件列表
+    protected uploadList: UploadFile[] = [];
+
+    /**
+     * 默认已经的上传的文件列表
+     */
+    protected defaultFileList: UploadFile[];
 
     protected refName: string = "w_upload";
 
-    protected defaultFileList;
 
     constructor(props: UploadImageProps, context: any) {
         super(props, context);
@@ -59,9 +64,6 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
         };
     }
 
-    componentDidMount() {
-        console.log("----------------122122-----------")
-    }
 
     render() {
         const {init, locale, name, action, accept, listType, placeholder, defaultFiles, beforeUpload, onRemove, onPreview} = this.props;
@@ -107,10 +109,24 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
         return !exceedLimit
     };
 
-    //点击移除文件时的回调，返回值为 false 时不移除。支持返回一个 Promise 对象，Promise 对象 resolve(false) 或 reject 时不移除。
+    /**
+     * 点击移除文件时的回调，返回值为 false 时不移除。支持返回一个 Promise 对象，Promise 对象 resolve(false) 或 reject 时不移除。
+     * @param {UploadFile} file 移除的文件
+     */
     protected onRemove = (file: UploadFile) => {
-        console.log("---------onRemove---------", file);
-        // const {response} = file;
+        // console.log("---------onRemove---------", file, this.uploadList);
+        //文件被移除
+        let index = -1;
+        let r = this.uploadList.some((item, i) => {
+            index = i;
+            return item.response.url === file.response.url;
+        });
+        if (r && index > -1) {
+            //移除
+            this.uploadList.splice(index, 1);
+            //更新
+            this.props.uploadSuccess(this.uploadList.map(({response}) => response.url))
+        }
     };
 
     /**
@@ -137,12 +153,13 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
             //上传成功
             let urls = files.map(({response}) => response.url);
             this.props.uploadSuccess(urls);
-            this.uploadList = urls;
+            this.uploadList = files;
             //移除文件
             this.removeFile(files);
         } else {
-            //上传失败
-            this.props.uploadError(errorResp);
+            if (errorResp) { //上传失败
+                this.props.uploadError(errorResp);
+            }
         }
 
     };
@@ -164,7 +181,7 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
             return [];
         }
 
-        return defaultFileList.map((url, i) => {
+        let uploadFiles = defaultFileList.map((url, i) => {
             return {
                 uid: i,
                 size: i,
@@ -179,13 +196,24 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
                 }
             } as UploadFile;
         });
+
+        this.uploadList = uploadFiles;
+
+        return uploadFiles;
     };
 
+    /**
+     * 自动移除图片
+     * @param files
+     */
     protected removeFile = (files) => {
         if (this.props.multiple === true) {
             return;
         }
-        console.log("-----files-----", files);
+        if (files.length === 1) {
+            return;
+        }
+        // console.log("-----files-----", files);
         let file;
         if (this.defaultFileList.length > 0) {
             file = this.defaultFileList[0];

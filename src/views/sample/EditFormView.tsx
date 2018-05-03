@@ -30,9 +30,6 @@ interface SampleFormState extends BaseFormSate<SampleInfo, EditSampleReq> {
 
     areaOptions: Array<CascaderOptionType>
 
-    showSampleLookup: boolean;
-
-    selectedSampleRows: Array<SampleInfo>;
 }
 
 /**
@@ -48,7 +45,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
 
     constructor(props: SampleFormProps, context: any) {
         super(props, context);
-        this.submitUrl = "/sample/update";
+        this.submitUrl = "/sample/edit";
         this.isCreated = false;
     }
 
@@ -57,9 +54,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
         areaOptions: [],
         submitting: false,
         submitData: null,
-        initFormData: null,
-        selectedSampleRows: [],
-        showSampleLookup: false,
+        initFormData: null
     };
 
     componentWillMount() {
@@ -71,7 +66,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
 
     fetchDataSuccess(data: SampleInfo, proxyReq: EditSampleReq) {
         super.fetchDataSuccess(data, proxyReq);
-        // proxyReq.icon="1234";
     };
 
     /**
@@ -104,9 +98,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
      * @returns {boolean}
      */
     protected beforeSerialize = (req: EditSampleReq) => {
-
         //TODO
-
         return true;
     };
 
@@ -120,16 +112,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                 title="编辑示例"
                 content="这是一个示例的表单页面，聚合了常见的表单控件，演示了基于antd UI框架的的基本用法">
                 <Card bordered={false}>
-                    {
-                        initFormData === null ? null : this.renderForm(initFormData)
-                    }
-                    <LookupListView onSelectedRow={this.onTableOk}
-                                    visible={this.state.showSampleLookup}
-                                    onCancel={this.onShowParentTable}
-                                    selectedRows={this.state.selectedSampleRows}
-                                    location={this.props.location}
-                                    history={this.props.history}
-                                    match={this.props.match}/>
+                    {initFormData === null ? null : this.renderForm(initFormData)}
                 </Card>
             </PageHeaderLayout>
         );
@@ -171,7 +154,6 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                     this.formBuilder.icon(
                         {
                             rules: [],
-                            // initialValue: StringUtils.hasText(initFormData.icon) ? [initFormData.icon] : null,
                             formItemType: FormItemType.UPLOAD_IMAGE
                         }
                     )()
@@ -205,7 +187,8 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                             rules: [],
                             formItemType: FormItemType.DATE_PICKER,
                             formItemProps: {
-                                placeholder: "请选择发布时间"
+                                placeholder: "请选择发布时间",
+                                showTime: true
                             }
                         }
                     )()
@@ -406,9 +389,9 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                             ],
                             formItemType: FormItemType.SWITCH,
                             formItemProps: {
+                                defaultChecked: initFormData.enabled,
                                 checkedChildren: "启用",
                                 unCheckedChildren: "禁用"
-                                // defaultChecked:true
                             }
                         })()
                 }
@@ -425,20 +408,32 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: false, message: '请选择上级'
                                 }
                             ],
-                            // initialValue: this.state.selectedSampleRows.length > 0 ? this.state.selectedSampleRows[0].name : null,
-                            initialFunction: (parentId: number) => {
-                                console.log("----parentId----", parentId);
+                            formItemType: FormItemType.LOOKUP,
+                            formItemProps: {
+                                onOk: (rows: Array<SampleInfo>) => {
+                                    console.log("选中的行", rows);
+                                },
+                                showValue(rows: Array<SampleInfo>) {
+                                    // if (initFormData.parentInfo === null) {
+                                    //     return null;
+                                    // }
+                                    initFormData.parentInfo = rows[0];
+                                    return rows[0].name;
+                                },
+                                multiple: false,
+                                lookupTable: (LookupListView as any),
+                                placeholder: "请选择上级",
+                                defaultSelectedRows: initFormData.parentInfo ? [initFormData.parentInfo] : []
                             },
-                            getFormatter: (parent: SampleInfo) => {
-                                console.log("--formatter parent--", parent);
-                                return this.state.selectedSampleRows[0].id;
+                            setFormatter: () => {
+                                return [initFormData.parentInfo];
+                            },
+                            getFormatter: (sampleInfos: SampleInfo[]) => {
+                                console.log("--formatter parent--", sampleInfos);
+                                return sampleInfos[0].id;
                             }
                         }
-                    )(
-                        <Input key={"input_parentId"} readOnly={true} onClick={() => {
-                            this.onShowParentTable();
-                        }}/>
-                    )
+                    )()
                 }
             </FormItem>
             <FormItem
@@ -453,14 +448,21 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: true, message: '请选择地区信息'
                                 }
                             ],
-                            // initialValue: getCascadeAreaValues(initFormData.areaId),
-
+                            formItemType: FormItemType.CASCADER,
+                            formItemProps: {
+                                options: this.state.areaOptions,
+                                loadData: this.loadAreaInfo,
+                                expandTrigger: "hover",
+                                placeholder: "请选择地区信息",
+                                onChange: this.onCascadeAreaChange,
+                                changeOnSelect: true
+                            },
                             /**
-                             *
+                             * 初始化函数
                              * @param {Array<string>} values
                              */
                             initialFunction: (values: Array<string>) => {
-                                this.getAreaInfo({
+                                return this.getAreaInfo({
                                     level: 1
                                 }).then((areaOptions) => {
                                     this.setState({
@@ -468,50 +470,25 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     });
                                     //获取级联地区数据的初始化数据
                                     this.getCascadeAreaSelectInitValue(values);
-
                                 }).catch((e) => {
                                     console.log("加载地区数据失败", e);
                                 });
                             },
                             setFormatter(val) {
+                                console.log("-----set 地址 -----", val);
                                 return getCascadeAreaValues(val);
                             },
                             getFormatter: (values: string[]) => {
                                 console.log("-----获取地址 -----", values);
                                 return values[values.length - 1];
                             }
-                        })(
-                        <Cascader key={"cascade_areaId"}
-                                  options={this.state.areaOptions}
-                                  loadData={this.loadAreaInfo}
-                                  expandTrigger="hover"
-                                  placeholder="请选择地区信息"
-                                  onChange={this.onCascadeAreaChange}
-                                  changeOnSelect/>
-                    )
+                        })()
                 }
             </FormItem>
             <FormItem wrapperCol={{span: 12, offset: 5}}>
                 <Button loading={this.state.submitting} type="primary" htmlType="submit">提交参数</Button>
             </FormItem>
         </Form>
-    };
-
-
-    onShowParentTable = (showSampleLookup = true) => {
-        this.setState({
-            showSampleLookup
-        })
-
-    };
-
-
-    onTableOk = (rows: Array<SampleInfo>) => {
-        console.log("选中的行", rows);
-        this.setState({
-            selectedSampleRows: rows,
-            showSampleLookup: false
-        });
     };
 
 

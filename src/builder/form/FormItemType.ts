@@ -53,6 +53,12 @@ export enum FormItemType {
     CHECKBOX_GROUP = "CHECKBOX_GROUP",
 
     /**
+     * 级联选择器
+     * @type {string}
+     */
+    CASCADER = "CASCADER",
+
+    /**
      * 单选框
      * @type {string}
      */
@@ -147,5 +153,11 @@ export enum FormItemType {
      * 星期选择器
      * @type {string}
      */
-    WEEK_PICKER = "WEEK_PICKER"
+    WEEK_PICKER = "WEEK_PICKER",
+
+    /**
+     * 带回查找
+     * @type {string}
+     */
+    LOOKUP = "LOOKUP"
 }

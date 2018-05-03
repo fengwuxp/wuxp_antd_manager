@@ -26,23 +26,29 @@ export interface BaseLookupViewState<T> extends BaseAbstractTableViewState<T> {
 
 export interface BaseLookupViewProps<T> extends ReduxRouterProps {
 
+    /**
+     * 确认选中
+     * @param {Array<T>} rows
+     */
     onSelectedRow: (rows: Array<T>) => void;
 
-    selectedRows: Array<any>;
+    /**
+     * 默认选中的行
+     */
+    selectedRows?: Array<T>;
 
-    onCancel: (...p) => void;
+    /**
+     *是否多选，
+     * 默认 true
+     */
+    multiple?: boolean
 
-    visible: boolean;
 
-    width?: number | string;
-
-    title?: string
 
 }
 
 
-export default abstract class BaseLookupViewBaseListView<
-    P extends BaseLookupViewProps<T>,
+export default abstract class BaseLookupViewBaseListView<P extends BaseLookupViewProps<T>,
     S extends BaseLookupViewState<T>,
     E extends ApiQueryReq,
     T,
@@ -51,7 +57,7 @@ export default abstract class BaseLookupViewBaseListView<
 
 
     constructor(props: P, context: any, defaultPrams: E) {
-        super(props, context, defaultPrams);
+        super(props, context, defaultPrams, false);
     }
 
     state = {
@@ -154,4 +160,6 @@ export default abstract class BaseLookupViewBaseListView<
         this.fetchListData();
 
     };
+
+    abstract getSelectedRows: () => Array<T>
 }
