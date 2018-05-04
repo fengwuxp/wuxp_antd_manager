@@ -1,4 +1,4 @@
-import apiClient from "../fetch/BuildFetchClient";
+import apiClient from "../../fetch/BuildFetchClient";
 
 
 /**

@@ -14,7 +14,8 @@ import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentForm
 import LookupListView from "./LookupListView";
 import {FormItemType} from "../../builder/form/FormItemType";
 import {getCascadeAreaValues} from "../../utils/AreaUtil";
-// import Modal from "../../components/modal/";
+import {queryAreaToCasaderOptions, loadAreaToCasaderOptions} from "../../helper/area/AreaHelper";
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -86,23 +87,13 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
      * @param {QueryAreaReq} params
      * @returns {Promise<CascaderOptionType[]>}
      */
-    getAreaInfo = (params: QueryAreaReq): Promise<CascaderOptionType[]> => {
-        //查询地区
-        return InfoProvideService.queryArea({
-            ...params,
-            querySize: -1
-        }).then((data) => {
-            const {records} = data;
-            //数据转换
-            return records.map(({id, name, level}) => {
-                return {
-                    value: id,
-                    label: name,
-                    isLeaf: level >= 3
-                };
-            });
-        });
-    };
+    getAreaInfo = queryAreaToCasaderOptions.bind(this);
+
+    /**
+     * 级联数据处理
+     * @param {CascaderOptionType[]} selectedOptions
+     */
+    loadAreaInfo = loadAreaToCasaderOptions.bind(this);
 
     /**
      * 在提交表单之前对参数进行处理，在这里可以进行值转换等操作
@@ -229,7 +220,7 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
                                                 required: true, message: '请选择发布类型'
                                             }
                                         ],
-                                        formItemType:FormItemType.SELECT,
+                                        formItemType: FormItemType.SELECT,
                                         formItemProps: {
                                             placeholder: "请选择发布类型",
                                             allowClear: true,
@@ -454,28 +445,6 @@ export default class InputFormView extends BaseFormView<SampleFormProps,
         console.log(value, selectedOptions);
     };
 
-    /**
-     * 级联数据处理
-     * @param {CascaderOptionType[]} selectedOptions
-     */
-    loadAreaInfo = (selectedOptions?: CascaderOptionType[]) => {
 
-        //上一个选中的选项
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-
-        console.log(targetOption.value);
-
-        this.getAreaInfo({
-            parentId: targetOption.value,
-        }).then((children) => {
-            targetOption.children = children;
-            this.setState({
-                areaOptions: [...this.state.areaOptions],
-            });
-        }).catch((e) => {
-            console.log("加载级联地区数据失败", e);
-        });
-
-    }
 }
 

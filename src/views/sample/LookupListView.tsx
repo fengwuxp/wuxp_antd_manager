@@ -83,10 +83,7 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
         )
     };
 
-    public getSelectedRows = () => {
 
-        return this.state.selectedRows;
-    }
 
 
 }

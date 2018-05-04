@@ -3,6 +3,8 @@ import SendMode from "../enums/SendMode";
 import {FormBuilder, ProxyFormBuilderType} from "../../../builder/form/FormItemBuilder";
 import {DatePickerProps, RangePickerProps} from "antd/lib/date-picker/interface";
 import {AntdSelectProps} from "../../../builder/form/item/CommonSimpleComponentHandler";
+import {InputProps} from "antd/lib/input";
+import {SwitchProps} from "antd/lib/switch";
 
 
 /**
@@ -76,19 +78,19 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     /**
      * ID
      */
-    id?: ProxyFormBuilderType<any>;
+    id?: ProxyFormBuilderType<InputProps>;
     /**
      * 编号
      */
-    sn?: ProxyFormBuilderType<any>;
+    sn?: ProxyFormBuilderType<InputProps>;
     /**
      * 名称
      */
-    name?: ProxyFormBuilderType<any>;
+    name?: ProxyFormBuilderType<InputProps>;
     /**
      * 名称模糊查询
      */
-    nameLike?: ProxyFormBuilderType<any>;
+    nameLike?: ProxyFormBuilderType<InputProps>;
     /**
      * 最小发布日期
      */
@@ -104,7 +106,7 @@ export interface QuerySampleReqBuilder extends FormBuilder<QuerySampleReq> {
     /**
      * 启用
      */
-    enabled?: ProxyFormBuilderType<any>;
+    enabled?: ProxyFormBuilderType<SwitchProps>;
     /**
      * 上级ID
      */

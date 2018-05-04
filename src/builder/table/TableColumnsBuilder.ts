@@ -1,4 +1,5 @@
 import {ColumnProps} from "antd/es/table/interface";
+import {isNullOrUndefined} from "util";
 
 
 /**
@@ -67,10 +68,21 @@ class ProxyTableBuilder<T extends HasActionTable<E>, E> {
                         return this.proxy;
                     }
 
+                    let oldRender = column.render;
+
                     this.columns.push({
                         ...column,
                         key: propertyKey,
-                        dataIndex: propertyKey
+                        dataIndex: propertyKey,
+                        render: (cellValue, rowData, index) => {
+                            if (propertyKey !== "operation" && isNullOrUndefined(cellValue)) {
+                                return null;
+                            }
+                            if (isNullOrUndefined(oldRender)) {
+                                return cellValue;
+                            }
+                            return oldRender(cellValue, rowData, index);
+                        }
                     });
 
                     return this.proxy;

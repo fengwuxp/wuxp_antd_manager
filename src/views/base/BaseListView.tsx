@@ -3,7 +3,7 @@ import {Button, Form, Icon, Input, Select} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import zh_CN from 'rc-pagination/lib/locale/zh_CN';
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
-import ListQueryHelper, {ExportExcelDesc} from "../../helper/ExportExcelFileHelper";
+import ListQueryHelper, {ExportExcelDesc} from "../../helper/base/ExportExcelFileHelper";
 import BaseAbstractTableView, {BaseAbstractTableViewProps, BaseAbstractTableViewState} from "./BaseAbstractTableView";
 import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 import {FormComponentProps} from "antd/lib/form";

@@ -44,7 +44,6 @@ export interface BaseLookupViewProps<T> extends ReduxRouterProps {
     multiple?: boolean
 
 
-
 }
 
 
@@ -161,5 +160,8 @@ export default abstract class BaseLookupViewBaseListView<P extends BaseLookupVie
 
     };
 
-    abstract getSelectedRows: () => Array<T>
+    public getSelectedRows = (): Array<T> => {
+
+        return this.state.selectedRows;
+    }
 }
