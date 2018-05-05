@@ -151,5 +151,5 @@ function adminLogout() {
     //     url: "/logout"
     // });
 
-    location.href = "logout";
+    location.href = "/logout";
 }

@@ -28,12 +28,12 @@ export function queryAreaToCasaderOptions(params: QueryAreaReq): Promise<Cascade
  * 加载地区信息
  * @param {CascaderOptionType[]} selectedOptions
  */
-export function loadAreaToCasaderOptions(selectedOptions?: CascaderOptionType[]) {
+export function loadAreaToCasaderOptions(selectedOptions?: CascaderOptionType[]): Promise<void> {
 
     //上一个选中的选项
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    queryAreaToCasaderOptions({
+    return queryAreaToCasaderOptions({
         parentId: targetOption.value,
     }).then((children) => {
         targetOption.children = children;

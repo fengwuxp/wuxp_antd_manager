@@ -38,6 +38,7 @@ ReactDOM.render(
         <ConnectedRouter history={history}>
             <Switch>
                 <Route path="/login" component={UserLayout}/>
+                <Route path="/logout" component={UserLayout}/>
                 <AuthorizedRoute
                     path="/"
                     render={(props: any) => <BasicLayout {...props} />}

@@ -25,9 +25,22 @@ export interface UploadImageProps extends UploadProps {
     uploadError?: (e: any) => void;
 
     /**
+     * 自动替换原来的文件
+     */
+    autoReplace?: boolean;
+
+    /**
      * 是否初始化
      */
     init: boolean;
+}
+
+interface WUploadFileState {
+    defaultFileIsClear: boolean;
+
+    errorMessage: string;
+
+    maxFileSize: number;
 }
 
 const DEFAULT_LOCAL: UploadLocale = {
@@ -41,16 +54,12 @@ const DEFAULT_NAME: string = "file";
 
 const DEFAULT_ACTION: string = `${process.env.NODE_ENV === 'dev' ? '/api' : ''}/upload/upFile`;
 
-export default class WUploadFile extends React.Component<UploadImageProps, any> {
+export default class WUploadFile extends React.Component<UploadImageProps, WUploadFileState> {
 
 
     //已经上传的文件列表
     protected uploadList: UploadFile[] = [];
 
-    /**
-     * 默认已经的上传的文件列表
-     */
-    protected defaultFileList: UploadFile[];
 
     protected refName: string = "w_upload";
 
@@ -63,17 +72,17 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
             errorMessage = `上传文件不能超过${this.props.maxFileSize}MB`;
         }
         const maxFileSize = this.props.maxFileSize * 1024 * 1024;
-
         this.state = {
             errorMessage,
-            maxFileSize
+            maxFileSize,
+            defaultFileIsClear: false
         };
+
     }
 
 
     render() {
-        const {init, locale, name, action, accept, listType, placeholder, defaultFiles, beforeUpload, onRemove, onPreview} = this.props;
-        this.defaultFileList = this.getDefaultFileList(defaultFiles);
+        const {init, locale, name, action, accept, listType, placeholder, beforeUpload, onRemove, onPreview} = this.props;
 
         const _locale = locale ? locale : DEFAULT_LOCAL;
         const _name = name ? name : DEFAULT_NAME;
@@ -84,7 +93,7 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
                               accept={accept}
                               listType={_listType}
                               action={action ? action : _action}
-                              defaultFileList={this.defaultFileList}
+                              defaultFileList={this.getDefaultFileList(this.props.defaultFiles)}
                               name={_name}
                               withCredentials={true}
                               beforeUpload={beforeUpload ? beforeUpload : this.beforeUpload}
@@ -130,6 +139,7 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
         if (r && index > -1) {
             //移除
             this.uploadList.splice(index, 1);
+            console.log("----移除文件--", this.uploadList)
             //更新
             this.props.uploadSuccess(this.uploadList.map(({response}) => response.url))
         }
@@ -142,8 +152,6 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
     protected onChange = (param: UploadChangeParam) => {
         // console.log("---------onChange---------", helper.formItemName);
         const {fileList} = param;
-        console.log(fileList);
-
         // 3. filter successfully uploaded files according to response from server
         let errorResp;
         const files = fileList.filter((file) => {
@@ -183,7 +191,8 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
      */
     protected getDefaultFileList = (defaultFileList: Array<string> = []): UploadFile[] => {
 
-        if (defaultFileList === null) {
+        console.log("-------defaultFileIsClear-----------",this.state.defaultFileIsClear)
+        if (defaultFileList === null || this.state.defaultFileIsClear) {
             return [];
         }
 
@@ -213,25 +222,22 @@ export default class WUploadFile extends React.Component<UploadImageProps, any> 
      * @param files
      */
     protected removeFile = (files) => {
-        if (this.props.multiple === true) {
+        if (this.props.autoReplace === true) {
             return;
         }
         if (files.length === 1) {
             return;
         }
-        // console.log("-----files-----", files);
-        let file;
-        if (this.defaultFileList.length > 0) {
-            file = this.defaultFileList[0];
-            this.defaultFileList = [];
+        let fileList = this.getDefaultFileList(this.props.defaultFiles);
+        if (fileList.length > 0) {
+            this.setState({
+                defaultFileIsClear: true
+            });
         } else if (files.length > 1) {
-            file = files[0];
+            fileList=files;
+
         }
-        if (isNullOrUndefined(file)) {
-            return;
-        }
-        // console.log("-----移除图片-----", file);
         //移除图片
-        this.refs[this.refName]['handleRemove'](file);
+        fileList.forEach(file => this.refs[this.refName]['handleRemove'](file));
     }
 }
