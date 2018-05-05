@@ -17,7 +17,12 @@ const routes: Array<RouteConfig> = [
     {
         path: '/sample/load',
         exact: true,
-        component: asyncComponent(() => import(/* webpackChunkName: "sample/input" */ './EditFormView'))
+        component: asyncComponent(() => import(/* webpackChunkName: "sample/load" */ './EditFormView'))
+    },
+    {
+        path: '/sample/show',
+        exact: true,
+        component: asyncComponent(() => import(/* webpackChunkName: "sample/show" */ './DetailView'))
     },
     {
         path: '/sample/rich_text',

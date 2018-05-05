@@ -13,6 +13,7 @@ import {EditSampleReq, EditSampleReqBuilder} from "./req/EditSampleReq";
 import LookupListView from "./LookupListView";
 import {getCascadeAreaValues} from "../../utils/AreaUtil";
 import {FormItemType} from "../../builder/form/FormItemType";
+import {loadAreaToCasaderOptions, queryAreaToCasaderOptions} from "../../helper/area/AreaHelper";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -69,23 +70,13 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
      * @param {QueryAreaReq} params
      * @returns {Promise<CascaderOptionType[]>}
      */
-    getAreaInfo = (params: QueryAreaReq): Promise<CascaderOptionType[]> => {
-        //查询地区
-        return InfoProvideService.queryArea({
-            ...params,
-            querySize: -1
-        }).then((data) => {
-            const {records} = data;
-            //数据转换
-            return records.map(({id, name, level}) => {
-                return {
-                    value: id,
-                    label: name,
-                    isLeaf: level >= 3
-                };
-            });
-        });
-    };
+    getAreaInfo = queryAreaToCasaderOptions.bind(this);
+
+    /**
+     * 级联数据处理
+     * @param {CascaderOptionType[]} selectedOptions
+     */
+    loadAreaInfo = loadAreaToCasaderOptions.bind(this);
 
 
     /**
@@ -228,7 +219,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
                                     required: true, message: '请选择发布类型'
                                 }
                             ],
-                            formItemType:FormItemType.SELECT,
+                            formItemType: FormItemType.SELECT,
                             formItemProps: {
                                 placeholder: "请选择发布类型",
                                 allowClear: true,
@@ -511,28 +502,5 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
         console.log("--------onCascadeAreaChange-------", value, selectedOptions);
     };
 
-
-    /**
-     * 级联数据处理
-     * @param {CascaderOptionType[]} selectedOptions
-     */
-    loadAreaInfo = (selectedOptions?: CascaderOptionType[]) => {
-
-        //上一个选中的选项
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-
-        console.log("------targetOption----------", targetOption);
-
-        return this.getAreaInfo({
-            parentId: targetOption.value,
-        }).then((children) => {
-            targetOption.children = children;
-            this.setState({
-                areaOptions: [...this.state.areaOptions],
-            });
-        }).catch((e) => {
-            console.log("加载级联地区数据失败", e);
-        });
-    }
 }
 

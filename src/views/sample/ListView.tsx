@@ -21,6 +21,8 @@ import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import SendMode from "./enums/SendMode";
 import * as styles from "../TableList.scss";
 import {FormItemType} from "../../builder/form/FormItemType";
+import MenuBuilder, {SimpleCommonOperation} from "../../builder/menu/MenuBuilder";
+import {ClickParam} from "antd/lib/menu";
 
 const {RangePicker} = DatePicker;
 
@@ -79,18 +81,21 @@ export default class ListView extends BaseListView<SampleListProps,
             fixed: true,
             width: 240,
             render: (cellval, rowData) => {
-                const menu = (
-                    <Menu onClick={({item, key, keyPath}) => {
-                        console.log(`key =${key}`, rowData);
-                        //TODO
 
-                    }} selectedKeys={[]}>
-                        <Menu.Item key="remove">删除</Menu.Item>
-                        <Menu.Item key="confirm">确认</Menu.Item>
-                        <Menu.Item key="see_detail">查看详情</Menu.Item>
-                    </Menu>
-                );
-
+                const menu = MenuBuilder.builder<SimpleCommonOperation>()
+                    .deleted(
+                        "删除",
+                        (param: ClickParam) => {
+                            console.log("删除", rowData)
+                        }
+                    ).confirm(
+                        "确认",
+                        () => {
+                            console.log("确认", rowData)
+                        }
+                    ).seeView(
+                        <Link to={`/sample/show?id=${rowData.id}`}>{"查看详情"}</Link>
+                    ).build();
                 return (
                     <div>
 
@@ -100,7 +105,6 @@ export default class ListView extends BaseListView<SampleListProps,
                                     icon="edit"
                                     size={"small"}>编辑</Button>
                         </Link>
-                        {/*<a href={`/sample/load?id=${rowData.id}`} target='_blank'>编辑</a>*/}
                         <Dropdown overlay={menu}>
                             <Button>更多操作 <Icon type="down"/></Button>
                         </Dropdown>
@@ -293,7 +297,7 @@ export default class ListView extends BaseListView<SampleListProps,
                                     placeholder: "请选择发布类型",
                                     allowClear: true,
                                     onChange: (value, option) => {
-                                        console.log("---------change----------",value);
+                                        console.log("---------change----------", value);
                                         this.submitQueryForm({sendMode: value});
                                     },
                                     renderOptions: () => {
