@@ -6,6 +6,46 @@ import classNames from 'classnames';
 import * as styles from './index.scss';
 import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
+import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
+import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
+
+
+export interface PageHeaderProps extends ReduxRouterProps, ReactBaseProps {
+
+    title?: React.ReactNode;
+
+    logo?: React.ReactNode;
+
+    action?: React.ReactNode;
+
+    content?: React.ReactNode;
+
+    extraContent?: React.ReactNode;
+
+    routes?: any[];
+
+    params?: any;
+
+    breadcrumbNameMap?: any;
+
+    breadcrumbSeparator?: React.ReactNode
+
+    breadcrumbList?: Array<{ title: React.ReactNode; href?: string }>;
+
+    tabList?: Array<{ key: string; tab: React.ReactNode }>;
+
+    tabActiveKey?: string;
+
+    tabDefaultActiveKey?: string;
+
+    onTabChange?: (key: string) => void;
+
+    tabBarExtraContent?: React.ReactNode;
+
+    linkElement?: any  //React.ReactNode ;
+
+
+}
 
 const history = BrowserNavigatorFactory.get();
 
@@ -29,7 +69,7 @@ export function getBreadcrumb(breadcrumbNameMap, url) {
  * 1:处理面包屑导航
  * 2：页面标题，以及提示内容等展示
  */
-export default class PageHeader extends PureComponent<any, any> {
+export default class PageHeader extends PureComponent<PageHeaderProps, any> {
 
     static contextTypes = {
         routes: PropTypes.array,
