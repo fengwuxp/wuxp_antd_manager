@@ -28,7 +28,7 @@ export default abstract class BaseSimpleDetailView<P extends ReduxRouterProps,
     }
 
     state = {
-        info: null
+        info: {}
     } as S;
 
     componentWillMount() {
