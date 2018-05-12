@@ -47,7 +47,7 @@ export default class ListView extends BaseListView<SampleListProps,
     QuerySampleReq,
     QuerySampleReqBuilder,
     SampleInfo,
-    SampleBuilder> {
+    SampleBuilder<SampleBuilder<any>>> {
 
     constructor(props: any, context: any) {
         super(props, context, {
@@ -75,6 +75,27 @@ export default class ListView extends BaseListView<SampleListProps,
 
 
     protected buildColumns = (): ColumnProps<SampleInfo>[] => {
+
+        // console.log("this.tableBuilder.parentInfo",this.tableBuilder.parentInfo.name)
+        // this.tableBuilder.parentInfo((builder:SampleBuilder)=>{
+        //     return builder.name({
+        //         title:"上级",
+        //         width:120
+        //     }).build();
+        // });
+        let build = this.tableBuilder.parentInfo.name({
+            title: "上级"
+        }).parentInfo.feePct({
+            title: "123"
+        }).areaInfo.name({
+            title:"地区名称"
+        }).areaInfo.areaInfo.name({
+            title:"上级地区名称"
+        }).sn({
+            title:"sn"
+        }).build();
+
+        console.log("---------------", build);
 
         return this.tableBuilder.operation({
             title: '操作',
@@ -181,6 +202,14 @@ export default class ListView extends BaseListView<SampleListProps,
             sorter: true,
             width: 120
         }).build();
+
+        //     .areaInfo((builder:any)=>{
+        //     return builder.name({
+        //
+        //     }).build();
+        // })
+
+
     };
 
     render() {

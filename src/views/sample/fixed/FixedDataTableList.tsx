@@ -13,7 +13,7 @@ export default class FixedDataTableListextends extends BaseListView<SampleListPr
     QuerySampleReq,
     QuerySampleReqBuilder,
     SampleInfo,
-    SampleBuilder> {
+    SampleBuilder<SampleBuilder<any>>> {
 
 
     protected getTableTile: (currentPageData: Object[]) => React.ReactNode;

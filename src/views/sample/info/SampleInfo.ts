@@ -1,10 +1,11 @@
 import {HasActionTable} from "../../../builder/table/TableColumnsBuilder";
 import {ColumnProps} from "antd/es/table/interface";
+import {AreaInfo} from "../../../services/infoprovide/info/AreaInfo";
 
 /**
  * sampleInfo
  */
-export interface SampleInfo  {
+export interface SampleInfo {
 
 
     /**
@@ -128,12 +129,12 @@ export interface SampleInfo  {
 /**
  * SampleBuilder
  */
-export interface SampleBuilder extends HasActionTable<SampleInfo> {
+export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
 
     /**
      * id
      */
-    id: (column: ColumnProps<SampleInfo>) => this;
+    id: (column: ColumnProps<SampleInfo>) => B;
 
 
     /**
@@ -228,8 +229,10 @@ export interface SampleBuilder extends HasActionTable<SampleInfo> {
     /**
      * 上级信息
      */
-    parentInfo: (column: ColumnProps<SampleInfo>) => this;
+    // parentInfo: (column: ColumnProps<SampleInfo>) => this;
 
+    // parentInfo: (p: (SampleBuilder) => ColumnProps<SampleInfo>[]) => this;
+    parentInfo:SampleBuilder<B>
 
     /**
      * 地区信息ID
@@ -240,7 +243,9 @@ export interface SampleBuilder extends HasActionTable<SampleInfo> {
     /**
      * 地区信息
      */
-    areaInfo: (column: ColumnProps<SampleInfo>) => this;
+    // areaInfo: (column?: ColumnProps<SampleInfo>) => this;
+    areaInfo:AreaBuilder<this>;
+    // areaInfo: (column?: any) => this;
 
 
     /**
@@ -254,4 +259,16 @@ export interface SampleBuilder extends HasActionTable<SampleInfo> {
      */
     updateTime: (column: ColumnProps<SampleInfo>) => this;
 
+}
+
+export interface AreaBuilder<T> extends HasActionTable<AreaInfo>{
+
+    name: (column: ColumnProps<AreaInfo>) => T;
+
+    /**
+     * 第三方地区
+     */
+    thirdCode: (column: ColumnProps<AreaInfo>) => T;
+
+    areaInfo:AreaBuilder<T>;
 }

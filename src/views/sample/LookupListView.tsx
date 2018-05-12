@@ -19,7 +19,7 @@ export default class LookupListView extends BaseLookupView<LookupListViewProps,
     LookupListViewState,
     QuerySampleReq,
     SampleInfo,
-    SampleBuilder> {
+    SampleBuilder<SampleBuilder<any>>> {
 
 
     constructor(props: LookupListViewProps, context: any,) {
