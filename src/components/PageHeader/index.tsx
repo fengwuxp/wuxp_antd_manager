@@ -102,6 +102,7 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
     // Generated according to props
     conversionFromProps = () => {
         const {breadcrumbList, breadcrumbSeparator, linkElement = 'a'} = this.props;
+        console.log(breadcrumbList)
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
                 <Breadcrumb.Item href="">

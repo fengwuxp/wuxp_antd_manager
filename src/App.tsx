@@ -18,6 +18,7 @@ import {Spin} from "antd";
 import * as styles from "./index.scss";
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import {fetchSystemConfig} from "./manager/config/SystemConfigManager";
 
 moment.locale('zh-cn');
 
@@ -32,6 +33,11 @@ const history = BrowserNavigatorFactory.get();
 
 const {AuthorizedRoute} = Authorized;
 
+//加载系统配置
+fetchSystemConfig([
+    "site_name",
+    "admin_logo"
+]);
 
 ReactDOM.render(
     <Provider store={antdAdminStore}>

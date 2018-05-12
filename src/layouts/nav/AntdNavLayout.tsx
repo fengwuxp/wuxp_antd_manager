@@ -226,7 +226,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     render() {
         let fetchingNotices = false;
-        const {session, menus, currentSelectedMenu} = this.props;
+        const {currentSelectedMenu} = this.props;
         const currentUser = {
             notifyCount: 10,
             name: "张三",

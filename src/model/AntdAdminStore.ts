@@ -7,7 +7,19 @@ import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
  * 系统配置
  */
 export interface SystemConfig {
+
     [k: string]: any
+
+    /**
+     * 站点名称
+     */
+    site_name: string;
+
+    /**
+     * 站点logo
+     */
+    admin_logo: string;
+
 }
 
 /**

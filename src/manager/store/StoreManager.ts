@@ -6,6 +6,7 @@ import {session} from "../../reducers/SessionReducer";
 import {menus} from "../../reducers/AntdMenuReducer";
 import {currentSelectedMenu} from "../../reducers/MenuChooseReducer";
 import {queryParamsCache} from "../../reducers/QueryParamsCacheReducer";
+import {systemConfig} from "../../reducers/SystemConfigReducer";
 
 
 /**
@@ -19,7 +20,8 @@ const builder = reduxStoreBuilderFactory<AntdAdminStore>({
     session,
     menus,
     currentSelectedMenu,
-    queryParamsCache
+    queryParamsCache,
+    systemConfig
 });
 
 

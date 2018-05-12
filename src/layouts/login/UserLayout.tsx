@@ -5,6 +5,9 @@ import {Link} from "react-router-dom";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import * as styles from './UserLayout.scss';
 import LoginView, {LoginPageProps} from "../../views/account/LoginView";
+import {connect, MapStateToPropsParam} from "react-redux";
+import {SystemConfig} from "../../model/AntdAdminStore";
+import {isNullOrUndefined} from "util";
 
 
 const links = [
@@ -36,20 +39,27 @@ export interface UserLayoutPops extends LoginPageProps {
     match: any;
 
     logo: string;
+
+    systemConfig: SystemConfig
 }
 
+
+const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({systemConfig}) => ({
+    systemConfig
+});
+
+@(connect as any)(mapStateToPropsParam)
 class UserLayout extends React.PureComponent<UserLayoutPops, any> {
 
     getPageTitle() {
 
-        let title = 'Ant Design Pro';
+        let title = this.props.systemConfig.site_name || "";
 
         return title;
     }
 
     componentWillUnmount(): void {
     }
-
 
 
     render() {
@@ -62,7 +72,7 @@ class UserLayout extends React.PureComponent<UserLayoutPops, any> {
                             <div className={styles.header}>
                                 <Link to="/">
                                     <img alt="logo" className={styles.logo} src={this.props.logo}/>
-                                    <span className={styles.title}>Ant Design</span>
+                                    <span className={styles.title}>{this.getPageTitle()}</span>
                                 </Link>
                             </div>
                             <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>

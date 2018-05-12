@@ -7,36 +7,22 @@ import AntdNavLayout, {AntdNavLayoutProps} from "./AntdNavLayout";
 import {connect, MapStateToPropsParam} from "react-redux";
 import {isNullOrUndefined} from "util";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
-import _ from "lodash";
 import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
 
-const DEFAULT_TITLE = "Ant Design Pro";
 
 
-function findMenuItemByPath(menus: Array<AntdMenuItem>, paths: Array<string>, i = 1): AntdMenuItem {
-
-    let path = "";
-    for (let index = 0; index <= i; index++) {
-        path += paths[index] + "/";
-    }
-    path = path.substr(0, path.length - 1);
-    let item = _.find(menus, {path: path});
-    if (paths.length < -2 || isNullOrUndefined(item) || isNullOrUndefined(item.children)) {
-        return item;
-    }
-    return findMenuItemByPath(item.children, paths, ++i);
-}
-
-
-const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, currentSelectedMenu}) => ({
+const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, systemConfig, currentSelectedMenu}) => ({
     session,
     currentSelectedMenu,
-    menus
+    menus,
+    systemConfig
 });
 
 @(connect as any)(mapStateToPropsParam)
 export default class BasicLayout extends React.Component<AntdNavLayoutProps, any> {
 
+
+    protected currentMenuIndex: number = 0;
 
     constructor(props: any, context: any) {
         super(props, context);
@@ -50,7 +36,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
     getPageTitle() {
         const {menus, location} = this.props;
 
-        let title = DEFAULT_TITLE;
+        let title = this.props.systemConfig.site_name||"";
         if (isNullOrUndefined(menus)) {
             return title
         }
@@ -58,13 +44,14 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
         if (pathname === "/") {
             return title;
         }
-        const paths = pathname.split("/");
-        let menuItem: AntdMenuItem = findMenuItemByPath(menus, paths);
+        let menuItem: AntdMenuItem = this.findMenuItemByPath(menus, pathname);
         if (isNullOrUndefined(menuItem)) {
             return title;
         } else {
-            title = `${menuItem.name} - ${DEFAULT_TITLE}`;
+            title = `${menuItem.name} - ${this.props.systemConfig.site_name}`;
         }
+
+        //查找当前路径所在的一级菜单
 
         return title;
     }
@@ -84,12 +71,59 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
 
         const {menus} = this.props;
         const showMenu = menus && menus.length > 0;
+        let title = this.getPageTitle();
         return (
-            <DocumentTitle title={this.getPageTitle()}>
+            <DocumentTitle title={title}>
                 {showMenu ? <ContainerQuery query={MediaQuery}>{params => <AntdNavLayout {...this.props}
+                                                                                         currentSelectedMenu={this.currentMenuIndex}
                                                                                          className={classNames(params) as string}/>}</ContainerQuery> : null}
             </DocumentTitle>
         );
     }
+
+    findMenuItemByPath = (menus: Array<AntdMenuItem>, path: string): AntdMenuItem => {
+
+        //当前一级菜单的索引
+        let currentMenuIndex = 0;
+
+        let menu: AntdMenuItem;
+
+
+        menus.some((item, i) => {
+            let index = 0;
+            let menuItem = findMenuItem(item, path, index);
+            if (isNullOrUndefined(menuItem)) {
+                return false;
+            }
+
+            let currentMenu = menuItem.children[index];
+            // console.log("--------------", currentMenu, index, i);
+            let b = currentMenu != null;
+            if (b) {
+                menu = currentMenu;
+                currentMenuIndex = i;
+            }
+            return b;
+        });
+
+        //更新当前菜单的索引
+        // console.log("-----------currentMenuIndex-------", currentMenuIndex);
+        this.currentMenuIndex = currentMenuIndex;
+        return menu
+    }
+}
+
+function findMenuItem(menu: AntdMenuItem, path: string, index): AntdMenuItem {
+    if (menu.children == null) {
+        return menu;
+    }
+    return menu.children.find((item) => {
+        if (menu.path === path || path.startsWith(menu.path)) {
+            return findMenuItem(item, path, index++) != null;
+        } else {
+            return false;
+        }
+    });
+
 }
 

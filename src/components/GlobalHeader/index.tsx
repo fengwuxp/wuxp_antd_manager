@@ -9,9 +9,9 @@ import * as styles from './style.scss';
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 import HeaderSearch from "../HeaderSearch/index";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
-import {menuChooseManager} from "../../manager/menu/MenuChooseManager";
+import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 
-
+const history = BrowserNavigatorFactory.get();
 /**
  * 管理员
  */
@@ -165,6 +165,8 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
             onNoticeVisibleChange,
             onMenuClick,
             onNoticeClear,
+            menus,
+            currentSelectedMenu
         } = this.props;
 
         const menu = (
@@ -195,18 +197,22 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                 />
                 <Col style={{flex: 1}}>
                     {
-                        this.props.menus.map((item, i) => {
+                       menus.map((item, i) => {
                             let classNames = [styles.nav_menu_tab];
-                            if (i === this.props.currentSelectedMenu) {
+                            if (i === currentSelectedMenu) {
                                 classNames.push(styles.nav_menu_tab_selected)
                             }
                             return <span data-index={i}
                                          key={i}
                                          onClick={(event) => {
+
                                              const target: HTMLElement = event.target as HTMLElement;
                                              const domStringMap: DOMStringMap = target.dataset;
+                                             const path = menus[parseInt(domStringMap.index)].children[0].children[0].path;
+                                             console.log("path--->",path);
+                                             history.push(path);
                                              //切换导航
-                                             menuChooseManager.changeTopMenuNav(parseInt(domStringMap.index));
+                                             // menuChooseManager.changeTopMenuNav(parseInt(domStringMap.index));
                                          }} className={classNames.join(" ")}>{item.name}</span>
                         })
                     }
