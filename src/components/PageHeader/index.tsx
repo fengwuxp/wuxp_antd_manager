@@ -48,7 +48,7 @@ export interface PageHeaderProps extends ReduxRouterProps, ReactBaseProps {
 const history = BrowserNavigatorFactory.get();
 
 const {TabPane} = Tabs;
-
+const BreadcrumbItem :any=Breadcrumb.Item;
 
 export function getBreadcrumb(menus: AntdMenuItem[], selectedMenuIndexList: number[]): AntdMenuItem[] {
 
@@ -104,13 +104,13 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
         const {breadcrumbList, breadcrumbSeparator, linkElement = 'a'} = this.props;
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
-                <Breadcrumb.Item href="">
+                <BreadcrumbItem href="">
                     <Icon type="arrow-left"/>
-                </Breadcrumb.Item>
+                </BreadcrumbItem>
                 {breadcrumbList.map(item => (
-                    <Breadcrumb.Item key={item.title}>
+                    <BreadcrumbItem key={item.title}>
                         {item.href ? createElement(linkElement, {[linkElement === 'a' ? 'href' : 'to']: item.href,}, item.title) : item.title}
-                    </Breadcrumb.Item>
+                    </BreadcrumbItem>
                 ))}
             </Breadcrumb>
         );
@@ -125,14 +125,15 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
 
         //获取面包屑导航的菜单
         const breadcrumbList: AntdMenuItem[] = getBreadcrumb(menus, selectedMenuIndexList);
-        const extraBreadcrumbItems = breadcrumbList.map((item, index) => {
-            return <Breadcrumb.Item key={item.path}>
+
+        const extraBreadcrumbItems = breadcrumbList.map((item) => {
+            return <BreadcrumbItem key={item.path}>
                 {createElement(
                     linkElement,
                     {[linkElement === 'a' ? 'href' : 'to']: item.path},
                     item.name
                 )}
-            </Breadcrumb.Item>
+            </BreadcrumbItem>
         });
 
 

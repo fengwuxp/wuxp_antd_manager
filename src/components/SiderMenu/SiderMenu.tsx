@@ -242,8 +242,6 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         if (!selectedKeys.length) {
             selectedKeys = [openKeys[openKeys.length - 1]];
         }
-        console.log("------selectedKeys----", selectedKeys);
-        console.log("------openKeys----", openKeys);
         return (
             <Sider
                 trigger={null}
