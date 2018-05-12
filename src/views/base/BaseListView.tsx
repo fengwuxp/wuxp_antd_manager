@@ -271,6 +271,6 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
      * 提交查询表单之前的序列化操作
      * return false 则不提交查询
      */
-    protected abstract beforeSerialize: (req: E) => boolean;
+    protected beforeSerialize = (req: E) => true;
 }
 

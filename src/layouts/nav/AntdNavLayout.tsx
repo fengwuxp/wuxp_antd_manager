@@ -10,16 +10,14 @@ import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
 import {push} from "react-router-redux";
 import {sessionManager} from "../../manager/session/SessionManager";
 import {connect, MapStateToPropsParam} from "react-redux";
-import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
 import {Redirect, Route, Switch} from "react-router";
 import {getRoutes} from "../../utils/utils";
 import {routeConfigs} from "../../routes/router";
-
 import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
-import {isNullOrUndefined, isUndefined} from "util";
+import {isUndefined} from "util";
 import {RouteConfig} from "react-router-config";
 import {DefaultMenuMatchStrategy} from "../../components/SiderMenu/strategy/MatchMenuKeyStrategy";
 
@@ -110,38 +108,23 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     static childContextTypes = {
         location: PropTypes.object,
-        breadcrumbNameMap: PropTypes.object,
         menus: PropTypes.array,
-        currentSelectedMenu: PropTypes.number
+        selectedMenuIndexList: PropTypes.array
     };
 
     getChildContext() {
 
-        const {location, menus, currentSelectedMenu} = this.props;
+        const {location, menus, selectedMenuIndexList} = this.props;
 
-        const menuItems = this.getCurrentMenus();
+        // const result = {};
+        // convertRoutesToMap(routeConfigs, result);
 
-        const result = {};
-        convertRoutesToMap(routeConfigs, result);
-        const breadcrumbNameMap = getBreadcrumbNameMap(menuItems, result);
         return {
             location,
-            breadcrumbNameMap,
             menus,
-            currentSelectedMenu
+            selectedMenuIndexList
         };
     }
-
-
-    /**
-     * 获取当前激活的菜单
-     * @returns {Array<AntdMenuItem>}
-     */
-    private getCurrentMenus = () => {
-        const {menus, currentSelectedMenu} = this.props;
-
-        return menus[currentSelectedMenu].children || [];
-    };
 
 
     /**
@@ -190,10 +173,12 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             return;
         }
         if (key === 'logout') {
-            console.log("退出登录","");
+            console.log("退出登录", "");
             sessionManager.logout();
         }
     };
+
+
 
 
     /**
@@ -226,7 +211,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     render() {
         let fetchingNotices = false;
-        const {currentSelectedMenu} = this.props;
+        const {selectedMenuIndexList} = this.props;
         const currentUser = {
             notifyCount: 10,
             name: "张三",
@@ -257,7 +242,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                         <GlobalHeader
                             logo={this.props.logo}
                             menus={this.props.menus}
-                            currentSelectedMenu={currentSelectedMenu}
+                            selectedMenuIndexList={selectedMenuIndexList}
                             currentUser={currentUser}
                             fetchingNotices={fetchingNotices}
                             notices={this.props.notices}
@@ -321,6 +306,16 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             </Layout>
         );
     }
+
+    /**
+     * 获取当前激活的菜单
+     * @returns {Array<AntdMenuItem>}
+     */
+    private getCurrentMenus = () => {
+        const {menus, selectedMenuIndexList} = this.props;
+
+        return menus[selectedMenuIndexList[0]].children || [];
+    };
 }
 
 
@@ -336,32 +331,4 @@ const getRedirect = item => {
             });
         }
     }
-};
-
-
-/**
- * 获取面包屑映射
- * @param {Array<AntdMenuItem>} menus 菜单配置
- * @param {Array<RouteConfig>} routerData 路由配置
- * @returns {{} & Array<RouteConfig>}
- */
-const getBreadcrumbNameMap = (menus: Array<AntdMenuItem>, routerData: object) => {
-
-    const result = {};
-    const childResult = {};
-
-    menus.forEach((menu) => {
-        const key = menu.path;
-        const routerItem = routerData[key];
-        if (isNullOrUndefined(routerItem)) {
-            result[key] = menu;
-        } else {
-            result[key] = Object.assign({}, routerItem, menu);
-        }
-        if (menu.children && menu.children.length > 0) {
-            Object.assign(childResult, getBreadcrumbNameMap(menu.children, routerData));
-        }
-    });
-
-    return Object.assign({}, result, childResult);
 };

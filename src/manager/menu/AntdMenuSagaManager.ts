@@ -1,7 +1,7 @@
 import {call, put} from "redux-saga/effects";
-import {getMenuData, menuData} from "../../routes/menu";
+// import {getMenuData, menuData} from "../../routes/menu";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
-
+import apiClient from "../../fetch/BuildFetchClient";
 
 /**
  * 菜单saga 接口
@@ -37,24 +37,23 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
 function queryMenus(params) {
 
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // console.log(menuData);
-            resolve(getMenuData(menuData))
-        }, 200);
-    });
-
-    // return apiClient.post({
-    //     url: "/common/menus",
-    //     data: {
-    //         enabled: true,
-    //         level: 0
-    //     },
-    //     useFilter: false
-    // }).then((data) => {
-    //     console.log("---菜单数据--->", data);
-    //     return convertMenuItem(data.data);
+    // return new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         // console.log(menuData);
+    //         resolve(getMenuData(menuData))
+    //     }, 200);
     // });
+
+    return apiClient.post({
+        url: "/common/menus",
+        data: {
+            enabled: true,
+            level: 0
+        },
+        useFilter: false
+    }).then((data) => {
+        return convertMenuItem(data.data);
+    });
 }
 
 /**

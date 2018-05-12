@@ -1,6 +1,6 @@
 import * as React from "react";
 import Table from "antd/es/table/Table";
-import BaseListView, {BaseListState} from "../base/BaseListView";
+import BaseListView, {BaseListProps, BaseListState} from "../base/BaseListView";
 import Button from "antd/es/button/button";
 import Dropdown from "antd/lib/dropdown/dropdown";
 import {Card, Col, DatePicker, Form, Icon, Menu, Popover, Row, Select} from "antd";
@@ -34,7 +34,7 @@ export interface SampleState extends BaseListState<SampleInfo> {
 
 }
 
-export interface SampleListProps extends AntdFromBaseProps {
+export interface SampleListProps extends BaseListProps<QuerySampleReq> {
 
 }
 

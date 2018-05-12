@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {MatchMenuKeyStrategy} from "./strategy/MatchMenuKeyStrategy";
+import {getBreadcrumb} from "../PageHeader/index";
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -20,6 +21,10 @@ export interface SiderMenuProps extends ReduxRouterProps {
      */
     menus: Array<AntdMenuItem>;
 
+    /**
+     * 当前选中的菜单索引列表
+     */
+    selectedMenuIndexList: number[];
 
     /**
      * 是否为手机端
@@ -93,32 +98,14 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
     /**
      * 获取默认合拢子菜单
      * Convert pathname to openKeys
-     * /list/search/articles = > ['list','/list/search']
      * @param  props
      */
     getDefaultCollapsedSubMenus(props: SiderMenuProps): Array<string> {
-        const {location: {pathname}} = props || this.props;
-        const openKeys = this.props.matchMenuKeyStrategy.matchOpenKeys([], pathname);
-        // console.log("-----openKeys-------", openKeys);
-        return openKeys;
+        const {menus, selectedMenuIndexList} = props || this.props;
+
+        return getBreadcrumb(menus, selectedMenuIndexList.slice(1,3)).map(item =>item.path);
     }
 
-    /**
-     * 将菜单数据中的 path 提取出来，包括children中的
-     * Recursively flatten the data
-     * [{path:string},{path:string}] => {path,path2}
-     * @param  menus
-     */
-    getFlatMenuKeys(menus: Array<AntdMenuItem>): Array<string> {
-        let keys: Array<string> = [];
-        menus.forEach(item => {
-            if (item.children) {
-                keys = keys.concat(this.getFlatMenuKeys(item.children));
-            }
-            keys.push(item.path);
-        });
-        return keys;
-    }
 
     /**
      * 判断是否是http链接.返回 Link 或 a
@@ -189,9 +176,8 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
      * 获取当前选中的菜单keys
      * @returns {any}
      */
-    getSelectedMenuKeys = (): string[] => {
-        const {location: {pathname}} = this.props;
-        return urlToList(pathname).map(itemPath => this.props.matchMenuKeyStrategy.matchSelectKeys(this.getFlatMenuKeys(this.props.menus), itemPath).pop());
+    getSelectedMenuKeys = (openKeys): string[] => {
+        return [openKeys[1]];
     };
 
     /**
@@ -252,12 +238,12 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
         // Don't show popup menu when it is been collapsed
         const menuProps = collapsed ? {} : {openKeys,};
         // if pathname can't match, use the nearest parent's key
-        let selectedKeys = this.getSelectedMenuKeys();
+        let selectedKeys = this.getSelectedMenuKeys(openKeys);
         if (!selectedKeys.length) {
             selectedKeys = [openKeys[openKeys.length - 1]];
         }
-        // console.log("------selectedKeys----", selectedKeys)
-        // console.log("------openKeys----", openKeys)
+        console.log("------selectedKeys----", selectedKeys);
+        console.log("------openKeys----", openKeys);
         return (
             <Sider
                 trigger={null}
@@ -288,16 +274,4 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
             </Sider>
         );
     }
-
-    // componentWillUpdate(nextProps: Readonly<SiderMenuProps>, nextState: Readonly<any>, nextContext: any) {
-    //
-    //     let openKeys = this.getDefaultCollapsedSubMenus(this.props);
-    //     if (openKeys.length > 0) {
-    //         console.log("更新openKeys  ");
-    //         console.log(openKeys);
-    //         this.setState({
-    //             openKeys
-    //         })
-    //     }
-    // }
 }

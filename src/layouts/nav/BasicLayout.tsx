@@ -10,7 +10,6 @@ import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
 
 
-
 const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, systemConfig, currentSelectedMenu}) => ({
     session,
     currentSelectedMenu,
@@ -22,7 +21,7 @@ const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, men
 export default class BasicLayout extends React.Component<AntdNavLayoutProps, any> {
 
 
-    protected currentMenuIndex: number = 0;
+    protected selectedMenuIndexList: number[] = [0, 0, 0];
 
     constructor(props: any, context: any) {
         super(props, context);
@@ -36,7 +35,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
     getPageTitle() {
         const {menus, location} = this.props;
 
-        let title = this.props.systemConfig.site_name||"";
+        let title = this.props.systemConfig.site_name || "";
         if (isNullOrUndefined(menus)) {
             return title
         }
@@ -75,55 +74,72 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
         return (
             <DocumentTitle title={title}>
                 {showMenu ? <ContainerQuery query={MediaQuery}>{params => <AntdNavLayout {...this.props}
-                                                                                         currentSelectedMenu={this.currentMenuIndex}
+                                                                                         selectedMenuIndexList={this.selectedMenuIndexList}
                                                                                          className={classNames(params) as string}/>}</ContainerQuery> : null}
             </DocumentTitle>
         );
     }
 
+    /**
+     * 更具当前路径找到菜单
+     * @param {Array<AntdMenuItem>} menus
+     * @param {string} path
+     * @return {AntdMenuItem}
+     */
     findMenuItemByPath = (menus: Array<AntdMenuItem>, path: string): AntdMenuItem => {
 
         //当前一级菜单的索引
-        let currentMenuIndex = 0;
+        let selectedMenuIndexList = [];
 
         let menu: AntdMenuItem;
 
 
         menus.some((item, i) => {
-            let index = 0;
-            let menuItem = findMenuItem(item, path, index);
-            if (isNullOrUndefined(menuItem)) {
+
+            if (item.children === null) {
                 return false;
             }
 
-            let currentMenu = menuItem.children[index];
-            // console.log("--------------", currentMenu, index, i);
+
+            let menuItem = findMenuItem(item, path.substring(1, path.length), i, selectedMenuIndexList);
+            if (isNullOrUndefined(menuItem)) {
+                return false;
+            }
+            selectedMenuIndexList = selectedMenuIndexList.reverse();
+            let currentMenu = menuItem.children[selectedMenuIndexList[selectedMenuIndexList.length - 1]];
             let b = currentMenu != null;
             if (b) {
                 menu = currentMenu;
-                currentMenuIndex = i;
             }
             return b;
         });
 
+        // console.log("----------menu----------",menu);
+
         //更新当前菜单的索引
-        // console.log("-----------currentMenuIndex-------", currentMenuIndex);
-        this.currentMenuIndex = currentMenuIndex;
+        this.selectedMenuIndexList = selectedMenuIndexList;
         return menu
     }
 }
 
-function findMenuItem(menu: AntdMenuItem, path: string, index): AntdMenuItem {
-    if (menu.children == null) {
+function findMenuItem(menu: AntdMenuItem, path: string, index: number, selectedMenuIndexList: number[]): AntdMenuItem {
+
+    if (menu.path === path) {
+        selectedMenuIndexList.push(index);
         return menu;
     }
-    return menu.children.find((item) => {
-        if (menu.path === path || path.startsWith(menu.path)) {
-            return findMenuItem(item, path, index++) != null;
-        } else {
-            return false;
+    if (menu.children == null) {
+        return null;
+    }
+
+    return menu.children.find((item, i) => {
+
+        let b = findMenuItem(item, path, i, selectedMenuIndexList) != null;
+        if (b) {
+            selectedMenuIndexList.push(index)
         }
-    });
+        return b;
+    })
 
 }
 

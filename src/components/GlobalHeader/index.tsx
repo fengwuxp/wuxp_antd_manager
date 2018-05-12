@@ -43,9 +43,9 @@ export interface GlobalHeaderProps extends ReactBaseProps {
 
 
     /**
-     * 当前选中的菜单
+     * 当前选中的菜单的索引列表
      */
-    currentSelectedMenu: number;
+   selectedMenuIndexList: number[];
 
     /**
      * 通知列表
@@ -166,7 +166,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
             onMenuClick,
             onNoticeClear,
             menus,
-            currentSelectedMenu
+            selectedMenuIndexList
         } = this.props;
 
         const menu = (
@@ -199,7 +199,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                     {
                        menus.map((item, i) => {
                             let classNames = [styles.nav_menu_tab];
-                            if (i === currentSelectedMenu) {
+                            if (i === selectedMenuIndexList[0]) {
                                 classNames.push(styles.nav_menu_tab_selected)
                             }
                             return <span data-index={i}

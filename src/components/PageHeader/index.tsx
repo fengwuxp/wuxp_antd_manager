@@ -1,13 +1,13 @@
 import React, {createElement, PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import pathToRegexp from 'path-to-regexp';
 import {Breadcrumb, Col, Icon, Row, Tabs} from 'antd';
 import classNames from 'classnames';
 import * as styles from './index.scss';
-import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
+import {RouteConfig} from "react-router-config";
+import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 
 
 export interface PageHeaderProps extends ReduxRouterProps, ReactBaseProps {
@@ -22,11 +22,9 @@ export interface PageHeaderProps extends ReduxRouterProps, ReactBaseProps {
 
     extraContent?: React.ReactNode;
 
-    routes?: any[];
+    routes?: RouteConfig[];
 
     params?: any;
-
-    breadcrumbNameMap?: any;
 
     breadcrumbSeparator?: React.ReactNode
 
@@ -51,16 +49,20 @@ const history = BrowserNavigatorFactory.get();
 
 const {TabPane} = Tabs;
 
-export function getBreadcrumb(breadcrumbNameMap, url) {
-    let breadcrumb = breadcrumbNameMap[url];
-    if (!breadcrumb) {
-        Object.keys(breadcrumbNameMap).forEach(item => {
-            if (pathToRegexp(item).test(url)) {
-                breadcrumb = breadcrumbNameMap[item];
-            }
-        });
-    }
-    return breadcrumb || {};
+
+export function getBreadcrumb(menus: AntdMenuItem[], selectedMenuIndexList: number[]): AntdMenuItem[] {
+
+    let list: AntdMenuItem[] = [];
+    selectedMenuIndexList.forEach((i, index) => {
+        let number = index - 1;
+        if (index > 0 && list[number].children) {
+            list.push(list[number].children[i]);
+        } else {
+            list.push(menus[i]);
+        }
+    });
+    return list;
+
 }
 
 
@@ -72,17 +74,17 @@ export function getBreadcrumb(breadcrumbNameMap, url) {
 export default class PageHeader extends PureComponent<PageHeaderProps, any> {
 
     static contextTypes = {
+
         routes: PropTypes.array,
 
         params: PropTypes.object,
 
         menus: PropTypes.array,
 
-        currentSelectedMenu: PropTypes.number,
+        selectedMenuIndexList: PropTypes.array,
 
         location: PropTypes.object,
 
-        breadcrumbNameMap: PropTypes.object,
 
     };
     onChange = key => {
@@ -95,14 +97,11 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
             routes: this.props.routes || this.context.routes,
             params: this.props.params || this.context.params,
             routerLocation: this.props.location || this.context.location,
-            breadcrumbNameMap: this.props.breadcrumbNameMap || this.context.breadcrumbNameMap,
-
         };
     };
     // Generated according to props
     conversionFromProps = () => {
         const {breadcrumbList, breadcrumbSeparator, linkElement = 'a'} = this.props;
-        console.log(breadcrumbList)
         return (
             <Breadcrumb className={styles.breadcrumb} separator={breadcrumbSeparator}>
                 <Breadcrumb.Item href="">
@@ -118,37 +117,23 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
     };
 
 
-    conversionFromLocation = (routerLocation, breadcrumbNameMap) => {
+    conversionFromLocation = () => {
         const {breadcrumbSeparator, linkElement = 'a'} = this.props;
-        // Convert the url to an array
-        const pathSnippets = urlToList(routerLocation.pathname);
-        // Loop data mosaic routing
-        const extraBreadcrumbItems = pathSnippets.map((url, index) => {
-            const currentBreadcrumb = getBreadcrumb(breadcrumbNameMap, url);
-            const isLinkable = index !== pathSnippets.length - 1 && currentBreadcrumb.component;
-            return currentBreadcrumb.name && !currentBreadcrumb.hideInBreadcrumb ? (
-                <Breadcrumb.Item key={url}>
-                    {createElement(
-                        isLinkable ? linkElement : 'span',
-                        {[linkElement === 'a' ? 'href' : 'to']: url},
-                        currentBreadcrumb.name
-                    )}
-                </Breadcrumb.Item>
-            ) : null;
-        });
-        const {menus, currentSelectedMenu} = this.context;
-        // Add home breadcrumbs to your head
-        extraBreadcrumbItems.unshift(
-            <Breadcrumb.Item key="home">
+
+        const {menus, selectedMenuIndexList} = this.context;
+
+
+        //获取面包屑导航的菜单
+        const breadcrumbList: AntdMenuItem[] = getBreadcrumb(menus, selectedMenuIndexList);
+        const extraBreadcrumbItems = breadcrumbList.map((item, index) => {
+            return <Breadcrumb.Item key={item.path}>
                 {createElement(
                     linkElement,
-                    {
-                        [linkElement === 'a' ? 'href' : 'to']: '/',
-                    },
-                    menus[currentSelectedMenu].name
+                    {[linkElement === 'a' ? 'href' : 'to']: item.path},
+                    item.name
                 )}
             </Breadcrumb.Item>
-        );
+        });
 
 
         return (
@@ -179,7 +164,9 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
      */
     conversionBreadcrumbList = () => {
         const {breadcrumbList, breadcrumbSeparator} = this.props;
-        const {routes, params, routerLocation, breadcrumbNameMap} = this.getBreadcrumbProps();
+        const {routes, params, routerLocation} = this.getBreadcrumbProps();
+
+        //传入了面包屑列表
         if (breadcrumbList && breadcrumbList.length) {
             return this.conversionFromProps();
         }
@@ -200,10 +187,11 @@ export default class PageHeader extends PureComponent<PageHeaderProps, any> {
         // 根据 location 生成 面包屑
         // Generate breadcrumbs based on location
         if (routerLocation && routerLocation.pathname) {
-            return this.conversionFromLocation(routerLocation, breadcrumbNameMap);
+            return this.conversionFromLocation();
         }
         return null;
     };
+
     // 渲染Breadcrumb 子节点
     // Render the Breadcrumb child node
     itemRender = (route, params, routes, paths) => {
