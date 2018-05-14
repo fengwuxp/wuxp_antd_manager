@@ -235,7 +235,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                     collapsed={this.state.collapsed}
                     isMobile={this.state.isMobile}
                     onCollapse={this.handleMenuCollapse}
-                    matchMenuKeyStrategy={DefaultMenuMatchStrategy}
                 />
                 <Layout>
                     <Header style={{background: '#fff', padding: 0}}>

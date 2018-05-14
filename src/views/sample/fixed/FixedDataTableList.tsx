@@ -2,14 +2,14 @@ import * as React from "react";
 import {ColumnProps} from "antd/es/table";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import BaseListView from "../../base/BaseListView";
-import {SampleListProps, SampleState} from "../ListView";
+import {SampleListProps, SampleListState} from "../ListView";
 import {QuerySampleReq, QuerySampleReqBuilder} from "../req/QuerySampleReq";
 import {SampleBuilder, SampleInfo} from "../info/SampleInfo";
 
 const history = BrowserNavigatorFactory.get();
 
 export default class FixedDataTableListextends extends BaseListView<SampleListProps,
-    SampleState,
+    SampleListState,
     QuerySampleReq,
     QuerySampleReqBuilder,
     SampleInfo,

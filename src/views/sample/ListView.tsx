@@ -30,7 +30,7 @@ const Option = Select.Option;
 
 const history = BrowserNavigatorFactory.get();
 
-export interface SampleState extends BaseListState<SampleInfo> {
+export interface SampleListState extends BaseListState<SampleInfo> {
 
 }
 
@@ -43,7 +43,7 @@ export interface SampleListProps extends BaseListProps<QuerySampleReq> {
  */
 @(Form.create as any)()
 export default class ListView extends BaseListView<SampleListProps,
-    SampleState,
+    SampleListState,
     QuerySampleReq,
     QuerySampleReqBuilder,
     SampleInfo,
@@ -76,13 +76,6 @@ export default class ListView extends BaseListView<SampleListProps,
 
     protected buildColumns = (): ColumnProps<SampleInfo>[] => {
 
-        // console.log("this.tableBuilder.parentInfo",this.tableBuilder.parentInfo.name)
-        // this.tableBuilder.parentInfo((builder:SampleBuilder)=>{
-        //     return builder.name({
-        //         title:"上级",
-        //         width:120
-        //     }).build();
-        // });
         let build = this.tableBuilder.parentInfo.name({
             title: "上级"
         }).parentInfo.feePct({

@@ -2,12 +2,11 @@ import React, {PureComponent} from 'react';
 import {Icon, Layout, Menu} from 'antd';
 
 import * as styles from './style.scss';
-import {urlToList} from 'ant-design-pro/lib/_utils/pathTools';
 import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
-import {MatchMenuKeyStrategy} from "./strategy/MatchMenuKeyStrategy";
 import {getBreadcrumb} from "../PageHeader/index";
+import {MatchMenuKeyStrategy} from "./strategy/MatchMenuKeyStrategy";
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -62,7 +61,7 @@ export interface SiderMenuProps extends ReduxRouterProps {
     /**
      * 匹配菜单策略
      */
-    matchMenuKeyStrategy: MatchMenuKeyStrategy
+    // matchMenuKeyStrategy: MatchMenuKeyStrategy
 }
 
 const getIcon = icon => {
