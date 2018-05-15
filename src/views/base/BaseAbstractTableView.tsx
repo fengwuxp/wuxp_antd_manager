@@ -14,6 +14,7 @@ import {antdAdminStore} from "../../manager/store/StoreManager";
 import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
+import {generatePageURL} from "./GenerateFetchURL";
 
 /**
  * 列表视图的 base state
@@ -121,6 +122,10 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
         this.defaultPrams = Object.assign({}, params, defaultPrams);
         this.tableBuilder = TableColumnsBuilder.builder<B, T>();
 
+        if (this.fetchUrl == null) {
+            //生成默认的请求url
+            this.fetchUrl = generatePageURL();
+        }
     }
 
     /**

@@ -172,7 +172,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
         const {getFieldValue, setFieldsValue} = this.form;
         const fieldValue = getFieldValue(key);
         // let value = this.getFormatterValue(key, fieldValue);
-        console.log("-----------value--------->", fieldValue);
+        // console.log("-----------value--------->", fieldValue);
         const result = option.initialFunction(fieldValue);
         // console.log("-----------value--------->", result,result.constructor === Promise);
         if (isNullOrUndefined(result)) {

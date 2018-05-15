@@ -139,7 +139,7 @@ export default class WUploadFile extends React.Component<UploadImageProps, WUplo
         if (r && index > -1) {
             //移除
             this.uploadList.splice(index, 1);
-            console.log("----移除文件--", this.uploadList)
+            // console.log("----移除文件--", this.uploadList)
             //更新
             this.props.uploadSuccess(this.uploadList.map(({response}) => response.url))
         }

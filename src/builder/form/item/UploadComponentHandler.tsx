@@ -2,7 +2,7 @@ import * as React from "react";
 import {UploadProps} from "antd/lib/upload/interface";
 import {FormItemType} from "../FormItemType";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
-import {isArray, isNullOrUndefined} from "util";
+import {isArray, isNullOrUndefined, isString} from "util";
 import WUploadFile from "../../../components/form/upload/WUploadFile";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 
@@ -40,10 +40,10 @@ export function handleUploadImage(formItemType: FormItemType,
     }
     const uploadSuccess = (urls: Array<string>) => {
 
-        console.log("------文件上传成功----------",propName, urls);
+        // console.log("------文件上传成功----------",propName, urls);
         let obj = {};
         //设置值
-        obj[propName] = urls;
+        obj[propName] = urls.join(",");
         from.setFieldsValue(obj)
     };
     return {
@@ -70,7 +70,10 @@ export function handleUploadImage(formItemType: FormItemType,
             if (isNullOrUndefined(value)) {
                 return null
             }
-            // console.log("--------upload getFormatter ------------", propName, value);
+            if(isString(value)){
+                return value;
+            }
+            // console.log("--------upload getFormatter ------------", propName, value.join(","));
             return value.join(",");
         }
     }

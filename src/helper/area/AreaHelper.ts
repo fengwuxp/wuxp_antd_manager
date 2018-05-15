@@ -1,6 +1,7 @@
 import InfoProvideService from "../../services/infoprovide/InfoProvideService";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import {CascaderOptionType} from "antd/lib/cascader";
+import {isNullOrUndefined} from "util";
 
 /**
  * 查询地区信息
@@ -32,6 +33,10 @@ export function loadAreaToCasaderOptions(selectedOptions?: CascaderOptionType[])
 
     //上一个选中的选项
     const targetOption = selectedOptions[selectedOptions.length - 1];
+
+    if (isNullOrUndefined(targetOption) ||isNullOrUndefined(targetOption.value)) {
+        return Promise.reject({});
+    }
 
     return queryAreaToCasaderOptions({
         parentId: targetOption.value,

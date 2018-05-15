@@ -8,15 +8,20 @@ import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
 import {message} from "antd";
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
+import {generateCreateURL, generateUpdateURL} from "./GenerateFetchURL";
 
 
-export interface BaseFormSate<E, Q extends ApiReq> {
+export interface BaseFormState<E, Q extends ApiReq> {
 
     /**
      * 初始化表单数据
      */
     initFormData?: E;
 
+    /**
+     * 上下文数据
+     */
+    contextData?: any,
 
     /**
      * 提交的数据
@@ -39,7 +44,7 @@ export interface BaseFormSate<E, Q extends ApiReq> {
  * @param B  表单建造者
  */
 export default abstract class BaseFormView<P extends AntdFromBaseProps,
-    S extends BaseFormSate<E, Q>,
+    S extends BaseFormState<E, Q>,
     E,
     Q extends ApiReq,
     B extends FormBuilder<Q>>
@@ -72,43 +77,54 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
         super(props, context);
 
         this.formBuilder = FormItemBuilder.builder<B, Q>(this.props.form);
+        if (this.submitUrl == null) {
+            //生成默认的请求url
+            if (this.isCreated) {
+                this.submitUrl = generateCreateURL();
+            } else {
+                this.submitUrl = generateUpdateURL();
+            }
+        }
     }
 
 
     componentWillMount(): void {
 
-        if (!this.isCreated) {
-            //在编辑是先加载表单数据
-            const {search} = this.props.history.location;
+        //在编辑是先加载表单数据
+        const {search} = this.props.history.location;
 
-            //TODO  判断查询参数是否有值
+        //TODO  判断查询参数是否有值
 
-            const path = this.props.match.path;
-            const params = parse(search.split("?")[1]);
+        const path = this.props.match.path;
+        const params = parse(search.split("?")[1]);
 
-            message.loading("数据加载中", 0)
-            //加载表单数据
-            apiClient.post({
-                url: path,
-                data: params,
-                useFilter: false
-            }).then((data) => {
+        message.loading("数据加载中", 0);
+        //加载表单数据
+        apiClient.post({
+            url: path,
+            data: params,
+            useFilter: false
+        }).then((data) => {
 
-                this.setState({
-                    initFormData: data
-                });
+            if (!this.isCreated) {
+                //编辑
                 const proxyReq: Q = this.formBuilder.build();
+                let key = this.findFormDataKey(data);
+                let formData = Object.assign({}, data[key]);
+                this.initFormData(formData, proxyReq);
+                delete data[key];
+            }
 
-                this.fetchDataSuccess(data, proxyReq);
+            //设置到上下文对象中
+            this.setState({
+                contextData: data
+            });
 
-                //执行表单项的初始化函数
-                this.formBuilder.executeInitFunction();
-            }).catch(this.fetchFormDataFailure)['finally'](() => {
-                message.destroy();
-            })
-        } else {
+            //执行表单项的初始化函数
             this.formBuilder.executeInitFunction();
-        }
+        }).catch(this.fetchFormDataFailure)['finally'](() => {
+            message.destroy();
+        })
     }
 
     componentDidMount() {
@@ -117,11 +133,16 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
     }
 
 
-    protected fetchDataSuccess(data: E, proxyReq: Q) {
+    protected initFormData(data: E, proxyReq: Q) {
         //初始化表单的值
-        console.log("----------super fetchDataSuccess------", data);
-        for (const key in data) {
-            (proxyReq as any)[key] = data[key];
+        this.setState({
+            initFormData: data
+        });
+        if (proxyReq !== null) {
+            console.log("----------super fetchDataSuccess------", data);
+            for (const key in data) {
+                (proxyReq as any)[key] = data[key];
+            }
         }
     };
 
@@ -216,5 +237,14 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
     protected submitFailure = (e) => {
         console.log("请求处理失败", e);
     };
+
+    /**
+     * 查找 表单当前维护对象数据的key
+     * @param data
+     */
+    protected findFormDataKey = (data: any) => {
+        //TODO 完全匹配
+        return Object.keys(data).find((key) => key.endsWith("Info"));
+    }
 
 }

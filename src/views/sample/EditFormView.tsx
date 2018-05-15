@@ -4,7 +4,7 @@ import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
-import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
+import BaseFormView, { BaseFormState} from "../base/BaseFormView";
 import InfoProvideService from "../../services/infoprovide/InfoProvideService";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import SendMode from "./enums/SendMode";
@@ -23,7 +23,7 @@ interface SampleFormProps extends AntdFromBaseProps {
 
 }
 
-interface SampleFormState extends BaseFormSate<SampleInfo, EditSampleReq> {
+interface SampleFormState extends BaseFormState<SampleInfo, EditSampleReq> {
 
     areaOptions: Array<CascaderOptionType>
 
@@ -62,7 +62,7 @@ export default class EditFormView extends BaseFormView<SampleFormProps,
 
 
     fetchDataSuccess(data: SampleInfo, proxyReq: EditSampleReq) {
-        super.fetchDataSuccess(data, proxyReq);
+        super.initFormData(data, proxyReq);
     };
 
     /**

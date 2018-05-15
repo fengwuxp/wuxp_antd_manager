@@ -4,7 +4,7 @@ import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
-import BaseFormView, {BaseFormSate} from "../base/BaseFormView";
+import BaseFormView, { BaseFormState} from "../base/BaseFormView";
 import InfoProvideService from "../../services/infoprovide/InfoProvideService";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import {CreateSampleReq, CreateSampleReqBuilder} from "./req/CreateSampleReq";
@@ -40,7 +40,7 @@ interface SampleFormProps extends AntdFromBaseProps {
 
 }
 
-interface SampleFormState extends BaseFormSate<SampleInfo, CreateSampleReq> {
+interface SampleFormState extends BaseFormState<SampleInfo, CreateSampleReq> {
 
     areaOptions: Array<CascaderOptionType>
 

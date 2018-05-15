@@ -8,6 +8,7 @@ import BaseAbstractTableView, {BaseAbstractTableViewProps, BaseAbstractTableView
 import {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 import {FormComponentProps} from "antd/lib/form";
 import FormItemBuilder, {FormBuilder} from "../../builder/form/FormItemBuilder";
+import {generateDeleteURL} from "./GenerateFetchURL";
 
 const Option = Select.Option;
 
@@ -52,7 +53,10 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
         super(props, context, defaultPrams);
 
         this.formBuilder = FormItemBuilder.builder<Q, E>(this.props.form);
-
+        if (this.deletedRequestUrl == null) {
+            //生成默认的请求url
+            this.deletedRequestUrl = generateDeleteURL();
+        }
     }
 
     state = {
