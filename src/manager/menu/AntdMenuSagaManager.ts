@@ -37,13 +37,6 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
 
 function queryMenus(params) {
 
-    // return new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //         // console.log(menuData);
-    //         resolve(getMenuData(menuData))
-    //     }, 200);
-    // });
-
     return apiClient.post({
         url: "/common/menus",
         data: {
@@ -52,7 +45,9 @@ function queryMenus(params) {
         },
         useFilter: false
     }).then((data) => {
-        return convertMenuItem(data.data);
+        if(data.success){
+            return convertMenuItem(data.data);
+        }
     });
 }
 

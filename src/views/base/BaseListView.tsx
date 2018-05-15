@@ -266,6 +266,10 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     };
 
 
+    /**
+     * 删除
+     * @param {any[]} ids
+     */
     protected deletedTableItem = (ids: any[]) => {
         Modal.confirm({
             title: "提示",
@@ -277,13 +281,14 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
                         ids
                     }
                 }).then(() => {
+                    //刷新
                     this.fetchListData();
                 });
             },
             okText: "确认",
             cancelText: "取消"
         })
-    }
+    };
 
     /**
      * 获取查询页面的表单

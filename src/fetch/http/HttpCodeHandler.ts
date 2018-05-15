@@ -13,9 +13,6 @@ let count301 = 0;
  * @returns {boolean | void}
  */
 export function httpCode301Handler<Response, FetchOption>(resp: Response, option: FetchOption): boolean | void {
-    // if (count301 > 0) {
-    //     return true;
-    // }
     count301++;
     message.warn("会话已失效，请重新登录", 2, () => {
         count301--;
