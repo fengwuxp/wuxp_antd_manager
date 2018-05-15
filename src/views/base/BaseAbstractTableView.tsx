@@ -12,6 +12,8 @@ import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColu
 import {QueryParamsCacheAction} from "../../manager/query/QueryParamsCacheManager";
 import {antdAdminStore} from "../../manager/store/StoreManager";
 import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
+import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
+import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
 
 /**
  * 列表视图的 base state
@@ -102,6 +104,11 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
      * 表格列建造者
      */
     protected tableBuilder: B;
+
+    /**
+     * 客户端请求工具
+     */
+    protected apiClient: ApiClientInterface<FetchOption> = apiClient;
 
     constructor(props: P, context: any, defaultPrams: E = {} as E, useQueryString = true) {
         super(props, context);

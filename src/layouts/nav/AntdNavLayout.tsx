@@ -209,18 +209,21 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
     render() {
         let fetchingNotices = false;
-        const {selectedMenuIndexList} = this.props;
+        const {selectedMenuIndexList, session} = this.props;
         const currentUser = {
             notifyCount: 10,
-            name: "张三",
-            avatar: "",
-            // ...session.admin
+            // name: session.admin.name,
+            // avatar: session.admin.name,
+            ...session.admin
         };
         const menuItems = this.getCurrentMenus();
 
-        if (redirectData.length === 0) {
+        if (redirectData.length === 0 && menuItems.length > 0) {
             //获取重定向数据
-            menuItems.forEach(getRedirect);
+            redirectData.push({
+                from: `/`,
+                to: menuItems[selectedMenuIndexList[1]].children[selectedMenuIndexList[2]],
+            });
         }
 
         const bashRedirect = this.getBashRedirect();
@@ -233,7 +236,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                     collapsed={this.state.collapsed}
                     isMobile={this.state.isMobile}
                     onCollapse={this.handleMenuCollapse}
-                    matchMenuKeyStrategy={DefaultMenuMatchStrategy}
                 />
                 <Layout>
                     <Header style={{background: '#fff', padding: 0}}>
@@ -314,7 +316,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
 
 
         if (selectedMenuIndexList.length === 0) {
-            console.warn(`--当前选中的菜单为空`)
+            console.warn(`--当前选中的菜单为空`);
             return []
         }
 
@@ -322,17 +324,3 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     };
 }
 
-
-const getRedirect = item => {
-    if (item && item.children) {
-        if (item.children[0] && item.children[0].path) {
-            redirectData.push({
-                from: `${item.path}`,
-                to: `${item.children[0].path}`,
-            });
-            item.children.forEach(children => {
-                getRedirect(children);
-            });
-        }
-    }
-};

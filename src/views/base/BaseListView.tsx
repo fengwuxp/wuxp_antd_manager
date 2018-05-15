@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Button, Form, Icon, Input, Select} from "antd";
+import {Button, Form, Icon, Input, Select, Modal} from "antd";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq"
 import zh_CN from 'rc-pagination/lib/locale/zh_CN';
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils";
@@ -42,6 +42,11 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
     protected formBuilder: Q;
 
     protected proxyReq: E;
+
+    /**
+     * 删除请求的url
+     */
+    protected deletedRequestUrl: string;
 
     constructor(props: P, context: any, defaultPrams: E) {
         super(props, context, defaultPrams);
@@ -260,6 +265,25 @@ export default abstract class BaseListView<P extends BaseListProps<E>,
 
     };
 
+
+    protected deletedTableItem = (ids: any[]) => {
+        Modal.confirm({
+            title: "提示",
+            content: "确认删除？",
+            onOk: () => {
+                this.apiClient.post({
+                    url: this.deletedRequestUrl,
+                    data: {
+                        ids
+                    }
+                }).then(() => {
+                    this.fetchListData();
+                });
+            },
+            okText: "确认",
+            cancelText: "取消"
+        })
+    }
 
     /**
      * 获取查询页面的表单

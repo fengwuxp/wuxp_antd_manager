@@ -79,7 +79,7 @@ class ProxyMenuSimpleBuilder<T extends MenuItemBuilder> {
                                 return;
                             }
                             handle(event);
-                        }}>{this.menuItems}</Menu>
+                        }}>{...this.menuItems}</Menu>
                     };
                 }
 

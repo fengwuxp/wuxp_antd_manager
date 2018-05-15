@@ -97,15 +97,14 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
         menus.some((item, i) => {
 
             if (item.children === null) {
-                console.warn("没有下级菜单-->",item.name)
+                console.warn("没有下级菜单-->",item.name);
                 return false;
             }
 
-
             let menuItem = findMenuItem(item, path.split("/")[1], i, selectedMenuIndexList);
 
-
             if (isNullOrUndefined(menuItem)) {
+                this.selectedMenuIndexList=[0,0,0];
                 return false;
             }
             selectedMenuIndexList = selectedMenuIndexList.reverse();
