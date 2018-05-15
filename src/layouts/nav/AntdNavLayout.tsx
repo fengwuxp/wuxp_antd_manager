@@ -222,7 +222,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
             //获取重定向数据
             redirectData.push({
                 from: `/`,
-                to: menuItems[selectedMenuIndexList[1]].children[selectedMenuIndexList[2]],
+                to: menuItems[selectedMenuIndexList[1]].children[selectedMenuIndexList[2]].path,
             });
         }
 
