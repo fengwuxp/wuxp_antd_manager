@@ -140,12 +140,12 @@ export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
     /**
      * sn
      */
-    sn: (column: ColumnProps<SampleInfo>) => this;
+    sn: (column: ColumnProps<SampleInfo>) => B;
 
     /**
      * 姓名
      */
-    name: (column: ColumnProps<SampleInfo>) => this;
+    name: (column: ColumnProps<SampleInfo>) => B;
 
     /**
      * 图标

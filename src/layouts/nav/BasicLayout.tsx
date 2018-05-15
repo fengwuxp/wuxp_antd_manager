@@ -97,11 +97,14 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
         menus.some((item, i) => {
 
             if (item.children === null) {
+                console.warn("没有下级菜单-->",item.name)
                 return false;
             }
 
 
-            let menuItem = findMenuItem(item, path.substring(1, path.length), i, selectedMenuIndexList);
+            let menuItem = findMenuItem(item, path.split("/")[1], i, selectedMenuIndexList);
+
+
             if (isNullOrUndefined(menuItem)) {
                 return false;
             }
@@ -124,7 +127,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
 
 function findMenuItem(menu: AntdMenuItem, path: string, index: number, selectedMenuIndexList: number[]): AntdMenuItem {
 
-    if (menu.path === path) {
+    if (menu.path.startsWith(`${path}/`)) {
         selectedMenuIndexList.push(index);
         return menu;
     }

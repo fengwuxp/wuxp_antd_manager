@@ -179,8 +179,6 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     };
 
 
-
-
     /**
      * 在第一次渲染后调用，只在客户端。之后组件已经生成了对应的DOM结构
      */
@@ -235,6 +233,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
                     collapsed={this.state.collapsed}
                     isMobile={this.state.isMobile}
                     onCollapse={this.handleMenuCollapse}
+                    matchMenuKeyStrategy={DefaultMenuMatchStrategy}
                 />
                 <Layout>
                     <Header style={{background: '#fff', padding: 0}}>
@@ -312,6 +311,12 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
      */
     private getCurrentMenus = () => {
         const {menus, selectedMenuIndexList} = this.props;
+
+
+        if (selectedMenuIndexList.length === 0) {
+            console.warn(`--当前选中的菜单为空`)
+            return []
+        }
 
         return menus[selectedMenuIndexList[0]].children || [];
     };
