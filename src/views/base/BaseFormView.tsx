@@ -77,6 +77,11 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
         super(props, context);
 
         this.formBuilder = FormItemBuilder.builder<B, Q>(this.props.form);
+    }
+
+
+    componentWillMount(): void {
+
         if (this.submitUrl == null) {
             //生成默认的请求url
             if (this.isCreated) {
@@ -85,10 +90,6 @@ export default abstract class BaseFormView<P extends AntdFromBaseProps,
                 this.submitUrl = generateUpdateURL();
             }
         }
-    }
-
-
-    componentWillMount(): void {
 
         //在编辑是先加载表单数据
         const {search} = this.props.history.location;

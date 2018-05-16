@@ -3,6 +3,7 @@ import apiClient from "../../fetch/BuildFetchClient";
 import {parse} from "querystring";
 import {isNullOrUndefined} from "util";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
+import {deepObjectGetterProxy} from "wuxp_react_dynamic_router/src/proxy/getter/DeepObjectGetterProxy";
 
 export interface BaseDetailViewState<E> {
 
@@ -31,7 +32,8 @@ export default abstract class BaseSimpleDetailView<P extends ReduxRouterProps,
         info: {}
     } as S;
 
-    componentWillMount() {
+
+    componentDidMount() {
         if (isNullOrUndefined(this.fetchUrl)) {
             this.fetchUrl = this.props.location.pathname;
         }
@@ -45,12 +47,21 @@ export default abstract class BaseSimpleDetailView<P extends ReduxRouterProps,
             data: params,
             useFilter: false
         }).then((data: E) => {
+            let key=this.findFormDataKey(data);
             this.setState({
-                info: data
+                info: deepObjectGetterProxy<any>(data[key])
             })
         }).catch((e) => {
             console.log(e);
         });
     }
 
+    /**
+     * 查找 表单当前维护对象数据的key
+     * @param data
+     */
+    protected findFormDataKey = (data: any) => {
+        //TODO 完全匹配
+        return Object.keys(data).find((key) => key.endsWith("Info"));
+    }
 }
