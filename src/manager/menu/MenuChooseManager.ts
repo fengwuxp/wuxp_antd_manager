@@ -45,7 +45,7 @@ class MenuChooseManager extends MenuChooseAction implements MenuChooseSaga {
 
 const menuChooseManager = new MenuChooseManager();
 
-addSagaHandler(MenuChooseSagaManager, MenuChooseManager);
+// addSagaHandler(MenuChooseSagaManager, MenuChooseManager);
 
 export {
     menuChooseManager

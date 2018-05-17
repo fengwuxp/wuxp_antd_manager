@@ -40,23 +40,23 @@ export interface AntdSession {
     /**
      * 用户信息
      */
-    admin: AntdAdmin,
+    admin?: AntdAdmin,
 
     /**
      * 会话状态
      */
-    status: SessionStatus,
+    status?: SessionStatus,
 
     /**
      * 登录类型
      */
-    type: LoginType,
+    type?: LoginType,
 
     /**
      * 提交状态
      */
-    submitting: boolean;
+    submitting?: boolean;
 
     //登录失败的错误提示
-    errorMessage: string;
+    errorMessage?: string;
 }

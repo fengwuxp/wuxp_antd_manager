@@ -128,7 +128,7 @@ class ProxyFormBuilder<T extends FormBuilder<Q>, Q extends object> {
                                 // if(isNullOrUndefined(node)){
                                 //     //TODO
                                 // }
-                                // console.log("默认，不处理");
+                                console.log("默认，不处理",propertyKey,node);
                                 break;
                             default:
                                 node = CommonSimpleComponentHandler[formItemType.toLowerCase()](formItemProps, propertyKey);

@@ -43,7 +43,7 @@ class SessionManager extends SessionAction implements SessionSaga {
 }
 
 const sessionManager = new SessionManager();
-addSagaHandler(SessionSagaManager, SessionManager);
+// addSagaHandler(SessionSagaManager, SessionManager);
 export {
     sessionManager
 }

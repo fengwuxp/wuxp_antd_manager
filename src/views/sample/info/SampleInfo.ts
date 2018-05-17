@@ -129,7 +129,7 @@ export interface SampleInfo {
 /**
  * SampleBuilder
  */
-export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
+export interface SampleBuilder<B extends HasActionTable<any>=SampleBuilder<any>> extends HasActionTable<SampleInfo> {
 
     /**
      * id
@@ -140,7 +140,7 @@ export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
     /**
      * sn
      */
-    sn: (column: ColumnProps<SampleInfo>) => B;
+    sn: (column: ColumnProps<SampleInfo>) => B | this;
 
     /**
      * 姓名
@@ -232,7 +232,7 @@ export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
     // parentInfo: (column: ColumnProps<SampleInfo>) => this;
 
     // parentInfo: (p: (SampleBuilder) => ColumnProps<SampleInfo>[]) => this;
-    parentInfo:SampleBuilder<B>
+    parentInfo: SampleBuilder<B>
 
     /**
      * 地区信息ID
@@ -244,7 +244,7 @@ export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
      * 地区信息
      */
     // areaInfo: (column?: ColumnProps<SampleInfo>) => this;
-    areaInfo:AreaBuilder<this>;
+    areaInfo: AreaBuilder<this>;
     // areaInfo: (column?: any) => this;
 
 
@@ -261,7 +261,7 @@ export interface SampleBuilder<B> extends HasActionTable<SampleInfo> {
 
 }
 
-export interface AreaBuilder<T> extends HasActionTable<AreaInfo>{
+export interface AreaBuilder<T> extends HasActionTable<AreaInfo> {
 
     name: (column: ColumnProps<AreaInfo>) => T;
 
@@ -270,5 +270,5 @@ export interface AreaBuilder<T> extends HasActionTable<AreaInfo>{
      */
     thirdCode: (column: ColumnProps<AreaInfo>) => T;
 
-    areaInfo:AreaBuilder<T>;
+    areaInfo: AreaBuilder<T>;
 }

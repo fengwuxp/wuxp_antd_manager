@@ -1,9 +1,11 @@
 import 'rc-drawer-menu/assets/index.css';
-import React from 'react';
 import DrawerMenu from 'rc-drawer-menu';
+import * as React from 'react';
 import SiderMenu, {SiderMenuProps} from './SiderMenu';
 
 export default (props: SiderMenuProps) => {
+
+    let width = props.width | 256;
 
     return props.isMobile ? (
         <DrawerMenu
@@ -14,7 +16,7 @@ export default (props: SiderMenuProps) => {
             onMaskClick={() => {
                 props.onCollapse(true);
             }}
-            width={props.width ? props.width : 256}
+            width={`${width}px`}
         >
             <SiderMenu {...props} collapsed={props.isMobile ? false : props.collapsed}/>
         </DrawerMenu>

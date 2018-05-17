@@ -19,6 +19,7 @@ import * as styles from "./index.scss";
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import {fetchSystemConfig} from "./manager/config/SystemConfigManager";
+import {registerStoreByProxy} from "wuxp_react_dynamic_router/src/proxy/redux/ProxyReduxAction";
 
 moment.locale('zh-cn');
 
@@ -38,7 +39,7 @@ fetchSystemConfig([
     "site_name",
     "admin_logo"
 ]);
-
+registerStoreByProxy(antdAdminStore)
 ReactDOM.render(
     <Provider store={antdAdminStore}>
         <ConnectedRouter history={history}>

@@ -7,7 +7,6 @@ import * as styles from './UserLayout.scss';
 import LoginView, {LoginPageProps} from "../../views/account/LoginView";
 import {connect, MapStateToPropsParam} from "react-redux";
 import {SystemConfig} from "../../model/AntdAdminStore";
-import {isNullOrUndefined} from "util";
 
 
 const links = [

@@ -29,7 +29,7 @@ class AntdMenuManager extends AntdMenuAction implements AntdMenuSaga {
 }
 
 const antdMenuManager = new AntdMenuManager();
-addSagaHandler(AntdMenuSagaManager, AntdMenuManager);
+// addSagaHandler(AntdMenuSagaManager, AntdMenuManager);
 export {
     antdMenuManager
 }

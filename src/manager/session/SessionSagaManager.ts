@@ -62,6 +62,7 @@ export class SessionSagaManager implements SessionSaga {
                 payload: {submitting: true},
             });
             const {success, data, message, code}: ApiResp<AntdAdmin> = yield call(adminLogin, payload);
+
             if (success) {
                 //登录成功
                 setAuthority("user");

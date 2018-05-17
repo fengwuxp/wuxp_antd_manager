@@ -30,6 +30,7 @@ export class AntdMenuSagaManager implements AntdMenuSaga {
             type,
             payload: menus
         });
+        return menus;
     }
 
 

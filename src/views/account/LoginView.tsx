@@ -2,12 +2,13 @@ import * as React from 'react';
 import {Alert, Checkbox, message} from 'antd';
 import Login from "../../components/Login/";
 import * as styles from './Login.scss';
-import {sessionManager} from "../../manager/session/SessionManager";
 import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
 import {LoginType} from "../../enums/AdminLoginType";
 import {MapStateToPropsParam} from 'react-redux';
 import {AntdSession, SessionStatus} from "../../model/session/AntdAdmin";
 import GlobalAipConfig from "typescript_api_sdk/src/config/GlobalAipConfig"
+import {sessionHandler} from "../../handler/session/SessionHandler";
+// import {sessionHandler} from "../../handler/session/SessionHandler";
 
 const {Tab, UserName, Password, Mobile, Captcha, Submit, PictureCode} = Login as any;
 
@@ -41,13 +42,19 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
     };
 
     handleSubmit = (err, values) => {
-        console.log(err);
-        console.log(values);
+        // console.log(err);
+        // console.log(values);
         if (!err) {
-            sessionManager.login({
+            // sessionManager.login({
+            //     type: this.state.type,
+            //     ...values
+            // });
+            let req = {
                 type: this.state.type,
                 ...values
-            });
+            };
+            console.log("----req---",req);
+            sessionHandler.login(req)
         }
     };
 

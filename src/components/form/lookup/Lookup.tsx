@@ -121,7 +121,7 @@ export default class Lookup<T> extends React.Component<LookupProps<T>, LookupSta
 
         return (
             <Row type={"flex"}>
-                <Col span={10}>
+                <Col span={16}>
                     <Input {...props}
                            value={this.state.values[0]}
                            readOnly={true}

@@ -47,7 +47,7 @@ export default class ListView extends BaseListView<SampleListProps,
     QuerySampleReq,
     QuerySampleReqBuilder,
     SampleInfo,
-    SampleBuilder<SampleBuilder<any>>> {
+    SampleBuilder<SampleBuilder>> {
 
     constructor(props: any, context: any) {
         super(props, context, {
@@ -86,6 +86,8 @@ export default class ListView extends BaseListView<SampleListProps,
             title:"上级地区名称"
         }).sn({
             title:"sn"
+        }).sn({
+
         }).build();
 
         console.log("---------------", build);
