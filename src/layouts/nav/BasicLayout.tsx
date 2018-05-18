@@ -93,7 +93,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
 
         let menu: AntdMenuItem;
 
-        console.log("---------menus----------",menus)
+        console.log("---------menus----------",menus);
 
         menus.some((item, i) => {
 

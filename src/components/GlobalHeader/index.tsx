@@ -12,6 +12,7 @@ import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 
 const history = BrowserNavigatorFactory.get();
+
 /**
  * 管理员
  */
@@ -45,7 +46,7 @@ export interface GlobalHeaderProps extends ReactBaseProps {
     /**
      * 当前选中的菜单的索引列表
      */
-   selectedMenuIndexList: number[];
+    selectedMenuIndexList: number[];
 
     /**
      * 通知列表
@@ -197,7 +198,7 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                 />
                 <Col style={{flex: 1}}>
                     {
-                       menus.map((item, i) => {
+                        menus.map((item, i) => {
                             let classNames = [styles.nav_menu_tab];
                             if (i === selectedMenuIndexList[0]) {
                                 classNames.push(styles.nav_menu_tab_selected)
@@ -209,10 +210,14 @@ export default class GlobalHeader extends PureComponent<GlobalHeaderProps, any> 
                                              const target: HTMLElement = event.target as HTMLElement;
                                              const domStringMap: DOMStringMap = target.dataset;
                                              const path = menus[parseInt(domStringMap.index)].children[0].children[0].path;
-                                             console.log("path--->",path);
-                                             history.push(path);
-                                             //切换导航
-                                             // menuChooseManager.changeTopMenuNav(parseInt(domStringMap.index));
+                                             console.log("path--->", path);
+                                             let p;
+                                             if (path.startsWith("/")) {
+                                                 p = `/${path}`
+                                             } else {
+                                                 p = path;
+                                             }
+                                             history.push(p);
                                          }} className={classNames.join(" ")}>{item.name}</span>
                         })
                     }

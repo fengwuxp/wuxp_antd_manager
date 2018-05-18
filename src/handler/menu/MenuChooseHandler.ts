@@ -25,13 +25,13 @@ class MenuChooseHandlerImpl implements MenuChooseHandler {
 
 }
 
-const menuChooseHandler = new MenuChooseHandlerImpl();
+const menuChooseHandlerImpl = new MenuChooseHandlerImpl();
 
-const currentSelectedMenu = createReducerByHandler<number>(menuChooseHandler);
+const currentSelectedMenu = createReducerByHandler<number>(menuChooseHandlerImpl);
 
-const menuChooseManager = createReduxHandler(menuChooseHandler);
+const menuChooseHandler = createReduxHandler(menuChooseHandlerImpl);
 
 export {
     currentSelectedMenu,
-    menuChooseManager
+    menuChooseHandler
 }
