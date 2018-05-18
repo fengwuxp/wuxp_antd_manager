@@ -8,12 +8,14 @@ import {call} from "redux-saga/effects";
 export interface SystemConfigHandler extends SagaHandler<SystemConfig> {
 
     getSystemConfig: (req: string[], type?: string) => ReduxAction<SystemConfig>;
+
+    setSystemConfig: (state: SystemConfig, newState: SystemConfig) => SystemConfig;
 }
 
 
 class SystemConfigHandlerImpl implements SystemConfigHandler {
 
-    default: SystemConfig = null;
+    default: SystemConfig = {} as SystemConfig;
 
     /**
      * 获取系统配置
@@ -26,6 +28,10 @@ class SystemConfigHandlerImpl implements SystemConfigHandler {
         return yield call(fetchSystemConfig, req);
     };
 
+    setSystemConfig(state: SystemConfig, newState: SystemConfig) {
+
+        return newState;
+    }
 
 }
 
@@ -39,8 +45,8 @@ function fetchSystemConfig(naems: string[]) {
         useFilter: false
     }).then((data: Array<any>) => {
         const config = {};
-        data.forEach((item, i) => {
-            config[naems[i]] = item;
+        naems.forEach((name, i) => {
+            config[name] = data[i] || "";
         });
         return config;
     }).catch((e) => {

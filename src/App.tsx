@@ -4,13 +4,13 @@ import 'antd/dist/antd.css';
 import "fixed-data-table-2/dist/fixed-data-table.css";
 import 'ant-design-pro/dist/ant-design-pro.css';
 import {Route, Switch} from 'react-router-dom'
+import {antdAdminStore} from "./store/StoreManager";
 import UserLayout from "./layouts/login/UserLayout";
 import BasicLayout from "./layouts/nav/BasicLayout";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory"
 import Authorized from './utils/auth/Authorized';
 import {Provider} from "react-redux";
 import {ConnectedRouter} from 'react-router-redux'
-import {antdAdminStore} from "./store/StoreManager";
 import {pushRoutes} from "./routes/router";
 import routes from "./views/sample";
 import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
@@ -34,14 +34,16 @@ const history = BrowserNavigatorFactory.get();
 
 const {AuthorizedRoute} = Authorized;
 
+//将store 注册到代理handler中
+registerStoreByProxy(antdAdminStore);
+
 //加载系统配置
-const config = systemConfigHandler.getSystemConfig([
+ systemConfigHandler.getSystemConfig([
     "site_name",
     "admin_logo"
 ]);
-console.log(`---------config--------`, config);
-//将store 注册到代理handler中
-registerStoreByProxy(antdAdminStore);
+
+
 
 
 ReactDOM.render(

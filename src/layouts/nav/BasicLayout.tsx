@@ -61,7 +61,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
     componentWillMount() {
 
         //加载菜单
-        menuHandler.updateMenus();
+        menuHandler.getMenus();
 
 
     }
@@ -93,6 +93,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
 
         let menu: AntdMenuItem;
 
+        console.log("---------menus----------",menus)
 
         menus.some((item, i) => {
 

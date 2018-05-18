@@ -8,17 +8,21 @@ import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_rou
 import {LoginType} from "../../enums/AdminLoginType";
 import {SagaHandler} from "wuxp_react_dynamic_router/src/redux/SagaHandler";
 import {ReduxAction} from "wuxp_react_dynamic_router/src/redux/ReduxAction";
-
+import {TargetAction} from "wuxp_react_dynamic_router/src/decorator/TargetReduxAction";
 
 /**
  * 会话相关处理
  */
 export interface SessionHandler extends SagaHandler<AntdSession> {
 
-    login: (req, type?: string) => ReduxAction<AntdSession>;
+    login: (req, type?: string) => void;
 
-    logout: (type?: string) => ReduxAction<AntdSession>;
+    logout: (type?: string) => void;
+
+    setMember: (state: AntdSession, newState: AntdSession) => AntdSession;
+
 }
+
 
 export class SessionHandlerImpl implements SessionHandler {
 
@@ -50,6 +54,7 @@ export class SessionHandlerImpl implements SessionHandler {
      * @param {string}type
      * @return {any}
      */
+    @TargetAction(SessionHandlerImpl.prototype.setMember)
     * login(req, type?: string): any {
 
         try {
@@ -101,6 +106,7 @@ export class SessionHandlerImpl implements SessionHandler {
      * 退出
      * @returns {IterableIterator<any>}
      */
+    @TargetAction(SessionHandlerImpl.prototype.setMember)
     * logout(type?: string): any {
         console.log("退出登录");
         yield call(adminLogout);
@@ -111,6 +117,10 @@ export class SessionHandlerImpl implements SessionHandler {
 
         return null;
     }
+
+    setMember(state: AntdSession, newState: AntdSession): AntdSession {
+        return newState;
+    };
 
 
 }
