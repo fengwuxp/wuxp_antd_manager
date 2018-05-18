@@ -25,12 +25,10 @@ class InfoProvideService {
      * 查询地区
      * @param params 参数
      * @param option 请求配置
-     * @param method 请求方法 GET 或者 POST
-     * @param dataType 结果数据类型  支持：JSON,JSONP,TEXT
      */
-    queryArea = (params: QueryAreaReq, option?: FetchOption, method?: ReqMethod, dataType?: DataType): Promise<PageInfo<AreaInfo>> => {
+    queryArea = (params: QueryAreaReq, option?: FetchOption ): Promise<PageInfo<AreaInfo>> => {
 
-        return ["/area/page", [], method, dataType] as any;
+        return [] as any;
     };
 
 }

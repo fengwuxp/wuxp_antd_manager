@@ -12,6 +12,8 @@ export function queryAreaToCasaderOptions(params: QueryAreaReq): Promise<Cascade
     return InfoProvideService.queryArea({
         ...params,
         querySize: -1,
+    }, {
+        url: "/area/page"
     }).then((data) => {
         const {records} = data;
         //数据转换
@@ -34,7 +36,7 @@ export function loadAreaToCasaderOptions(selectedOptions?: CascaderOptionType[])
     //上一个选中的选项
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    if (isNullOrUndefined(targetOption) ||isNullOrUndefined(targetOption.value)) {
+    if (isNullOrUndefined(targetOption) || isNullOrUndefined(targetOption.value)) {
         return Promise.reject({});
     }
 
