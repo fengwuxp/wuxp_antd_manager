@@ -25,7 +25,7 @@ export interface SystemConfig {
 /**
  * 查询参数缓存
  */
-export interface QueryParamsCache<T extends ApiQueryReq> {
+export interface QueryParamsCache<T extends ApiQueryReq=ApiQueryReq> {
 
     /**
      * 上一次查询列表的url

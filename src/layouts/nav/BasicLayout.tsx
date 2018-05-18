@@ -7,7 +7,7 @@ import AntdNavLayout, {AntdNavLayoutProps} from "./AntdNavLayout";
 import {connect, MapStateToPropsParam} from "react-redux";
 import {isNullOrUndefined} from "util";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
-import {antdMenuManager} from "../../manager/menu/AntdMenuManager";
+import {menuHandler} from "../../handler/menu/AntdMenuHandler";
 
 
 const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session, menus, systemConfig, currentSelectedMenu}) => ({
@@ -61,7 +61,7 @@ export default class BasicLayout extends React.Component<AntdNavLayoutProps, any
     componentWillMount() {
 
         //加载菜单
-        antdMenuManager.getMenus();
+        menuHandler.updateMenus();
 
 
     }

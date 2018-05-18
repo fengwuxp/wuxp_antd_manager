@@ -6,9 +6,8 @@ import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
 import GlobalHeader, {GlobalHeaderProps} from "../../components/GlobalHeader/index";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {enquireScreen, unenquireScreen} from 'enquire-js';
-import AntdNoticeManager from "../../manager/notice/AntdNoticeManager";
+import AntdNoticeManager from "../../handler/notice/AntdNoticeManager";
 import {push} from "react-router-redux";
-import {sessionManager} from "../../manager/session/SessionManager";
 import {connect, MapStateToPropsParam} from "react-redux";
 import {AntdSession} from "../../model/session/AntdAdmin";
 import {SystemConfig} from "../../model/AntdAdminStore";
@@ -19,7 +18,7 @@ import Authorized from '../../utils/auth/Authorized';
 import NotFound from '../../views/exception/404';
 import {isUndefined} from "util";
 import {RouteConfig} from "react-router-config";
-import {DefaultMenuMatchStrategy} from "../../components/SiderMenu/strategy/MatchMenuKeyStrategy";
+import {sessionHandler} from "../../handler/session/SessionHandler";
 
 const {Content, Header, Footer} = Layout;
 
@@ -174,7 +173,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
         }
         if (key === 'logout') {
             console.log("退出登录", "");
-            sessionManager.logout();
+            sessionHandler.logout();
         }
     };
 

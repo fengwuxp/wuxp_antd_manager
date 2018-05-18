@@ -9,9 +9,9 @@ import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxR
 import {SelectValue} from "antd/lib/select";
 import {QueryParamsCache} from "../../model/AntdAdminStore";
 import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColumnsBuilder";
-import {QueryParamsCacheAction} from "../../manager/query/QueryParamsCacheManager";
-import {antdAdminStore} from "../../manager/store/StoreManager";
-import {DEFAULT_QUERY_SIZE} from "../../reducers/QueryParamsCacheReducer";
+import {paramsCacheHandler,DEFAULT_QUERY_SIZE} from "../../handler/query/QueryParamsCacheHandler";
+import {antdAdminStore} from "../../store/StoreManager";
+
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
 import {generatePageURL} from "./GenerateFetchURL";
@@ -145,7 +145,7 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
                 queryParamsCache = {...params as any};
             } else {
                 // 清空查询参数缓存
-                QueryParamsCacheAction.updateCache({
+                paramsCacheHandler.updateCache({
                     params: null,
                     prevFetchUrl: null
                 });
@@ -182,7 +182,7 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
             useFilter: false
         }).then((data: PageInfo<any>) => {
             //更新查询参数缓存
-            QueryParamsCacheAction.updateCache({
+            paramsCacheHandler.updateCache({
                 params: this.reqParams,
                 prevFetchUrl: this.fetchUrl
             });

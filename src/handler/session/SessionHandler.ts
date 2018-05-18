@@ -4,17 +4,20 @@ import {ApiResp} from "typescript_api_sdk/src/api/model/ApiResp";
 import {setAuthority} from "../../utils/auth/authority";
 import {call, put} from "redux-saga/effects";
 import * as routerRedux from "react-router-redux";
-import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_router/src/proxy/redux/ProxyReduxAction"
+import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
 import {LoginType} from "../../enums/AdminLoginType";
-import {addSagaHandler} from "wuxp_react_dynamic_router/src/manager/saga/SagaManager";
-import {SagaHandler} from "wuxp_react_dynamic_router/src/handler/SagaHandler";
+import {SagaHandler} from "wuxp_react_dynamic_router/src/redux/SagaHandler";
+import {ReduxAction} from "wuxp_react_dynamic_router/src/redux/ReduxAction";
 
 
+/**
+ * 会话相关处理
+ */
 export interface SessionHandler extends SagaHandler<AntdSession> {
 
-    login: (req, type?: string) => AntdSession;
+    login: (req, type?: string) => ReduxAction<AntdSession>;
 
-    logout: (type?: string) => void;
+    logout: (type?: string) => ReduxAction<AntdSession>;
 }
 
 export class SessionHandlerImpl implements SessionHandler {
@@ -44,10 +47,10 @@ export class SessionHandlerImpl implements SessionHandler {
     /**
      * 用户登录
      * @param req
-     * @param type
+     * @param {string}type
      * @return {any}
      */
-    * login(req, type?): any {
+    * login(req, type?: string): any {
 
         try {
 
@@ -98,7 +101,7 @@ export class SessionHandlerImpl implements SessionHandler {
      * 退出
      * @returns {IterableIterator<any>}
      */
-    * logout(type?: string) {
+    * logout(type?: string): any {
         console.log("退出登录");
         yield call(adminLogout);
         setAuthority("");
@@ -136,13 +139,11 @@ function adminLogout() {
 }
 
 
-let sessionHandlerImpl = new SessionHandlerImpl();
+const sessionHandlerImpl = new SessionHandlerImpl();
 
 const session = createReducerByHandler<AntdSession>(sessionHandlerImpl);
 
 const sessionHandler = createReduxHandler<SessionHandler>(sessionHandlerImpl);
-
-addSagaHandler(sessionHandlerImpl);
 
 export {
     sessionHandler,

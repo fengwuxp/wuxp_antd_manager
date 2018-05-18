@@ -10,7 +10,7 @@ import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navig
 import Authorized from './utils/auth/Authorized';
 import {Provider} from "react-redux";
 import {ConnectedRouter} from 'react-router-redux'
-import {antdAdminStore} from "./manager/store/StoreManager";
+import {antdAdminStore} from "./store/StoreManager";
 import {pushRoutes} from "./routes/router";
 import routes from "./views/sample";
 import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
@@ -18,8 +18,8 @@ import {Spin} from "antd";
 import * as styles from "./index.scss";
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import {fetchSystemConfig} from "./manager/config/SystemConfigManager";
-import {registerStoreByProxy} from "wuxp_react_dynamic_router/src/proxy/redux/ProxyReduxAction";
+import {systemConfigHandler} from "./handler/config/SystemConfigHandler";
+import {registerStoreByProxy} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
 
 moment.locale('zh-cn');
 
@@ -35,11 +35,15 @@ const history = BrowserNavigatorFactory.get();
 const {AuthorizedRoute} = Authorized;
 
 //加载系统配置
-fetchSystemConfig([
+const config = systemConfigHandler.getSystemConfig([
     "site_name",
     "admin_logo"
 ]);
-registerStoreByProxy(antdAdminStore)
+console.log(`---------config--------`, config);
+//将store 注册到代理handler中
+registerStoreByProxy(antdAdminStore);
+
+
 ReactDOM.render(
     <Provider store={antdAdminStore}>
         <ConnectedRouter history={history}>
