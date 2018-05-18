@@ -9,7 +9,6 @@ import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import {QuerySampleReq, QuerySampleReqBuilder} from "./req/QuerySampleReq";
-import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 import FormItem from "antd/lib/form/FormItem";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";

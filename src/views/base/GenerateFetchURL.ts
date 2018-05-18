@@ -1,5 +1,3 @@
-import {Location} from "history";
-
 enum GenerateURLType {
 
     /**

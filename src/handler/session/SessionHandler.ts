@@ -7,7 +7,6 @@ import * as routerRedux from "react-router-redux";
 import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
 import {LoginType} from "../../enums/AdminLoginType";
 import {SagaHandler} from "wuxp_react_dynamic_router/src/redux/SagaHandler";
-import {ReduxAction} from "wuxp_react_dynamic_router/src/redux/ReduxAction";
 import {TargetAction} from "wuxp_react_dynamic_router/src/decorator/TargetReduxAction";
 
 /**
@@ -19,7 +18,7 @@ export interface SessionHandler extends SagaHandler<AntdSession> {
 
     logout: (type?: string) => void;
 
-    setMember: (state: AntdSession, newState: AntdSession) => AntdSession;
+    setSession: (state: AntdSession, newState: AntdSession) => AntdSession;
 
 }
 
@@ -54,7 +53,7 @@ export class SessionHandlerImpl implements SessionHandler {
      * @param {string}type
      * @return {any}
      */
-    @TargetAction(SessionHandlerImpl.prototype.setMember)
+    @TargetAction(SessionHandlerImpl.prototype.setSession)
     * login(req, type?: string): any {
 
         try {
@@ -66,7 +65,7 @@ export class SessionHandlerImpl implements SessionHandler {
                 }
             });
 
-            console.log("登录请求参数", req);
+            console.log("------登录请求参数-----------", req);
             const {success, data, message, code}: ApiResp<AntdAdmin> = yield call(adminLogin, req);
 
             if (success) {
@@ -106,7 +105,7 @@ export class SessionHandlerImpl implements SessionHandler {
      * 退出
      * @returns {IterableIterator<any>}
      */
-    @TargetAction(SessionHandlerImpl.prototype.setMember)
+    @TargetAction(SessionHandlerImpl.prototype.setSession)
     * logout(type?: string): any {
         console.log("退出登录");
         yield call(adminLogout);
@@ -118,7 +117,7 @@ export class SessionHandlerImpl implements SessionHandler {
         return null;
     }
 
-    setMember(state: AntdSession, newState: AntdSession): AntdSession {
+    setSession(state: AntdSession, newState: AntdSession): AntdSession {
         return newState;
     };
 

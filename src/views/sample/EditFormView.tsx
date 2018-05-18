@@ -5,7 +5,6 @@ import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFr
 import TextArea from "antd/lib/input/TextArea";
 import {CascaderOptionType} from "antd/lib/cascader";
 import BaseFormView, {BaseFormState} from "../base/BaseFormView";
-import InfoProvideService from "../../services/infoprovide/InfoProvideService";
 import {QueryAreaReq} from "../../services/infoprovide/req/QueryAreaReq";
 import SendMode from "./enums/SendMode";
 import {SampleInfo} from "./info/SampleInfo";
@@ -14,8 +13,6 @@ import LookupListView from "./LookupListView";
 import {getCascadeAreaValues} from "../../utils/AreaUtil";
 import {FormItemType} from "../../builder/form/FormItemType";
 import {loadAreaToCasaderOptions, queryAreaToCasaderOptions} from "../../helper/area/AreaHelper";
-import Upload from "antd/es/upload/Upload";
-import Icon from "antd/es/icon";
 
 const FormItem = Form.Item;
 const Option = Select.Option;

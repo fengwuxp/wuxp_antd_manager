@@ -1,21 +1,23 @@
 import {SagaHandler} from "wuxp_react_dynamic_router/src/redux/SagaHandler";
-import {ReduxAction} from "wuxp_react_dynamic_router/src/redux/ReduxAction";
+
 import {QueryParamsCache} from "../../model/AntdAdminStore";
 import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
+import {DefaultAction} from "wuxp_react_dynamic_router/src/decorator/TargetReduxAction";
 
 /**
  *  缓存查询参数处理
  */
 export interface QueryParamsCacheHandler extends SagaHandler<QueryParamsCache> {
 
-    updateCache: (...p) => ReduxAction<QueryParamsCache>;
+    updateCache: (state: QueryParamsCache, newState?: QueryParamsCache) => QueryParamsCache;
 }
 
 class QueryParamsCacheHandlerImpl implements QueryParamsCacheHandler {
 
-    default: QueryParamsCache = null;
+    default: QueryParamsCache = {} as QueryParamsCache;
 
-    updateCache: (...p) => ReduxAction<QueryParamsCache>;
+    @DefaultAction()
+    updateCache: (state: QueryParamsCache, newState?: QueryParamsCache) => QueryParamsCache;
 
 }
 
@@ -29,7 +31,7 @@ const paramsCacheHandler = createReduxHandler<QueryParamsCacheHandler>(queryPara
  * 默认的查询大小
  * @type {number}
  */
-const DEFAULT_QUERY_SIZE:number=10;
+const DEFAULT_QUERY_SIZE: number = 10;
 
 export {
     queryParamsCache,

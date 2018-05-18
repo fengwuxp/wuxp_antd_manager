@@ -6,7 +6,6 @@ import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {getBreadcrumb} from "../PageHeader/index";
-import {MatchMenuKeyStrategy} from "./strategy/MatchMenuKeyStrategy";
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;

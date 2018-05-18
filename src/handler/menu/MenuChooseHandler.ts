@@ -1,29 +1,35 @@
 import {SagaHandler} from "wuxp_react_dynamic_router/src/redux/SagaHandler";
 import {createReducerByHandler, createReduxHandler} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
-import {ReduxAction} from "wuxp_react_dynamic_router/src/redux/ReduxAction";
+import {DefaultAction} from "wuxp_react_dynamic_router/src/decorator/TargetReduxAction";
 
 /**
  * 菜单切换（选择）
  */
-export interface MenuChooseHandler extends SagaHandler<number>{
+export interface MenuChooseHandler extends SagaHandler<number> {
 
-    changeMenuNav:()=> ReduxAction<number>;
+    changeMenuNav: (state: number, newState?: number) => number;
 }
 
+function readonly(s) {
+    // discriptor.writable = false;
+    return s;
+}
 
-class MenuChooseHandlerImpl implements  MenuChooseHandler{
+class MenuChooseHandlerImpl implements MenuChooseHandler {
 
-    default: number=0;
+    default: number = 0;
 
-    changeMenuNav: () => ReduxAction<number>;
+    @DefaultAction()
+    changeMenuNav: (state: number, newState?: number) => number;
+
 
 }
 
-const  menuChooseHandler=new MenuChooseHandlerImpl();
+const menuChooseHandler = new MenuChooseHandlerImpl();
 
 const currentSelectedMenu = createReducerByHandler<number>(menuChooseHandler);
 
-const menuChooseManager=createReduxHandler(menuChooseHandler);
+const menuChooseManager = createReduxHandler(menuChooseHandler);
 
 export {
     currentSelectedMenu,

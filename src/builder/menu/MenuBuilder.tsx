@@ -3,9 +3,6 @@ import Menu, {ClickParam} from "antd/lib/menu";
 import {isNullOrUndefined} from "util";
 
 
-
-
-
 export interface MenuItemBuilder {
 
     // [key: string]: SimpleMenuItemBuilder;

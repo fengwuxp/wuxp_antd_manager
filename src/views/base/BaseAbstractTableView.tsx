@@ -9,7 +9,7 @@ import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxR
 import {SelectValue} from "antd/lib/select";
 import {QueryParamsCache} from "../../model/AntdAdminStore";
 import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColumnsBuilder";
-import {paramsCacheHandler,DEFAULT_QUERY_SIZE} from "../../handler/query/QueryParamsCacheHandler";
+import {DEFAULT_QUERY_SIZE, paramsCacheHandler} from "../../handler/query/QueryParamsCacheHandler";
 import {antdAdminStore} from "../../store/StoreManager";
 
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";

@@ -1,7 +1,6 @@
 import React from 'react';
 import * as styles from './PageHeaderLayout.scss';
 import {Link} from "react-router-dom";
-import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 import PageHeader, {PageHeaderProps} from "../../components/PageHeader/index";
 
 export interface PageHeaderLayoutProps extends PageHeaderProps {

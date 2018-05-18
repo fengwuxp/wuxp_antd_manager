@@ -3,6 +3,7 @@ import Exception from "ant-design-pro/lib/Exception";
 import {Link} from "react-router-dom";
 import Button from "antd/es/button/button";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
+
 const history = BrowserNavigatorFactory.get();
 
 
