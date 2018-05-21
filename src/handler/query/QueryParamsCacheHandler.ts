@@ -25,7 +25,7 @@ const queryParamsCacheHandler = new QueryParamsCacheHandlerImpl();
 
 const queryParamsCache = createReducerByHandler<QueryParamsCache>(queryParamsCacheHandler);
 
-const paramsCacheHandler = createReduxHandler<QueryParamsCacheHandler>(queryParamsCacheHandler);
+const paramsCacheHandler = createReduxHandler<QueryParamsCacheHandler>(queryParamsCacheHandler,true);
 
 /**
  * 默认的查询大小

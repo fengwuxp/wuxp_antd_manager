@@ -29,7 +29,7 @@ const menuChooseHandlerImpl = new MenuChooseHandlerImpl();
 
 const currentSelectedMenu = createReducerByHandler<number>(menuChooseHandlerImpl);
 
-const menuChooseHandler = createReduxHandler(menuChooseHandlerImpl);
+const menuChooseHandler = createReduxHandler(menuChooseHandlerImpl,true);
 
 export {
     currentSelectedMenu,
