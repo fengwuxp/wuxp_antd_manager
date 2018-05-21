@@ -6,7 +6,6 @@ import Dropdown from "antd/lib/dropdown/dropdown";
 import {Card, Col, DatePicker, Form, Icon, Menu, Popover, Row, Select} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
-import {downloadFileByFetch} from "../../fetch/download/FetchDownloader";
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import {QuerySampleReq, QuerySampleReqBuilder} from "./req/QuerySampleReq";
 import FormItem from "antd/lib/form/FormItem";
@@ -167,7 +166,7 @@ export default class ListView extends BaseListView<SampleListProps,
                 return <Popover content={<Button icon="download"
                                                  type="primary"
                                                  size="small"
-                                                 onClick={() => downloadFileByFetch({url: cellValue}, cellValue)}>下载</Button>}>
+                                                 onClick={() => {}}>下载</Button>}>
                     <Icon type="file"/>
                 </Popover>
             }
