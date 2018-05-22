@@ -96,7 +96,6 @@ const getWebpackBaseConfig = function (options) {
                             {
                                 loader: "css-loader",
                                 options: {
-                                    modules: true,
                                     //压缩css
                                     minimize: true,
                                     localIdentName: "[name]__[local]-[hash:base64:5]"
@@ -121,7 +120,6 @@ const getWebpackBaseConfig = function (options) {
                             {
                                 loader: "css-loader",
                                 options: {
-                                    modules: true,
                                     //压缩css
                                     minimize: true,
                                     localIdentName: "[name]__[local]-[hash:base64:5]"
@@ -155,7 +153,7 @@ const getWebpackBaseConfig = function (options) {
                             {
                                 loader: "css-loader",
                                 options: {
-                                    modules: true,
+
                                     //压缩css
                                     minimize: true,
                                     localIdentName: "[name]__[local]-[hash:base64:5]"
