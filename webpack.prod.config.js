@@ -27,7 +27,7 @@ config.plugins.unshift(
     new HtmlWebPackPlugin({
         template: './src/index.html',
         filename: "index.html",
-        title: "react App",
+        title: "antd template",
         chunks: ['app', 'common'],
         inject: true,
     }),

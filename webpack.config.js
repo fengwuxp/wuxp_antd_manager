@@ -10,7 +10,7 @@ config.plugins.push(
     new HtmlWebPackPlugin({
         template: './src/index.html',
         filename: "index.html",
-        title: "antd mobile template",
+        title: "antd  template",
         chunks: ['app'],
         inject: true,
     })
