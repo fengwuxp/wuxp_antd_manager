@@ -21,9 +21,10 @@
   },
   "homepage": "https://github.com/fengwuxp/wuxp_antd_manager#readme",
   "scripts": {
-    "serve-dev": "cross-env dev=0 webpack-dev-server --config webpack.dev.js  --devtool eval --progress --colors  --watch --port 9091 --open",
-    "build": "rm -rf ./dist && cross-env dev=0 webpack --config ./webpack/webpack.config.js  --progress --colors",
-    "build:prod": "rm -rf ./dist && cross-env dev=1 webpack --config ./webpack/webpack.prod.config.js   --progress --colors",
+    "serve-dev": "cross-env dev=0 webpack-dev-server --config ./webpack.local.dev.js  --devtool eval --progress --colors  --watch --port 9091 --open",
+    "build": "rm -rf ./dist && cross-env dev=0 webpack --config ./webpack.config.js  --progress --colors",
+    "build:prod": "rm -rf ./dist && cross-env dev=1 webpack --config ./webpack.prod.config.js   --progress --colors",
+    "npm_publish":"npm publish",
     "mock": "node --harmony ./mock/server.js"
   },
   "dependencies": {

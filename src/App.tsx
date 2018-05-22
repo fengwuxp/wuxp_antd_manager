@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import "fixed-data-table-2/dist/fixed-data-table.css";
-import 'ant-design-pro/dist/ant-design-pro.css';
+// import 'ant-design-pro/dist/ant-design-pro.css';
 import {Route, Switch} from 'react-router-dom'
 import {antdAdminStore} from "./store/StoreManager";
 import UserLayout from "./layouts/login/UserLayout";

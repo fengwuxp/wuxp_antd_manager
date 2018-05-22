@@ -1,7 +1,6 @@
 const webpack = require('webpack');
-const config = require("./webpack/webpack.config");
+const config = require("./webpack.config");
 const path = require("path");
-// const host = require('quick-local-ip').getLocalIP4();
 const host = "localhost";
 const port = '9091';
 

@@ -1,20 +1,17 @@
+const path = require('path');
 const webpack = require('webpack');
-const baseConfig = require("./webpack.base.config");
+const {getWebpackBaseConfig} = require("./webpack.base.config");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
+const baseConfig = getWebpackBaseConfig({
+    themePath: path.resolve("theme", "index.js")
+});
 
 const config = {
     ...baseConfig,
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify("dev"),
-                ROOT_DOMAIN: JSON.stringify(`/`),
-                BASE_NAME: JSON.stringify("/react/views")
-            }
-        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: "common",
             minChunks: function (module) {
@@ -38,13 +35,6 @@ const config = {
                 // 提取出出现多次但是没有定义成变量去引用的静态值
                 reduce_vars: true,
             }
-        }),
-        new HtmlWebPackPlugin({
-            template: './src/index.html',
-            filename: "index.html",
-            title: "react App",
-            chunks: ['app', 'common'],
-            inject: true,
         }),
         new ExtractTextPlugin('styles.css'),
     ]
