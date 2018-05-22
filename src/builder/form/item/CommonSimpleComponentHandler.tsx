@@ -34,7 +34,7 @@ export default class CommonSimpleComponentHandler {
      * @param {string} propName
      * @returns {React.ReactNode }
      */
-    static auto_complete = (props: AutoCompleteProps, propName: string):React.ReactNode  => {
+    static auto_complete = (props: AutoCompleteProps, propName: string): React.ReactNode => {
         return <AutoComplete key={getDefaultKey(propName)} {...props}/>
     };
 
@@ -183,13 +183,13 @@ export default class CommonSimpleComponentHandler {
      * @param {string} propName
      * @returns {React.ReactNode}
      */
-    static time_picker= (props: TimePickerProps, propName: string): React.ReactNode => {
-        return <TimePicker  key={getDefaultKey(propName)} {...props}/>
+    static time_picker = (props: TimePickerProps, propName: string): React.ReactNode => {
+        return <TimePicker key={getDefaultKey(propName)} {...props}/>
     }
 }
 
 
 function getDefaultKey(key) {
 
-    return `from_item_${key}`;
+    return `antd_form_item_${key}`;
 }
