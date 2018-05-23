@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const config = require("./webpack.config");
 const path = require("path");
 const host = "localhost";
-const port = '9091';
+const port = 9091;
 
 config.plugins.push(
     new webpack.DefinePlugin({

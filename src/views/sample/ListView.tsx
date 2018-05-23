@@ -17,7 +17,7 @@ import {Link} from "react-router-dom";
 import {ColumnProps} from "antd/es/table/interface";
 import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import SendMode from "./enums/SendMode";
-import * as styles from "../TableList.scss";
+import * as styles from "../TableList.less";
 import {FormItemType} from "../../builder/form/FormItemType";
 import MenuBuilder, {SimpleCommonOperation} from "../../builder/menu/MenuBuilder";
 import {ClickParam} from "antd/lib/menu";

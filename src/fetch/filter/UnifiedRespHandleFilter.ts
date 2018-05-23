@@ -12,16 +12,6 @@ let count = 0;
 export class UnifiedRespHandleFilter extends ApiAbstractFilter {
 
 
-    // preHandle(params: FetchOption): boolean | Promise<boolean> {
-    //
-    //     const {headers} = params;
-    //     params.headers = {
-    //         ...headers,
-    //         viewType: 'react'
-    //     };
-    //     return true;
-    // }
-
     postHandle(resp: ApiResp<any>, context?: any): boolean {
         const {message, success, actions} = resp;
 

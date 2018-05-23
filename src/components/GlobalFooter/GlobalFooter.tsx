@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import * as styles from './style.scss';
+import * as styles from './style.less';
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 
 

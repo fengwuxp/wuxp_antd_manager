@@ -136,6 +136,9 @@ function adminLogin(payload): Promise<ApiResp<AntdAdmin>> {
             captcha
         },
         useFilter: false
+    }).then((data)=>{
+        console.log("---------data-----------",data);
+        return data;
     });
 }
 

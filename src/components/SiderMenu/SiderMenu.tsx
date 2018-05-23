@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Icon, Layout, Menu} from 'antd';
-
-import * as styles from './style.scss';
+import * as styles from './style.less';
 import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
@@ -101,7 +100,7 @@ export default class SiderMenu extends PureComponent<SiderMenuProps, any> {
     getDefaultCollapsedSubMenus(props: SiderMenuProps): Array<string> {
         const {menus, selectedMenuIndexList} = props || this.props;
 
-        return getBreadcrumb(menus, selectedMenuIndexList.slice(1,3)).map(item =>item.path);
+        return getBreadcrumb(menus, selectedMenuIndexList.slice(1, 3)).map(item => item.path);
     }
 
 

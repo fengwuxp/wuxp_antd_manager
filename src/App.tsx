@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
-// import 'antd/dist/antd.css';
-import "fixed-data-table-2/dist/fixed-data-table.css";
+// import 'antd/dist/antd.less';
+import * as styles from "./index.less";
+// import "fixed-data-table-2/dist/fixed-data-table.css";
 // import 'ant-design-pro/dist/ant-design-pro.css';
 import {Route, Switch} from 'react-router-dom'
 import {antdAdminStore} from "./store/StoreManager";
@@ -15,7 +16,6 @@ import {pushRoutes} from "./routes/router";
 import routes from "./views/sample";
 import {setDefaultLoadingComponent} from "wuxp_react_dynamic_router/src/components/load/AsyncComponent";
 import {Spin} from "antd";
-import * as styles from "./index.scss";
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import {systemConfigHandler} from "./handler/config/SystemConfigHandler";

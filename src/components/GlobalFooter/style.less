@@ -1,6 +1,4 @@
-$text-color-secondary: rgba(00,00,00, .45);
-$text-color: rgba(00,00,00,.65);
-$font-size-base: 14px;
+@import '~antd/lib/style/themes/default.less';
 
 .globalFooter {
   padding: 0 16px;
@@ -11,7 +9,7 @@ $font-size-base: 14px;
     margin-bottom: 8px;
 
     a {
-      color: $text-color-secondary;
+      color: @text-color-secondary;
       transition: all 0.3s;
 
       &:not(:last-child) {
@@ -19,13 +17,13 @@ $font-size-base: 14px;
       }
 
       &:hover {
-        color: $text-color;
+        color: @text-color;
       }
     }
   }
 
   .copyright {
-    color: $text-color-secondary;
-    font-size: $font-size-base;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
   }
 }

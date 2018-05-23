@@ -6,7 +6,7 @@ const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
 
 const baseConfig = getWebpackBaseConfig({
-    themePath: path.resolve("theme", "index.js")
+    themePath: path.resolve("theme", "index.json")
 });
 
 

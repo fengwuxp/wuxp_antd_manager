@@ -7,7 +7,7 @@ import {DefaultAction} from "wuxp_react_dynamic_router/src/decorator/TargetRedux
  */
 export interface MenuChooseHandler extends SagaHandler<number> {
 
-    changeMenuNav: (state: number, newState?: number) => number;
+    changeMenuNav: (state: number, newState?: number) => void;
 }
 
 function readonly(s) {
@@ -20,7 +20,7 @@ class MenuChooseHandlerImpl implements MenuChooseHandler {
     default: number = 0;
 
     @DefaultAction()
-    changeMenuNav: (state: number, newState?: number) => number;
+    changeMenuNav: (state: number, newState?: number) => void;
 
 
 }

@@ -1,4 +1,4 @@
-$border-color-base: #d9d9d9;
+@import '~antd/lib/style/themes/default.less';
 
 .headerSearch {
   :global(.anticon-search) {
@@ -22,7 +22,7 @@ $border-color-base: #d9d9d9;
     &,
     &:hover,
     &:focus {
-      border-bottom: 1px solid $border-color-base;
+      border-bottom: 1px solid @border-color-base;
     }
     &.show {
       width: 210px;

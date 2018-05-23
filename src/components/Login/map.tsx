@@ -1,6 +1,6 @@
 import React from 'react';
 import {Icon, Input} from 'antd';
-import * as styles from './style.scss';
+import * as styles from './style.less';
 
 const map = {
     UserName: {

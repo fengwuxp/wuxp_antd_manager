@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
 import {Link} from "react-router-dom";
-import * as styles from './style.scss';
+import * as styles from './style.less';
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";
 import HeaderSearch from "../HeaderSearch/index";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";

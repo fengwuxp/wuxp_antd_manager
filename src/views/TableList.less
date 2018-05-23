@@ -1,10 +1,5 @@
-@import '../utils/utils';
-
-$screen-xl: 1200px;
-$screen-lg: 992px;
-$screen-md: 768px;
-$screen-sm: 576px;
-$screen-xs: 480px;
+@import '~antd/lib/style/themes/default.less';
+@import '../utils/utils.less';
 
 .tableList {
   .tableListOperator {
@@ -40,13 +35,13 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-lg) {
+@media screen and (max-width: @screen-lg) {
   .tableListForm :global(.ant-form-item) {
     margin-right: 24px;
   }
 }
 
-@media screen and (max-width: $screen-md) {
+@media screen and (max-width: @screen-md) {
   .tableListForm :global(.ant-form-item) {
     margin-right: 8px;
   }

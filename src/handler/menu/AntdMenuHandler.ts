@@ -5,8 +5,8 @@ import {call} from "redux-saga/effects";
 import {
     createReducerByHandler,
     createReduxHandler,
-    USE_NEW_SATE
 } from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
+import {DefaultAction, TargetAction} from "wuxp_react_dynamic_router/src/decorator/TargetReduxAction";
 
 
 /**
@@ -21,42 +21,24 @@ export interface AntdMenuHandler extends SagaHandler<AntdMenuItem[]> {
      */
     getMenus: (req?, type?: string) => void
 
-    setMenus: string;
+    setMenus: (state: AntdMenuItem[], newState?: AntdMenuItem[]) => void;
 }
 
 class AntdMenuHandlerImpl implements AntdMenuHandler {
 
     default: Array<AntdMenuItem> = [];
 
+    @DefaultAction()
+    setMenus: (state: AntdMenuItem[], newState?: AntdMenuItem[]) => void;
+
+
+    @TargetAction(AntdMenuHandlerImpl.prototype.setMenus)
     * getMenus(req, type?: string): any {
 
-        const menus = yield call(queryMenus, req);
-        console.log("-------------------menus-----------", menus);
-        return menus;
+        return yield call(queryMenus, req);
     }
 
-    setMenus = USE_NEW_SATE
-
-
 }
-
-// const antdMenuHandler: AntdMenuHandler = {
-//
-//     default: [],
-//
-//     * updateMenus(req, type?: string): any {
-//
-//         const menus = yield call(queryMenus, req);
-//
-//         return menus;
-//     },
-//
-//     setMenus(state: AntdMenuItem[], action: ReduxAction): any {
-//
-//         return action.payload;
-//     }
-//
-// };
 
 function queryMenus(params) {
 
@@ -68,9 +50,7 @@ function queryMenus(params) {
         },
         useFilter: false
     }).then((data) => {
-        if (data.success) {
-            return convertMenuItem(data.data);
-        }
+        return convertMenuItem(data);
     });
 }
 
@@ -99,29 +79,9 @@ function convertMenuItem(list) {
 
 const antdMenuHandler = new AntdMenuHandlerImpl();
 
-// console.log("---",Object.keys(antdMenuHandler["__proto__"]));
-// console.log("---", Object.getPrototypeOf(antdMenuHandler));
-// console.log("---", Object.getOwnPropertyNames(Object.getPrototypeOf(antdMenuHandler)));
-
-
 const menus = createReducerByHandler<AntdMenuItem>(antdMenuHandler);
 
 const menuHandler = createReduxHandler<AntdMenuHandler>(antdMenuHandler);
-
-// const menus = function (state: Array<AntdMenuItem>, action: ReduxAction): Array<AntdMenuItem> {
-//
-//     console.log("--------action.type----------",action)
-//
-//     switch (action.type) {
-//
-//         case "AntdMenuHandlerImpl.updateMenus":
-//             return action.payload;
-//
-//         default:
-//             return []
-//     }
-//
-// };
 
 export {
     menuHandler,

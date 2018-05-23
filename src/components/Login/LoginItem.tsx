@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Col, Form, Row} from 'antd';
 import omit from 'omit.js';
-import * as styles from './style.scss';
+import * as styles from './style.less';
 import map from './map';
 import TimerUtil from "../../utils/timer/TimerUtil"
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";

@@ -4,7 +4,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 
 const baseConfig = getWebpackBaseConfig({
-    themePath: path.resolve("theme", "index.js")
+    themePath: path.resolve("theme", "index.json")
 });
 const config = {
     ...baseConfig

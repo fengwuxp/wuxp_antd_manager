@@ -1,18 +1,9 @@
-$border-width-base: 1px;
-$border-style-base: solid;
-$border-color-split: #e8e8e8;
-$border-radius-base: 4px;
-$heading-color: rgba(00, 00, 00, 0.85);
-$screen-xl: 1200px;
-$screen-lg: 992px;
-$screen-md: 768px;
-$screen-sm: 576px;
-$screen-xs: 480px;
+@import '~antd/lib/style/themes/default.less';
 
 .pageHeader {
-  background: #fff;
+  background: @component-background;
   padding: 16px 32px 0 32px;
-  border-bottom: $border-width-base $border-style-base $border-color-split;
+  border-bottom: @border-width-base @border-style-base @border-color-split;
 
   .detail {
     display: flex;
@@ -31,7 +22,7 @@ $screen-xs: 480px;
 
     :global {
       .ant-tabs-bar {
-        border-bottom: $border-width-base $border-style-base $border-color-split;
+        border-bottom: @border-width-base @border-style-base @border-color-split;
       }
     }
   }
@@ -43,7 +34,7 @@ $screen-xs: 480px;
     > img {
       width: 28px;
       height: 28px;
-      border-radius: $border-radius-base;
+      border-radius: @border-radius-base;
       display: block;
     }
   }
@@ -51,7 +42,7 @@ $screen-xs: 480px;
   .title {
     font-size: 20px;
     font-weight: 500;
-    color: $heading-color;
+    color: @heading-color;
   }
 
   .action {
@@ -100,7 +91,7 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-xl) {
+@media screen and (max-width: @screen-xl) {
   .pageHeader {
     .extraContent {
       margin-left: 44px;
@@ -108,7 +99,7 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-lg) {
+@media screen and (max-width: @screen-lg) {
   .pageHeader {
     .extraContent {
       margin-left: 20px;
@@ -116,7 +107,7 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-md) {
+@media screen and (max-width: @screen-md) {
   .pageHeader {
     .row {
       display: block;
@@ -130,7 +121,7 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-sm) {
+@media screen and (max-width: @screen-sm) {
   .pageHeader {
     .detail {
       display: block;
@@ -138,7 +129,7 @@ $screen-xs: 480px;
   }
 }
 
-@media screen and (max-width: $screen-xs) {
+@media screen and (max-width: @screen-xs) {
   .pageHeader {
     .action {
       :global {
