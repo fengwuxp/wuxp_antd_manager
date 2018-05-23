@@ -1,7 +1,11 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const {existsSync} = require('fs');
-
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {
+    DEPLOYMENT_DIRECTORY,
+    PROJECT_DIR
+} = require("../../../webpack-config/WebpackConfig");
 
 /**
  * 获取主题配置
@@ -47,6 +51,9 @@ const getWebpackBaseConfig = function (options) {
     const isPackage = options.packagePath !== undefined && options.packagePath !== null;
     const theme = getTheme(isPackage ? options.packagePath : options.themePath, isPackage);
 
+    //默认打包目录
+    const packPath = path.resolve("src", '../dist');
+
     const config = {
         entry: {
             app: path.resolve('src', 'App'),
@@ -54,7 +61,7 @@ const getWebpackBaseConfig = function (options) {
         output: {
             filename: '[name]_[hash].js',
             chunkFilename: '[name]_[hash].js',
-            path: path.resolve("src", '../dist'),
+            path: packPath,
             publicPath: "/"
         },
         resolve: {
@@ -105,7 +112,7 @@ const getWebpackBaseConfig = function (options) {
                                 loader: "postcss-loader",
                                 options: {
                                     config: {
-                                        path: path.join(__dirname,'./postcss.config.js')
+                                        path: path.join(__dirname, './postcss.config.js')
                                     }
                                 }
                             }
@@ -129,7 +136,7 @@ const getWebpackBaseConfig = function (options) {
                                 loader: "postcss-loader",
                                 options: {
                                     config: {
-                                        path: path.join(__dirname,'./postcss.config.js')
+                                        path: path.join(__dirname, './postcss.config.js')
                                     }
                                 }
                             },
@@ -163,7 +170,7 @@ const getWebpackBaseConfig = function (options) {
                                 loader: "postcss-loader",
                                 options: {
                                     config: {
-                                        path: path.join(__dirname,'./postcss.config.js')
+                                        path: path.join(__dirname, './postcss.config.js')
                                     }
                                 }
                             },
@@ -193,8 +200,31 @@ const getWebpackBaseConfig = function (options) {
         externals: {
             "react": "React",
             "react-dom": "ReactDOM"
-        }
+        },
+        plugins: []
     };
+    //是否打release包
+    let release = process.env.RELEASE;
+    if (release === "1") {
+        //重写打包目录到部署目录
+        config.output.path = DEPLOYMENT_DIRECTORY;
+    }
+    if (release != null) {
+        config.plugins.push(
+            //git https://github.com/johnagan/clean-webpack-plugin
+            //先将部署目录清除
+            new CleanWebpackPlugin([
+                config.output.path
+            ], {
+                root: PROJECT_DIR,       　　　　　　   //根目录
+                // verbose: true,        　　　　　　　  //开启在控制台输出信息
+                // dry: false        　　　　　　　　　　//启用删除文件,
+                allowExternal: true,                  //允许删除wbpack根目录之外的文件
+                beforeEmit: true                       //在将文件发送到输出目录之前执行清理
+            }),
+        );
+    }
+
 
     return config;
 };

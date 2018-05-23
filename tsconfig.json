@@ -32,6 +32,7 @@
   "compileOnSave": false,
   "include": [
     "src/**/*",
+    "node_modules/typescript_api_sdk/types/PromiseExt.ts",
     "node_modules/wuxp_react_dynamic_router/types/index.d.ts"
   ],
   "exclude": [

@@ -2,9 +2,8 @@ import * as React from 'react';
 import {Alert, Checkbox, message} from 'antd';
 import Login from "../../components/Login/";
 import * as styles from './Login.scss';
-import {ReactReduxConnect} from "wuxp_react_dynamic_router/src/decorator/ReactReduxConnect";
 import {LoginType} from "../../enums/AdminLoginType";
-import {MapStateToPropsParam} from 'react-redux';
+import {connect, MapStateToPropsParam} from 'react-redux';
 import {AntdSession, SessionStatus} from "../../model/session/AntdAdmin";
 import GlobalAipConfig from "typescript_api_sdk/src/config/GlobalAipConfig"
 import {sessionHandler} from "../../handler/session/SessionHandler";
@@ -21,7 +20,7 @@ const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({session}) =>
     session
 });
 
-@ReactReduxConnect(mapStateToPropsParam)
+@(connect as any)(mapStateToPropsParam)
 export default class LoginView extends React.Component<LoginPageProps, any> {
 
 
@@ -53,7 +52,7 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
                 type: this.state.type,
                 ...values
             };
-            console.log("----req---",req);
+            console.log("----req---", req);
             sessionHandler.login(req)
         }
     };

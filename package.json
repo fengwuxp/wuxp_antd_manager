@@ -24,7 +24,7 @@
     "serve-dev": "cross-env dev=0 webpack-dev-server --config ./webpack.local.dev.js  --devtool eval --progress --colors  --watch --port 9091 --open",
     "build": "rm -rf ./dist && cross-env dev=0 webpack --config ./webpack.config.js  --progress --colors",
     "build:prod": "rm -rf ./dist && cross-env dev=1 webpack --config ./webpack.prod.config.js   --progress --colors",
-    "npm_publish":"npm publish",
+    "npm_publish": "npm publish",
     "mock": "node --harmony ./mock/server.js"
   },
   "dependencies": {
