@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Alert, Checkbox, message} from 'antd';
 import Login from "../../components/Login/";
-import * as styles from './Login.less';
+import  styles from './Login.module.less';
 import {LoginType} from "../../enums/AdminLoginType";
 import {connect, MapStateToPropsParam} from 'react-redux';
 import {AntdSession, SessionStatus} from "../../model/session/AntdAdmin";

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import LoginItem, {LoginItemProps} from './LoginItem';
 import LoginTab from './LoginTab';
 import LoginSubmit from './LoginSubmit';
-import * as styles from './style.less';
+import styles from './style.module.less';
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
 
 

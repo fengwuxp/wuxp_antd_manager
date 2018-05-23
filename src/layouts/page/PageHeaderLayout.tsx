@@ -1,5 +1,5 @@
 import React from 'react';
-import * as styles from './PageHeaderLayout.less';
+import  styles from './PageHeaderLayout.module.less';
 import {Link} from "react-router-dom";
 import PageHeader, {PageHeaderProps} from "../../components/PageHeader/index";
 

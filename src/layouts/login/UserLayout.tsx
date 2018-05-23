@@ -3,7 +3,7 @@ import DocumentTitle from 'react-document-title';
 import {Icon} from 'antd';
 import {Link} from "react-router-dom";
 import GlobalFooter from "../../components/GlobalFooter/GlobalFooter";
-import * as styles from './UserLayout.less';
+import styles from './UserLayout.module.less';
 import LoginView, {LoginPageProps} from "../../views/account/LoginView";
 import {connect, MapStateToPropsParam} from "react-redux";
 import {SystemConfig} from "../../model/AntdAdminStore";

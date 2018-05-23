@@ -1,6 +1,5 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
-
+const cssModuleLoader = require('./cssModuleUtils');
 
 /**
  * 获取主题配置
@@ -40,31 +39,33 @@ function getLessLoader(options) {
         test: /\.less$/,
         use: [
             require.resolve('style-loader'),
-            ({resource}) => ({
-                loader: 'css-loader',
-                options: {
-                    minimize: true,
-                    importLoaders: 1,
-                    modules: /\.module\.less/.test(resource),
-                    localIdentName: '[name]__[local]___[hash:base64:5]',
-                },
-            }),
+            // ({resource}) => ({
+            //     loader: 'css-loader',
+            //     options: {
+            //         minimize: true,
+            //         importLoaders: 1,
+            //         modules: /\.module\.less/.test(resource),
+            //         localIdentName: '[name]__[local]___[hash:base64:5]',
+            //     }
+            // }),
+            cssModuleLoader,
             {
-                loader:"postcss-loader",
+                loader: "postcss-loader",
                 options: {
                     config: {
                         path: path.join(__dirname, './postcss.config.js')
                     }
 
-                },
+                }
             },
             {
                 loader: require.resolve('less-loader'),
                 options: {
+                    sourceMap: true,
                     javascriptEnabled: true,
                     modifyVars: theme,
-                },
-            },
+                }
+            }
         ]
 
     }

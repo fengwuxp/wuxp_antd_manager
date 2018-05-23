@@ -2,7 +2,7 @@ import React, {createElement, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {Breadcrumb, Col, Icon, Row, Tabs} from 'antd';
 import classNames from 'classnames';
-import * as styles from './style.less';
+import styles from './style.module.less';
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";
 import {ReactBaseProps} from "wuxp_react_dynamic_router/src/model/ReactBaseProps";

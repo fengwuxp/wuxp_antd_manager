@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {AutoComplete, Icon, Input} from 'antd';
 import classNames from 'classnames';
-import * as  styles from './style.less';
+import * as  styles from './style.module.less';
 
 export interface IHeaderSearchProps {
     placeholder?: string;

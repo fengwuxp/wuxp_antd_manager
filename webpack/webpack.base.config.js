@@ -1,6 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const {existsSync} = require('fs');
+const cssModuleLoader = require('./cssModuleUtils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getLessLoader = require("./getLessLoader");
 
@@ -81,16 +81,7 @@ const getWebpackBaseConfig = function (options) {
                     use: ExtractTextPlugin.extract({
                         fallback: "style-loader",
                         use: [
-                            ({ resource }) => ({
-                                loader: 'css-loader',
-                                options: {
-                                    importLoaders: 1,
-                                    modules: /\.module\.css/.test(resource),
-                                    localIdentName: '[name]__[local]___[hash:base64:5]',
-                                    minimize: true,
-                                    sourceMap: true,
-                                },
-                            }),
+                            cssModuleLoader,
                             {
                                 loader: "postcss-loader",
                                 options: {
@@ -109,14 +100,7 @@ const getWebpackBaseConfig = function (options) {
                     test: /\.s[c|a]ss$/,
                     use: ExtractTextPlugin.extract({
                         use: [
-                            {
-                                loader: "css-loader",
-                                options: {
-                                    //压缩css
-                                    minimize: true,
-                                    localIdentName: "[name]__[local]-[hash:base64:5]"
-                                }
-                            },
+                            cssModuleLoader,
                             {
                                 loader: "postcss-loader",
                                 options: {

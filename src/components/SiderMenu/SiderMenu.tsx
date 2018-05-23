@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Icon, Layout, Menu} from 'antd';
-import * as styles from './style.less';
+import styles from './style.module.less';
 import {Link} from "react-router-dom";
 import {AntdMenuItem} from "../../model/menu/AntdMenuItem";
 import {ReduxRouterProps} from "wuxp_react_dynamic_router/src/model/redux/ReduxRouterProps";

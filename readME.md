@@ -13,3 +13,14 @@
      
      
      表单页面：
+
+
+#### 说明
+
+      1 css模块化  css less scss等文件 如果以 xx.moudle.xxx的形式命名则开启模块化
+         
+         详见配置 ：webpack/CssModuleUtils
+          
+         css 模块化 https://blog.csdn.net/xiangzhihong8/article/details/53195926
+         
+            
