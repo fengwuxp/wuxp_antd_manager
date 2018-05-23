@@ -6,7 +6,6 @@ import styles from './style.module.less';
 const FormItem = Form.Item;
 
 export default ({className, ...rest}) => {
-    console.log("---------styles--------------", styles);
     const clsString = classNames(styles.submit, className);
     return (
         <FormItem>

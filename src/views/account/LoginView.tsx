@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Alert, Checkbox, message} from 'antd';
-import Login from "../../components/Login/";
+import Login from "../../components/Login";
 import  styles from './Login.module.less';
 import {LoginType} from "../../enums/AdminLoginType";
 import {connect, MapStateToPropsParam} from 'react-redux';
@@ -101,7 +101,7 @@ export default class LoginView extends React.Component<LoginPageProps, any> {
 
         const {session} = this.props;
 
-        // console.log(`提交状态${session.submitting}`);
+        console.log(`--提交状态${session.submitting}---`,session);
 
         return (
             <div className={styles.main}>

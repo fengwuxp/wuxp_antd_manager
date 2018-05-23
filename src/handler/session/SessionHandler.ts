@@ -23,28 +23,30 @@ export interface SessionHandler extends SagaHandler<AntdSession> {
 }
 
 
+let defaultSession = {
+
+    admin: null,
+
+    type: LoginType.ACCOUNT,
+
+    /**
+     * 登录状态
+     */
+    status: null,
+
+    /**
+     * 提交状态
+     */
+    submitting: false,
+
+    errorMessage: null
+
+};
+
 export class SessionHandlerImpl implements SessionHandler {
 
 
-    public default: AntdSession = {
-
-        admin: null,
-
-        type: LoginType.ACCOUNT,
-
-        /**
-         * 登录状态
-         */
-        status: null,
-
-        /**
-         * 提交状态
-         */
-        submitting: false,
-
-        errorMessage: null
-
-    };
+     default: AntdSession = defaultSession;
 
 
     /**
@@ -78,7 +80,8 @@ export class SessionHandlerImpl implements SessionHandler {
                 return {
                     admin: data,
                     status: SessionStatus.LOGIN_SUCCESS,
-                    submitting: false
+                    submitting: false,
+                    type: LoginType.ACCOUNT,
                 };
             } else {
                 console.log("登录请求失败");
@@ -87,7 +90,8 @@ export class SessionHandlerImpl implements SessionHandler {
                 return {
                     status: SessionStatus.LOGIN_ERROR,
                     submitting: false,
-                    errorMessage: message
+                    errorMessage: message,
+                    type: LoginType.ACCOUNT,
                 };
             }
 
@@ -95,6 +99,7 @@ export class SessionHandlerImpl implements SessionHandler {
             return {
                 status: SessionStatus.LOGIN_ERROR,
                 submitting: false,
+                type: LoginType.ACCOUNT,
                 errorMessage: "登录出现异常"
             };
         }
@@ -114,7 +119,7 @@ export class SessionHandlerImpl implements SessionHandler {
         //回到登录页面
         yield put(routerRedux.push('/login'));
 
-        return null;
+        return defaultSession;
     }
 
     setSession(state: AntdSession, newState: AntdSession): AntdSession {
@@ -136,16 +141,16 @@ function adminLogin(payload): Promise<ApiResp<AntdAdmin>> {
             captcha
         },
         useFilter: false
-    }).then((data)=>{
-        console.log("---------data-----------",data);
-        return data;
+    }).then((data) => {
+        return data
     });
 }
 
 function adminLogout() {
 
     apiClient.get({
-        url: "/logout"
+        url: "/logout",
+        useFilter: false
     });
 
 }

@@ -50,7 +50,10 @@ function queryMenus(params) {
         },
         useFilter: false
     }).then((data) => {
-        return convertMenuItem(data);
+        if (!data.success) {
+            return [];
+        }
+        return convertMenuItem(data.data);
     });
 }
 
