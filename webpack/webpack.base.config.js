@@ -2,10 +2,19 @@ const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const {existsSync} = require('fs');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+
+function getWebpackConfig() {
+    if (process.env._self !== "1") {
+        return require("../../../webpack-config/WebpackConfig");
+    }
+    return {};
+}
+
 const {
     DEPLOYMENT_DIRECTORY,
     PROJECT_DIR
-} = require("../../../webpack-config/WebpackConfig");
+} = getWebpackConfig();
 
 /**
  * 获取主题配置

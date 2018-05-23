@@ -79,14 +79,12 @@ export default class ListView extends BaseListView<SampleListProps,
         }).parentInfo.feePct({
             title: "123"
         }).areaInfo.name({
-            title:"地区名称"
+            title: "地区名称"
         }).areaInfo.areaInfo.name({
-            title:"上级地区名称"
+            title: "上级地区名称"
         }).sn({
-            title:"sn"
-        }).sn({
-
-        }).build();
+            title: "sn"
+        }).sn({}).build();
 
         console.log("---------------", build);
 
@@ -166,7 +164,8 @@ export default class ListView extends BaseListView<SampleListProps,
                 return <Popover content={<Button icon="download"
                                                  type="primary"
                                                  size="small"
-                                                 onClick={() => {}}>下载</Button>}>
+                                                 onClick={() => {
+                                                 }}>下载</Button>}>
                     <Icon type="file"/>
                 </Popover>
             }
@@ -297,7 +296,7 @@ export default class ListView extends BaseListView<SampleListProps,
 
 
         return (
-            <Row gutter={{md: "8", lg: "24", xl: "48"}}>
+            <Row gutter={{md: 8, lg: 24, xl: 48}}>
                 <Col md={8} sm={24}>
                     <FormItem label="名称模糊查询">
                         {
@@ -343,7 +342,7 @@ export default class ListView extends BaseListView<SampleListProps,
         return (
             <div>
 
-                <Row gutter={{md: "8", lg: "24", xl: "48"}}>
+                <Row gutter={{md: 8, lg: 24, xl: 48}}>
                     <Col md={8} sm={24}>
                         <FormItem key={"ext_query_form_nameLike"}
                                   label="名称模糊查询">
@@ -394,7 +393,7 @@ export default class ListView extends BaseListView<SampleListProps,
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter={{md: "8", lg: "24", xl: "48"}}>
+                <Row gutter={{md: 8, lg: 24, xl: 48}}>
                     <Col md={8} sm={24}>
                         <FormItem label="发布时间">
                             {
@@ -416,7 +415,7 @@ export default class ListView extends BaseListView<SampleListProps,
                     </Col>
 
                 </Row>
-                <Row type="flex" gutter={{md: "5", lg: "24", xl: "48"}}>
+                <Row type="flex" gutter={{md: 5, lg: 24, xl: 48}}>
 
                     <FormItem label="发布时间">
                         {
