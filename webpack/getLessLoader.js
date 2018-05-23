@@ -1,6 +1,5 @@
 const path = require('path');
 const cssModuleLoader = require('./cssModuleUtils');
-
 /**
  * 获取主题配置
  * @param path    文件路径
@@ -37,17 +36,8 @@ function getLessLoader(options) {
 
     return {
         test: /\.less$/,
-        use: [
-            require.resolve('style-loader'),
-            // ({resource}) => ({
-            //     loader: 'css-loader',
-            //     options: {
-            //         minimize: true,
-            //         importLoaders: 1,
-            //         modules: /\.module\.less/.test(resource),
-            //         localIdentName: '[name]__[local]___[hash:base64:5]',
-            //     }
-            // }),
+        use:[
+            require.resolve("style-loader"),
             cssModuleLoader,
             {
                 loader: "postcss-loader",
@@ -55,7 +45,6 @@ function getLessLoader(options) {
                     config: {
                         path: path.join(__dirname, './postcss.config.js')
                     }
-
                 }
             },
             {
@@ -67,7 +56,6 @@ function getLessLoader(options) {
                 }
             }
         ]
-
     }
 }
 

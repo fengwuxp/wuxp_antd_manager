@@ -1,14 +1,10 @@
 import * as React from "react";
-import Table from "antd/es/table/Table";
 import BaseListView, {BaseListProps, BaseListState} from "../base/BaseListView";
-import Button from "antd/es/button/button";
-import Dropdown from "antd/lib/dropdown/dropdown";
-import {Card, Col, DatePicker, Form, Icon, Menu, Popover, Row, Select} from "antd";
+import {Card, Col, Button, Dropdown, Table, DatePicker, Form, Icon, Menu, Popover, Row, Select} from "antd";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import StringUtils from "typescript_api_sdk/src/utils/StringUtils"
 import BrowserNavigatorFactory from "wuxp_react_dynamic_router/src/factory/navigator/web/BrowserNavigatorFactory";
 import {QuerySampleReq, QuerySampleReqBuilder} from "./req/QuerySampleReq";
-import FormItem from "antd/lib/form/FormItem";
 import MomentHelper from "wuxp_react_dynamic_router/src/helper/MomentHelper";
 import {MomentFormatString} from "wuxp_react_dynamic_router/src/enums/MomentFormatString";
 import * as moment from "moment";
@@ -24,6 +20,7 @@ import {ClickParam} from "antd/lib/menu";
 
 const {RangePicker} = DatePicker;
 
+const FormItem = Form.Item;
 const Option = Select.Option;
 
 const history = BrowserNavigatorFactory.get();
@@ -74,19 +71,6 @@ export default class ListView extends BaseListView<SampleListProps,
 
     protected buildColumns = (): ColumnProps<SampleInfo>[] => {
 
-        let build = this.tableBuilder.parentInfo.name({
-            title: "上级"
-        }).parentInfo.feePct({
-            title: "123"
-        }).areaInfo.name({
-            title: "地区名称"
-        }).areaInfo.areaInfo.name({
-            title: "上级地区名称"
-        }).sn({
-            title: "sn"
-        }).sn({}).build();
-
-        console.log("---------------", build);
 
         return this.tableBuilder.operation({
             title: '操作',
@@ -194,13 +178,6 @@ export default class ListView extends BaseListView<SampleListProps,
             sorter: true,
             width: 120
         }).build();
-
-        //     .areaInfo((builder:any)=>{
-        //     return builder.name({
-        //
-        //     }).build();
-        // })
-
 
     };
 

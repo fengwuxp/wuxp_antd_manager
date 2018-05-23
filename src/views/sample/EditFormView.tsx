@@ -1,4 +1,4 @@
-import {Button, Card, Form, Select} from 'antd';
+import {Button, Card, Form, Select,Input} from 'antd';
 import * as React from "react";
 import PageHeaderLayout from "../../layouts/page/PageHeaderLayout";
 import {AntdFromBaseProps} from "wuxp_react_dynamic_router/src/model/antd/AntdFromBaseProps";
@@ -16,7 +16,7 @@ import {loadAreaToCasaderOptions, queryAreaToCasaderOptions} from "../../helper/
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+// const TextArea=Input.TextArea;
 
 interface SampleFormProps extends AntdFromBaseProps {
 

@@ -57,7 +57,8 @@ const getWebpackBaseConfig = function (options) {
                         {
                             loader: "babel-loader",
                             options: {
-                                presets: ['es2015', 'stage-2']
+                                presets: ['es2015', 'stage-2'],
+                                compact: true
                             }
                         }
                     ]
@@ -98,22 +99,19 @@ const getWebpackBaseConfig = function (options) {
 
                 {
                     test: /\.s[c|a]ss$/,
-                    use: ExtractTextPlugin.extract({
-                        use: [
-                            cssModuleLoader,
-                            {
-                                loader: "postcss-loader",
-                                options: {
-                                    config: {
-                                        path: path.join(__dirname, './postcss.config.js')
-                                    }
+                    use: [
+                        require.resolve("style-loader"),
+                        cssModuleLoader,
+                        {
+                            loader: "postcss-loader",
+                            options: {
+                                config: {
+                                    path: path.join(__dirname, './postcss.config.js')
                                 }
-                            },
-                            {loader: "sass-loader"}
-                        ],
-                        fallback: "style-loader"
-                    })
-
+                            }
+                        },
+                        {loader: "sass-loader"}
+                    ]
                 },
                 {
                     test: /\.(png|jpg|svg)/,

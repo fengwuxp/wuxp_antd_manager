@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import styles from "./index.module.less";
-// import "fixed-data-table-2/dist/fixed-data-table.css";
+import "fixed-data-table-2/dist/fixed-data-table.css";
 import {Route, Switch} from 'react-router-dom'
 import {antdAdminStore} from "./store/StoreManager";
 import UserLayout from "./layouts/login/UserLayout";
@@ -36,12 +36,10 @@ const {AuthorizedRoute} = Authorized;
 registerStoreByProxy(antdAdminStore);
 
 //加载系统配置
- systemConfigHandler.getSystemConfig([
+systemConfigHandler.getSystemConfig([
     "site_name",
     "admin_logo"
 ]);
-
-
 
 
 ReactDOM.render(

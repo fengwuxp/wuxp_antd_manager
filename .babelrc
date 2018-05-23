@@ -17,7 +17,7 @@
       "import",
       {
         "libraryName": "antd",
-        "libraryDirectory": "es",
+        "libraryDirectory": "lib",
         "style": true
       }
     ],
@@ -25,7 +25,7 @@
       "import",
       {
         "libraryName": "ant-design-pro",
-        "libraryDirectory": "es",
+        "libraryDirectory": "lib",
         "style": true
       }
     ]
