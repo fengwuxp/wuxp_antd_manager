@@ -11,10 +11,25 @@ import {QueryParamsCache} from "../../model/AntdAdminStore";
 import TableColumnsBuilder, {HasActionTable} from "../../builder/table/TableColumnsBuilder";
 import {DEFAULT_QUERY_SIZE, paramsCacheHandler} from "../../handler/query/QueryParamsCacheHandler";
 import {antdAdminStore} from "../../store/StoreManager";
-
+import tableBaseStyle from "../TableList.module.less";
 import {FetchOption} from "typescript_api_sdk/src/api/option/FetchOption";
 import {ApiClientInterface} from "typescript_api_sdk/src/api/base/ApiClientInterface";
 import {generatePageURL} from "./GenerateFetchURL";
+import {CssStyle} from "../../model/css/CssStyle";
+
+
+/**
+ * 表格基础样式定义
+ */
+interface TableBaseStyle extends CssStyle {
+    submitButtons;
+    tableList;
+    tableListForm;
+    "ant-form-item";
+    "ant-form-item-control";
+    "ant-form-item-control-wrapper";
+    "ant-form-item-label";
+}
 
 /**
  * 列表视图的 base state
@@ -105,6 +120,12 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
      * 表格列建造者
      */
     protected tableBuilder: B;
+
+    /**
+     * 表格基础样式
+     * @type {TableBaseStyle}
+     */
+    protected tableBaseStyle: TableBaseStyle = tableBaseStyle;
 
     /**
      * 客户端请求工具
