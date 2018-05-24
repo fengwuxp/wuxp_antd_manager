@@ -13,7 +13,7 @@ import {Link} from "react-router-dom";
 import {ColumnProps} from "antd/es/table/interface";
 import {SampleBuilder, SampleInfo} from "./info/SampleInfo";
 import SendMode from "./enums/SendMode";
-import styles from "../TableList.module.less";
+// import styles from "../TableList.module.less";
 import {FormItemType} from "../../builder/form/FormItemType";
 import MenuBuilder, {SimpleCommonOperation} from "../../builder/menu/MenuBuilder";
 import {ClickParam} from "antd/lib/menu";
@@ -182,7 +182,7 @@ export default class ListView extends BaseListView<SampleListProps,
     };
 
     render() {
-        console.log("render");
+        console.log("------render----",this.tableBaseStyle);
         const {page, loading, pagination, selectedRows} = this.state;
 
         const moreAction = (
@@ -205,7 +205,7 @@ export default class ListView extends BaseListView<SampleListProps,
                 title="示例列表"
                 content="示例列表">
                 <Card bordered={false}>
-                    <div className={styles.tableListForm}>{this.renderAdvancedForm()}</div>
+                    <div className={this.tableBaseStyle.tableListForm}>{this.renderAdvancedForm()}</div>
                     <Row>
                         <Col span={10}>
                             <Button icon="plus"
@@ -257,6 +257,7 @@ export default class ListView extends BaseListView<SampleListProps,
 
 
     protected beforeSerialize = (req: QuerySampleReq) => {
+
         //处理时间参数
         MomentHelper.handlerFormRangerDateParam(req, "publicDate", MomentFormatString.YYYY_MM_DD_HH_mm);
         return true;

@@ -36,16 +36,21 @@ function convertRouteToObject({path, location, component, exact, strict}: RouteC
 }
 
 
-function convertRoutesToMap(routes: Array<RouteConfig>, result: any) {
-    routes.forEach((item) => {
-        if (item.routes) {
-            convertRoutesToMap(routes, result);
-        } else {
-            result[item.path] = convertRouteToObject(item);
-        }
-    });
-}
+// function convertRoutesToMap(routes: Array<RouteConfig>, result: any) {
+//     routes.forEach((item) => {
+//         if (item.routes) {
+//             convertRoutesToMap(routes, result);
+//         } else {
+//             result[item.path] = convertRouteToObject(item);
+//         }
+//     });
+// }
 
+
+let isMobile;
+enquireScreen(b => {
+    isMobile = b;
+});
 
 export interface AntdNavLayoutProps extends GlobalHeaderProps {
     /**
@@ -209,6 +214,7 @@ export default class AntdNavLayout extends React.Component<AntdNavLayoutProps, a
     render() {
         let fetchingNotices = false;
         const {selectedMenuIndexList, session} = this.props;
+        console.log("-----session------",session)
         const currentUser = {
             notifyCount: 10,
             // name: session.admin.name,

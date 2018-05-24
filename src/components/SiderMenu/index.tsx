@@ -14,7 +14,7 @@ export default (props: SiderMenuProps) => {
             iconChild={null}
             open={!props.collapsed}
             onMaskClick={() => {
-                props.onCollapse(true);
+                props.onCollapse(false);
             }}
             width={`${width}px`}
         >

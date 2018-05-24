@@ -18,6 +18,10 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import {systemConfigHandler} from "./handler/config/SystemConfigHandler";
 import {registerStoreByProxy} from "wuxp_react_dynamic_router/src/redux/ProxyReduxAction";
+import {sessionHandler} from "./handler/session/SessionHandler";
+import {AntdAdmin, SessionStatus} from "./model/session/AntdAdmin";
+import {LoginType} from "./enums/AdminLoginType";
+import {isNullOrUndefined} from "util";
 
 moment.locale('zh-cn');
 
@@ -42,23 +46,46 @@ systemConfigHandler.getSystemConfig([
 ]);
 
 
-ReactDOM.render(
-    <Provider store={antdAdminStore}>
-        <ConnectedRouter history={history}>
-            <Switch>
-                <Route path="/login" component={UserLayout}/>
-                <Route path="/logout" component={UserLayout}/>
-                <AuthorizedRoute
-                    path="/"
-                    render={(props: any) => <BasicLayout {...props} />}
-                    authority={['admin', 'user']}
-                    redirectPath="/login"
-                />
-            </Switch>
-        </ConnectedRouter>
-    </Provider>,
-    document.getElementById("app"));
+function render(isLogin) {
+
+    ReactDOM.render(
+        <Provider store={antdAdminStore}>
+            <ConnectedRouter history={history}>
+                <Switch>
+                    <Route path="/login" exact component={UserLayout}/>
+                    <Route path="/logout" exact component={UserLayout}/>
+                    <Route path="/" render={(props: any) => <BasicLayout {...props} />}/>
+                    {/*<AuthorizedRoute*/}
+                    {/*path="/"*/}
+                    {/*render={(props: any) => <BasicLayout {...props} />}*/}
+                    {/*authority={['admin', 'user']}*/}
+                    {/*redirectPath="/login"*/}
+                    {/*/>*/}
+                </Switch>
+            </ConnectedRouter>
+        </Provider>,
+        document.getElementById("app"));
+}
+
+window['setAdminInfo'] = (admin: AntdAdmin) => {
+    let isLogin = !isNullOrUndefined(admin);
+    if (isLogin) {
+        sessionHandler.setSession(
+            {
+                type: LoginType.ACCOUNT,
+                submitting: false,
+                status: SessionStatus.LOGIN_SUCCESS,
+                admin: admin
+            }
+        );
+    }
+
+    render(isLogin);
+};
 
 
+if (process.env.NODE_ENV === "dev") {
 
+    window['setAdminInfo'](require("../mock/MockAdmin").mockAdmin());
+}
 

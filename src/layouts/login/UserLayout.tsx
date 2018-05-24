@@ -51,10 +51,7 @@ const mapStateToPropsParam: MapStateToPropsParam<any, any, any> = ({systemConfig
 class UserLayout extends React.PureComponent<UserLayoutPops, any> {
 
     getPageTitle() {
-
-
         let title = this.props.systemConfig.site_name || "";
-
         return title;
     }
 

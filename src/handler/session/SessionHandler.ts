@@ -18,7 +18,7 @@ export interface SessionHandler extends SagaHandler<AntdSession> {
 
     logout: (type?: string) => void;
 
-    setSession: (state: AntdSession, newState: AntdSession) => AntdSession;
+    setSession: (state: AntdSession, newState?: AntdSession) => AntdSession;
 
 }
 
@@ -46,7 +46,7 @@ let defaultSession = {
 export class SessionHandlerImpl implements SessionHandler {
 
 
-     default: AntdSession = defaultSession;
+    default: AntdSession = defaultSession;
 
 
     /**
@@ -122,7 +122,7 @@ export class SessionHandlerImpl implements SessionHandler {
         return defaultSession;
     }
 
-    setSession(state: AntdSession, newState: AntdSession): AntdSession {
+    setSession(state: AntdSession, newState?: AntdSession): AntdSession {
         return newState;
     };
 
