@@ -1,5 +1,5 @@
 const path = require('path');
-const cssModuleLoader = require('./cssModuleUtils');
+const {lessModuleLoader} = require('./cssModuleUtils');
 /**
  * 获取主题配置
  * @param path    文件路径
@@ -38,7 +38,7 @@ function getLessLoader(options) {
         test: /\.less$/,
         use:[
             require.resolve("style-loader"),
-            cssModuleLoader,
+            lessModuleLoader,
             {
                 loader: "postcss-loader",
                 options: {

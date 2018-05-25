@@ -1,6 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const cssModuleLoader = require('./cssModuleUtils');
+const {scssModuleLoader,cssModuleLoader} = require('./cssModuleUtils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getLessLoader = require("./getLessLoader");
 
@@ -101,7 +101,7 @@ const getWebpackBaseConfig = function (options) {
                     test: /\.s[c|a]ss$/,
                     use: [
                         require.resolve("style-loader"),
-                        cssModuleLoader,
+                        scssModuleLoader,
                         {
                             loader: "postcss-loader",
                             options: {
