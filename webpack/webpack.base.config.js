@@ -1,6 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const {scssModuleLoader,cssModuleLoader} = require('./cssModuleUtils');
+const {scssModuleLoader, cssModuleLoader} = require('./cssModuleUtils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getLessLoader = require("./getLessLoader");
 
@@ -57,7 +57,10 @@ const getWebpackBaseConfig = function (options) {
                         {
                             loader: "babel-loader",
                             options: {
-                                presets: ['es2015', 'stage-2'],
+                                presets: [
+                                    "react",
+                                    "env"
+                                ],
                                 compact: true
                             }
                         }
