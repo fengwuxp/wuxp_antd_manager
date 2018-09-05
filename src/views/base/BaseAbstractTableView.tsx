@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ApiQueryReq} from "typescript_api_sdk/src/api/model/ApiQueryReq";
 import {PageInfo} from "typescript_api_sdk/src/api/model/PageInfo";
-import {ColumnProps, TablePaginationConfig, TableRowSelection} from "antd/es/table/interface";
+import {ColumnProps, PaginationConfig, TableRowSelection} from "antd/es/table/interface";
 import {parse} from "querystring";
 import {isBoolean, isNullOrUndefined} from "util";
 import apiClient from "../../fetch/BuildFetchClient";
@@ -43,7 +43,7 @@ export interface BaseAbstractTableViewState<T> {
     loading: boolean;
 
     //分页信息
-    pagination: TablePaginationConfig | false,
+    pagination: PaginationConfig | false,
 
     /**
      * 选中的行
@@ -219,11 +219,11 @@ export default abstract class BaseAbstractTableView<P extends BaseAbstractTableV
 
     /**
      * 分页、排序、筛选变化时触发
-     * @param {TablePaginationConfig | boolean} pagination
+     * @param {PaginationConfig} pagination
      * @param {string[]} filters
      * @param {Object} sorter
      */
-    protected onTableChange = (pagination: TablePaginationConfig, filters: string[], sorter: any) => {
+    protected onTableChange = (pagination: PaginationConfig, filters: string[], sorter: any) => {
 
         console.log("排序处理", sorter);
 

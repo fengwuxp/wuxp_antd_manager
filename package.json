@@ -43,7 +43,7 @@
     "@types/redux-actions": "^2.3.0",
     "@types/redux-thunk": "^2.1.0",
     "ant-design-pro": "^1.3.0",
-    "antd": "^3.5.3",
+    "antd": "^3.9.1",
     "awesome-typescript-loader": "^3.2.2",
     "babel-core": "^6.26.0",
     "babel-istanbul": "^0.11.0",
@@ -136,6 +136,7 @@
     "webpack": "^3.8.1",
     "webpack-cleanup-plugin": "^0.5.1",
     "webpack-dev-server": "^2.9.4",
+    "wuxp_components_definition": "0.0.1",
     "wuxp_react_dynamic_router": "0.0.1"
   },
   "devDependencies": {
